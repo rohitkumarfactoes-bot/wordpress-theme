@@ -140,17 +140,6 @@ function gizmodotech_widgets_init() {
         'after_title'   => '</h2>',
     ));
 
-    // Footer Newsletter
-    register_sidebar(array(
-        'name'          => esc_html__('Footer Newsletter', 'gizmodotech'),
-        'id'            => 'footer-newsletter',
-        'description'   => esc_html__('Add a newsletter subscription widget here.', 'gizmodotech'),
-        'before_widget' => '<div id="%1$s" class="widget newsletter-widget %2$s">',
-        'after_widget'  => '</div>',
-        'before_title'  => '<h3 class="widget-title">',
-        'after_title'   => '</h3>',
-    ));
-
     // Footer Widget Areas
     for ($i = 1; $i <= 4; $i++) {
         register_sidebar(array(
