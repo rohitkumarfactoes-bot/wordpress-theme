@@ -42,18 +42,6 @@
                     ?>
                 </div>
 
-                <nav class="main-navigation" id="site-navigation">
-                    <?php
-                    wp_nav_menu(array(
-                        'theme_location' => 'primary',
-                        'menu_id'        => 'primary-menu',
-                        'menu_class'     => 'primary-menu',
-                        'container'      => false,
-                        'fallback_cb'    => false,
-                    ));
-                    ?>
-                </nav>
-
                 <div class="header-actions">
                     <button class="search-toggle" aria-label="<?php esc_attr_e('Search', 'gizmodotech'); ?>">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -89,6 +77,20 @@
                         </svg>
                     </button>
                 </div>
+            </div>
+
+            <div class="header-navigation-bar">
+                <nav class="main-navigation" id="site-navigation">
+                    <?php
+                    wp_nav_menu(array(
+                        'theme_location' => 'primary',
+                        'menu_id'        => 'primary-menu',
+                        'menu_class'     => 'primary-menu',
+                        'container'      => false,
+                        'fallback_cb'    => false,
+                    ));
+                    ?>
+                </nav>
             </div>
         </div>
     </header>

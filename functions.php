@@ -109,6 +109,12 @@ function gizmodotech_scripts() {
         true
     );
 
+    // Localize script for Ajax
+    wp_localize_script('gizmodotech-navigation', 'gizmodotech_ajax', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('gizmodotech_subscribe_nonce')
+    ));
+
     // Dark mode script
     wp_enqueue_script(
         'gizmodotech-dark-mode',
@@ -453,3 +459,22 @@ function gizmodotech_disable_embeds() {
     wp_deregister_script('wp-embed');
 }
 add_action('wp_footer', 'gizmodotech_disable_embeds');
+
+/**
+ * Handle Subscription AJAX
+ */
+function gizmodotech_handle_subscribe() {
+    check_ajax_referer('gizmodotech_subscribe_nonce', 'nonce');
+    
+    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+    
+    if (is_email($email)) {
+        // In a real scenario, save to DB or mailing list API
+        // For now, we simulate success
+        wp_send_json_success(array('message' => esc_html__('Thanks for subscribing!', 'gizmodotech')));
+    } else {
+        wp_send_json_error(array('message' => esc_html__('Please enter a valid email.', 'gizmodotech')));
+    }
+}
+add_action('wp_ajax_gizmodotech_subscribe', 'gizmodotech_handle_subscribe');
+add_action('wp_ajax_nopriv_gizmodotech_subscribe', 'gizmodotech_handle_subscribe');
