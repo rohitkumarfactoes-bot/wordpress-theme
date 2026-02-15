@@ -158,6 +158,17 @@ function gizmodotech_widgets_init() {
             'after_title'   => '</h3>',
         ));
     }
+
+    // Homepage Widget Area
+    register_sidebar(array(
+        'name'          => esc_html__('Homepage Widgets', 'gizmodotech'),
+        'id'            => 'homepage-widgets',
+        'description'   => esc_html__('Add widgets here to design your homepage (Slider, Category Posts, etc).', 'gizmodotech'),
+        'before_widget' => '<section id="%1$s" class="widget homepage-widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h2 class="widget-title">',
+        'after_title'   => '</h2>',
+    ));
 }
 add_action('widgets_init', 'gizmodotech_widgets_init');
 
@@ -480,6 +491,18 @@ add_action('wp_ajax_gizmodotech_subscribe', 'gizmodotech_handle_subscribe');
 add_action('wp_ajax_nopriv_gizmodotech_subscribe', 'gizmodotech_handle_subscribe');
 
 /**
+ * Load Custom Widgets
+ */
+if (file_exists(get_template_directory() . '/inc/widgets.php')) {
+    require get_template_directory() . '/inc/widgets.php';
+}
+function gizmodotech_register_custom_widgets() {
+    register_widget('Gizmodotech_Featured_Slider_Widget');
+    register_widget('Gizmodotech_Category_Posts_Widget');
+}
+add_action('widgets_init', 'gizmodotech_register_custom_widgets');
+
+/**
  * Auto-generate Table of Contents for Single Posts
  */
 function gizmodotech_add_toc($content) {
@@ -491,7 +514,7 @@ function gizmodotech_add_toc($content) {
     $i = 0;
 
     // Find H2 and H3 tags, generate links, and add IDs to headings
-    $content = preg_replace_callback('/<h([2-3])(.*?)>(.*?)<\/h\1>/', function($matches) use (&$toc_items, &$i) {
+    $content = preg_replace_callback('/<h([2-3])([^>]*)>(.*?)<\/h\1>/si', function($matches) use (&$toc_items, &$i) {
         $i++;
         $anchor = 'toc-' . $i;
         $level = $matches[1];
