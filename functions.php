@@ -495,10 +495,16 @@ add_action('wp_ajax_nopriv_gizmodotech_subscribe', 'gizmodotech_handle_subscribe
  */
 if (file_exists(get_template_directory() . '/inc/widgets.php')) {
     require get_template_directory() . '/inc/widgets.php';
+} elseif (file_exists(get_template_directory() . '/widgets.php')) {
+    require get_template_directory() . '/widgets.php';
 }
 function gizmodotech_register_custom_widgets() {
-    register_widget('Gizmodotech_Featured_Slider_Widget');
-    register_widget('Gizmodotech_Category_Posts_Widget');
+    if (class_exists('Gizmodotech_Featured_Slider_Widget')) {
+        register_widget('Gizmodotech_Featured_Slider_Widget');
+    }
+    if (class_exists('Gizmodotech_Category_Posts_Widget')) {
+        register_widget('Gizmodotech_Category_Posts_Widget');
+    }
 }
 add_action('widgets_init', 'gizmodotech_register_custom_widgets');
 
