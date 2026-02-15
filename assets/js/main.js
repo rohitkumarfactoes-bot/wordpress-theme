@@ -36,7 +36,9 @@
                     </svg>
                 </button>
             `;
-            $('.site-header .container').append(toggleHTML);
+            if ($('.site-header .container').length > 0) {
+                $('.site-header .container').append(toggleHTML);
+            }
         }
 
         // Toggle icon based on current theme

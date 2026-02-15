@@ -259,16 +259,6 @@ function gizmodotech_fix_svg() {
 add_action( 'admin_head', 'gizmodotech_fix_svg' );
 
 /**
- * Add security headers
- */
-function gizmodotech_security_headers() {
-	header( 'X-Content-Type-Options: nosniff' );
-	header( 'X-Frame-Options: SAMEORIGIN' );
-	header( 'X-XSS-Protection: 1; mode=block' );
-}
-add_action( 'send_headers', 'gizmodotech_security_headers' );
-
-/**
  * Remove WordPress version from head
  */
 remove_action( 'wp_head', 'wp_generator' );
@@ -409,3 +399,4 @@ function gizmodotech_sanitize_checkbox( $checked ) {
  */
 require_once GIZMODOTECH_THEME_DIR . '/inc/template-tags.php';
 require_once GIZMODOTECH_THEME_DIR . '/inc/template-functions.php';
+require_once GIZMODOTECH_THEME_DIR . '/inc/widgets/class-related-posts-widget.php';

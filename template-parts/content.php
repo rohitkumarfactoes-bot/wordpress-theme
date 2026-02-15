@@ -7,33 +7,32 @@
  */
 ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class('post-card'); ?>>
-    
-    <?php if (has_post_thumbnail()) : ?>
-    <div class="post-thumbnail">
-        <a href="<?php the_permalink(); ?>">
-            <?php the_post_thumbnail('gizmodotech-medium'); ?>
-        </a>
-        
-        <?php
-        $categories = get_the_category();
-        if (!empty($categories)) :
-        ?>
-        <span class="badge category-badge">
-            <?php echo esc_html($categories[0]->name); ?>
-        </span>
-        <?php endif; ?>
-    </div>
-    <?php endif; ?>
-    
-    <div class="post-content">
-        <?php the_title(sprintf('<h3 class="entry-title"><a href="%s">', esc_url(get_permalink())), '</a></h3>'); ?>
-        
-        <div class="entry-excerpt">
-            <?php the_excerpt(); ?>
-        </div>
-        
-        <?php gizmodotech_post_meta(); ?>
-    </div>
-    
+<article id="post-<?php the_ID(); ?>" <?php post_class('article-card'); ?>>
+	<?php gizmodotech_post_thumbnail(); ?>
+
+	<div class="article-card-content">
+		<header class="entry-header">
+			<?php
+			if ( is_singular() ) :
+				the_title( '<h1 class="entry-title">', '</h1>' );
+			else :
+				the_title( '<h2 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h2>' );
+			endif;
+
+			if ( 'post' === get_post_type() ) :
+				?>
+				<div class="entry-meta">
+					<?php
+					gizmodotech_posted_on();
+					gizmodotech_posted_by();
+					?>
+				</div>
+			<?php endif; ?>
+		</header>
+
+		<div class="entry-content">
+			<?php the_excerpt(); ?>
+		</div>
+
+	</div>
 </article>
