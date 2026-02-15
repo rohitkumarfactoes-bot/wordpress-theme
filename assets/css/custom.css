@@ -1,14 +1,4 @@
-/**
- * Gizmodotech Custom Styles
- * Component and page-specific styles
- *
- * @package Gizmodotech
- * @since 1.0.0
- */
 
-/* ==========================================================================
-   Header & Navigation
-   ========================================================================== */
 
 .top-banner {
   background: linear-gradient(to right, var(--color-primary), var(--color-accent));
@@ -102,7 +92,7 @@
 .btn-icon {
   display: flex;
   align-items: center;
-  justify-center;
+  justify-content:center;
   width: 2.5rem;
   height: 2.5rem;
   border-radius: var(--radius-md);

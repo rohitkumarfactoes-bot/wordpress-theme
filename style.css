@@ -1,9 +1,9 @@
 /*
 Theme Name: Gizmodotech
 Theme URI: https://gizmodotech.com
-Author: Gizmodotech Team
+Author: Rohit Kumar
 Author URI: https://gizmodotech.com
-Description: Modern, SEO-optimized WordPress theme for tech news and gadget reviews. Features dark mode, responsive design, fast loading, and Beebom-inspired clean UI. Perfect for technology blogs, mobile reviews, and gadget comparison sites.
+Description: A modern, SEO-optimized WordPress theme designed for tech news, gadget reviews, and technology blogs. Features dark mode, responsive design, and lightning-fast performance.
 Version: 1.0.0
 Requires at least: 6.0
 Tested up to: 6.4
@@ -11,300 +11,358 @@ Requires PHP: 7.4
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: gizmodotech
-Tags: blog, news, two-columns, right-sidebar, custom-colors, custom-menu, custom-logo, editor-style, featured-images, footer-widgets, full-width-template, rtl-language-support, sticky-post, theme-options, threaded-comments, translation-ready, dark-mode, tech, gadgets, reviews
-
-Gizmodotech WordPress Theme, Copyright 2026
-Gizmodotech is distributed under the terms of the GNU GPL
+Tags: blog, news, technology, responsive, dark-mode, custom-menu, featured-images, threaded-comments, translation-ready, custom-logo, two-columns, editor-style, rtl-language-support
 */
 
-/* ==========================================================================
-   CSS Variables - Theme Colors & Settings
-   ========================================================================== */
-
-:root {
-  /* Primary Brand Colors */
-  --color-primary: #0ea5e9;
-  --color-primary-hover: #0284c7;
-  --color-primary-light: #e0f2fe;
-  --color-primary-dark: #0369a1;
-  
-  /* Accent Colors */
-  --color-accent: #ef4444;
-  --color-accent-hover: #dc2626;
-  --color-accent-light: #fee2e2;
-  
-  /* Light Mode Colors */
-  --color-bg: #ffffff;
-  --color-surface: #f8fafc;
-  --color-surface-hover: #f1f5f9;
-  --color-border: #e2e8f0;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-tertiary: #94a3b8;
-  
-  /* Typography */
-  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  
-  /* Spacing */
-  --container-width: 1280px;
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 1rem;
-  --spacing-md: 1.5rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 3rem;
-  
-  /* Border Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  
-  /* Transitions */
-  --transition-fast: 150ms ease;
-  --transition-base: 200ms ease;
-  --transition-slow: 300ms ease;
-}
-
-/* Dark Mode Colors */
-body.dark-mode {
-  --color-bg: #0a0e1a;
-  --color-surface: #141824;
-  --color-surface-hover: #1e2433;
-  --color-border: #2d3548;
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #cbd5e1;
-  --color-text-tertiary: #64748b;
-}
-
-/* ==========================================================================
-   Reset & Base Styles
-   ========================================================================== */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--color-text-primary);
-  background-color: var(--color-bg);
-  transition: background-color var(--transition-base), color var(--transition-base);
-}
-
-/* ==========================================================================
-   Typography
-   ========================================================================== */
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--color-text-primary);
-  margin-bottom: 1rem;
-}
-
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.75rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1.125rem; }
-
-@media (max-width: 768px) {
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
-  h3 { font-size: 1.5rem; }
-}
-
-p {
-  margin-bottom: 1rem;
-  color: var(--color-text-secondary);
-}
-
-a {
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-a:hover {
-  color: var(--color-primary-hover);
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* ==========================================================================
-   Container & Layout
-   ========================================================================== */
-
-.container {
-  max-width: var(--container-width);
-  margin: 0 auto;
-  padding: 0 var(--spacing-sm);
-}
-
-@media (min-width: 768px) {
-  .container {
-    padding: 0 var(--spacing-md);
+/* ============================================
+   CSS Variables (Design Tokens)
+   ============================================ */
+   :root {
+    /* Colors - Light Mode */
+    --color-primary: #0ea5e9;
+    --color-primary-dark: #0284c7;
+    --color-accent: #ef4444;
+    --color-accent-dark: #dc2626;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-info: #3b82f6;
+    
+    /* Background Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-hover: #f1f5f9;
+    
+    /* Text Colors */
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+    --text-inverse: #ffffff;
+    
+    /* Border Colors */
+    --border-color: #e2e8f0;
+    --border-hover: #cbd5e1;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Typography */
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-heading: 'DM Sans', var(--font-primary);
+    --font-mono: 'Fira Code', 'Courier New', monospace;
+    
+    /* Font Sizes */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    
+    /* Border Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
+    --radius-full: 9999px;
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-base: 200ms ease;
+    --transition-slow: 300ms ease;
+    
+    /* Container Width */
+    --container-max: 1280px;
+    --container-padding: 1rem;
   }
-}
-
-@media (min-width: 1024px) {
-  .container {
-    padding: 0 var(--spacing-lg);
+  
+  /* Dark Mode Variables */
+  [data-theme="dark"] {
+    /* Background Colors */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --bg-card: #1e293b;
+    --bg-hover: #334155;
+    
+    /* Text Colors */
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #64748b;
+    --text-inverse: #0f172a;
+    
+    /* Border Colors */
+    --border-color: #334155;
+    --border-hover: #475569;
+    
+    /* Adjust shadows for dark mode */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
   }
-}
-
-/* ==========================================================================
-   WordPress Core Styles
-   ========================================================================== */
-
-.alignleft {
-  float: left;
-  margin-right: var(--spacing-md);
-  margin-bottom: var(--spacing-sm);
-}
-
-.alignright {
-  float: right;
-  margin-left: var(--spacing-md);
-  margin-bottom: var(--spacing-sm);
-}
-
-.aligncenter {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: var(--spacing-md);
-}
-
-.wp-caption {
-  max-width: 100%;
-}
-
-.wp-caption-text {
-  font-size: 0.875rem;
-  color: var(--color-text-tertiary);
-  margin-top: var(--spacing-xs);
-  text-align: center;
-}
-
-.sticky {
-  /* Sticky post styles */
-}
-
-.bypostauthor {
-  /* Post author styles */
-}
-
-.gallery {
-  margin-bottom: var(--spacing-md);
-}
-
-.gallery-item {
-  display: inline-block;
-  text-align: center;
-  vertical-align: top;
-  width: 100%;
-  margin-bottom: var(--spacing-sm);
-}
-
-.screen-reader-text {
-  clip: rect(1px, 1px, 1px, 1px);
-  position: absolute !important;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
-}
-
-/* ==========================================================================
-   Utility Classes
-   ========================================================================== */
-
-.card {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-md);
-  transition: all var(--transition-base);
-}
-
-.card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-base);
-  border: none;
-  font-family: inherit;
-}
-
-.btn-primary {
-  background-color: var(--color-primary);
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: var(--color-primary-hover);
-  box-shadow: var(--shadow-md);
-}
-
-.badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border-radius: 9999px;
-  background-color: var(--color-primary-light);
-  color: var(--color-primary-dark);
-}
-
-.gradient-text {
-  background: linear-gradient(to right, var(--color-primary), var(--color-accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Hide elements */
-.hidden {
-  display: none !important;
-}
-
-/* Responsive visibility */
-@media (max-width: 767px) {
-  .hide-mobile { display: none !important; }
-}
-
-@media (min-width: 768px) {
-  .hide-desktop { display: none !important; }
-}
+  
+  /* ============================================
+     Base Styles & Reset
+     ============================================ */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    font-family: var(--font-primary);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    transition: background-color var(--transition-base), color var(--transition-base);
+  }
+  
+  /* ============================================
+     Typography
+     ============================================ */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+  }
+  
+  h1 { font-size: var(--text-4xl); }
+  h2 { font-size: var(--text-3xl); }
+  h3 { font-size: var(--text-2xl); }
+  h4 { font-size: var(--text-xl); }
+  h5 { font-size: var(--text-lg); }
+  h6 { font-size: var(--text-base); }
+  
+  p {
+    margin-bottom: var(--space-4);
+  }
+  
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  
+  a:hover {
+    color: var(--color-primary-dark);
+  }
+  
+  /* ============================================
+     Layout & Container
+     ============================================ */
+  .container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+  }
+  
+  .site-content {
+    padding: var(--space-8) 0;
+  }
+  
+  /* ============================================
+     Header Styles
+     ============================================ */
+  .site-header {
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  /* ============================================
+     Navigation
+     ============================================ */
+  .main-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) 0;
+  }
+  
+  .main-navigation ul {
+    list-style: none;
+    display: flex;
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+  }
+  
+  .main-navigation li {
+    position: relative;
+  }
+  
+  .main-navigation a {
+    color: var(--text-primary);
+    font-weight: 500;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition-fast);
+  }
+  
+  .main-navigation a:hover {
+    background-color: var(--bg-hover);
+  }
+  
+  /* ============================================
+     Content Cards
+     ============================================ */
+  .article-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+  }
+  
+  .article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .article-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .article-card-content {
+    padding: var(--space-6);
+  }
+  
+  /* ============================================
+     Buttons
+     ============================================ */
+  .btn {
+    display: inline-block;
+    padding: var(--space-3) var(--space-6);
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+  }
+  
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--color-primary-dark);
+  }
+  
+  /* ============================================
+     Footer
+     ============================================ */
+  .site-footer {
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    padding: var(--space-12) 0 var(--space-6);
+    margin-top: var(--space-12);
+  }
+  
+  /* ============================================
+     Widgets
+     ============================================ */
+  .widget {
+    margin-bottom: var(--space-8);
+  }
+  
+  .widget-title {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--color-primary);
+  }
+  
+  /* ============================================
+     Responsive
+     ============================================ */
+  @media (max-width: 768px) {
+    :root {
+      --text-4xl: 1.875rem;
+      --text-3xl: 1.5rem;
+      --text-2xl: 1.25rem;
+    }
+    
+    .main-navigation ul {
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+  }
+  
+  /* ============================================
+     Dark Mode Toggle
+     ============================================ */
+  .dark-mode-toggle {
+    background: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-full);
+    padding: var(--space-2) var(--space-3);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  
+  .dark-mode-toggle:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--border-hover);
+  }
+  
+  /* ============================================
+     Utility Classes
+     ============================================ */
+  .text-center { text-align: center; }
+  .text-left { text-align: left; }
+  .text-right { text-align: right; }
+  
+  .mt-4 { margin-top: var(--space-4); }
+  .mb-4 { margin-bottom: var(--space-4); }
+  .py-4 { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+  
+  .hidden { display: none; }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  

@@ -1,359 +1,411 @@
 <?php
 /**
  * Gizmodotech Theme Functions
- * 
+ *
  * @package Gizmodotech
  * @since 1.0.0
  */
 
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
+// Prevent direct file access
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-// Theme version
-define('GIZMODOTECH_VERSION', '1.0.0');
+/**
+ * Define theme constants
+ */
+define( 'GIZMODOTECH_VERSION', '1.0.0' );
+define( 'GIZMODOTECH_THEME_DIR', get_template_directory() );
+define( 'GIZMODOTECH_THEME_URI', get_template_directory_uri() );
 
 /**
  * Theme Setup
  */
-function gizmodotech_setup() {
-    // Make theme available for translation
-    load_theme_textdomain('gizmodotech', get_template_directory() . '/languages');
-    
-    // Add default posts and comments RSS feed links to head
-    add_theme_support('automatic-feed-links');
-    
-    // Let WordPress manage the document title
-    add_theme_support('title-tag');
-    
-    // Enable support for Post Thumbnails on posts and pages
-    add_theme_support('post-thumbnails');
-    set_post_thumbnail_size(1200, 630, true);
-    
-    // Add additional image sizes
-    add_image_size('gizmodotech-featured', 1200, 675, true);
-    add_image_size('gizmodotech-large', 800, 450, true);
-    add_image_size('gizmodotech-medium', 600, 400, true);
-    add_image_size('gizmodotech-small', 400, 300, true);
-    
-    // Register navigation menus
-    register_nav_menus(array(
-        'primary' => esc_html__('Primary Menu', 'gizmodotech'),
-        'footer'  => esc_html__('Footer Menu', 'gizmodotech'),
-    ));
-    
-    // Switch default core markup for search form, comment form, and comments
-    add_theme_support('html5', array(
-        'search-form',
-        'comment-form',
-        'comment-list',
-        'gallery',
-        'caption',
-        'style',
-        'script',
-    ));
-    
-    // Add theme support for selective refresh for widgets
-    add_theme_support('customize-selective-refresh-widgets');
-    
-    // Add support for custom logo
-    add_theme_support('custom-logo', array(
-        'height'      => 60,
-        'width'       => 200,
-        'flex-width'  => true,
-        'flex-height' => true,
-    ));
-    
-    // Add support for Block Styles
-    add_theme_support('wp-block-styles');
-    
-    // Add support for full and wide align images
-    add_theme_support('align-wide');
-    
-    // Add support for editor styles
-    add_theme_support('editor-styles');
-    add_editor_style('assets/css/editor-style.css');
-    
-    // Add support for responsive embeds
-    add_theme_support('responsive-embeds');
-    
-    // Add support for custom colors
-    add_theme_support('editor-color-palette', array(
-        array(
-            'name'  => esc_html__('Primary', 'gizmodotech'),
-            'slug'  => 'primary',
-            'color' => '#0ea5e9',
-        ),
-        array(
-            'name'  => esc_html__('Accent', 'gizmodotech'),
-            'slug'  => 'accent',
-            'color' => '#ef4444',
-        ),
-    ));
+function gizmodotech_theme_setup() {
+	
+	// Add default posts and comments RSS feed links to head
+	add_theme_support( 'automatic-feed-links' );
+
+	// Let WordPress manage the document title
+	add_theme_support( 'title-tag' );
+
+	// Enable support for Post Thumbnails
+	add_theme_support( 'post-thumbnails' );
+
+	// Add custom image sizes
+	add_image_size( 'gizmodotech-featured', 1200, 675, true );
+	add_image_size( 'gizmodotech-large', 800, 450, true );
+	add_image_size( 'gizmodotech-medium', 600, 400, true );
+	add_image_size( 'gizmodotech-small', 400, 300, true );
+
+	// Register navigation menus
+	register_nav_menus( array(
+		'primary' => esc_html__( 'Primary Menu', 'gizmodotech' ),
+		'footer'  => esc_html__( 'Footer Menu', 'gizmodotech' ),
+	) );
+
+	// Switch default core markup to output valid HTML5
+	add_theme_support( 'html5', array(
+		'search-form',
+		'comment-form',
+		'comment-list',
+		'gallery',
+		'caption',
+		'style',
+		'script',
+	) );
+
+	// Add theme support for selective refresh for widgets
+	add_theme_support( 'customize-selective-refresh-widgets' );
+
+	// Add support for custom logo
+	add_theme_support( 'custom-logo', array(
+		'height'      => 100,
+		'width'       => 400,
+		'flex-width'  => true,
+		'flex-height' => true,
+	) );
+
+	// Add support for editor styles
+	add_theme_support( 'editor-styles' );
+	add_editor_style( 'style.css' );
+
+	// Add support for responsive embeds
+	add_theme_support( 'responsive-embeds' );
+
+	// Add support for wide and full alignment
+	add_theme_support( 'align-wide' );
+
+	// Load translation files
+	load_theme_textdomain( 'gizmodotech', GIZMODOTECH_THEME_DIR . '/languages' );
 }
-add_action('after_setup_theme', 'gizmodotech_setup');
+add_action( 'after_setup_theme', 'gizmodotech_theme_setup' );
 
 /**
- * Set the content width
+ * Set content width
  */
 function gizmodotech_content_width() {
-    $GLOBALS['content_width'] = apply_filters('gizmodotech_content_width', 1200);
+	$GLOBALS['content_width'] = apply_filters( 'gizmodotech_content_width', 1200 );
 }
-add_action('after_setup_theme', 'gizmodotech_content_width', 0);
+add_action( 'after_setup_theme', 'gizmodotech_content_width', 0 );
 
 /**
  * Register widget areas
  */
 function gizmodotech_widgets_init() {
-    register_sidebar(array(
-        'name'          => esc_html__('Sidebar', 'gizmodotech'),
-        'id'            => 'sidebar-1',
-        'description'   => esc_html__('Add widgets here to appear in your sidebar.', 'gizmodotech'),
-        'before_widget' => '<section id="%1$s" class="widget %2$s">',
-        'after_widget'  => '</section>',
-        'before_title'  => '<h3 class="widget-title">',
-        'after_title'   => '</h3>',
-    ));
-    
-    // Footer widget areas
-    for ($i = 1; $i <= 4; $i++) {
-        register_sidebar(array(
-            'name'          => sprintf(esc_html__('Footer %d', 'gizmodotech'), $i),
-            'id'            => 'footer-' . $i,
-            'description'   => sprintf(esc_html__('Footer column %d', 'gizmodotech'), $i),
-            'before_widget' => '<div id="%1$s" class="widget %2$s">',
-            'after_widget'  => '</div>',
-            'before_title'  => '<h4 class="widget-title">',
-            'after_title'   => '</h4>',
-        ));
-    }
+	
+	// Sidebar
+	register_sidebar( array(
+		'name'          => esc_html__( 'Sidebar', 'gizmodotech' ),
+		'id'            => 'sidebar-1',
+		'description'   => esc_html__( 'Add widgets here.', 'gizmodotech' ),
+		'before_widget' => '<section id="%1$s" class="widget %2$s">',
+		'after_widget'  => '</section>',
+		'before_title'  => '<h2 class="widget-title">',
+		'after_title'   => '</h2>',
+	) );
+
+	// Footer widgets
+	for ( $i = 1; $i <= 4; $i++ ) {
+		register_sidebar( array(
+			'name'          => sprintf( esc_html__( 'Footer %d', 'gizmodotech' ), $i ),
+			'id'            => 'footer-' . $i,
+			'description'   => sprintf( esc_html__( 'Footer widget area %d', 'gizmodotech' ), $i ),
+			'before_widget' => '<div id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h3 class="widget-title">',
+			'after_title'   => '</h3>',
+		) );
+	}
 }
-add_action('widgets_init', 'gizmodotech_widgets_init');
+add_action( 'widgets_init', 'gizmodotech_widgets_init' );
 
 /**
  * Enqueue scripts and styles
  */
-function gizmodotech_scripts() {
-    // Google Fonts
-    wp_enqueue_style(
-        'gizmodotech-fonts',
-        'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap',
-        array(),
-        null
-    );
-    
-    // Theme stylesheet
-    wp_enqueue_style('gizmodotech-style', get_stylesheet_uri(), array(), GIZMODOTECH_VERSION);
-    
-    // Custom styles
-    wp_enqueue_style('gizmodotech-custom', get_template_directory_uri() . '/assets/css/custom.css', array('gizmodotech-style'), GIZMODOTECH_VERSION);
-    
-    // Main JavaScript
-    wp_enqueue_script('gizmodotech-script', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), GIZMODOTECH_VERSION, true);
-    
-    // Comment reply script
-    if (is_singular() && comments_open() && get_option('thread_comments')) {
-        wp_enqueue_script('comment-reply');
-    }
-    
-    // Localize script for AJAX
-    wp_localize_script('gizmodotech-script', 'gizmodotech', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce'    => wp_create_nonce('gizmodotech_nonce'),
-    ));
+function gizmodotech_enqueue_scripts() {
+	
+	// Google Fonts
+	wp_enqueue_style( 
+		'gizmodotech-google-fonts',
+		'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap',
+		array(),
+		null
+	);
+
+	// Main stylesheet
+	wp_enqueue_style( 
+		'gizmodotech-style', 
+		get_stylesheet_uri(),
+		array(),
+		GIZMODOTECH_VERSION
+	);
+
+	// Main JavaScript
+	wp_enqueue_script( 
+		'gizmodotech-scripts', 
+		get_template_directory_uri() . '/assets/js/main.js',
+		array( 'jquery' ),
+		GIZMODOTECH_VERSION,
+		true
+	);
+
+	// Comment reply script
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+		wp_enqueue_script( 'comment-reply' );
+	}
+
+	// Localize script for AJAX
+	wp_localize_script( 'gizmodotech-scripts', 'gizmodotech_vars', array(
+		'ajax_url' => admin_url( 'admin-ajax.php' ),
+		'nonce'    => wp_create_nonce( 'gizmodotech_nonce' ),
+	) );
 }
-add_action('wp_enqueue_scripts', 'gizmodotech_scripts');
+add_action( 'wp_enqueue_scripts', 'gizmodotech_enqueue_scripts' );
+
+/**
+ * Add custom body classes
+ */
+function gizmodotech_body_classes( $classes ) {
+	
+	// Add dark mode class if enabled
+	if ( isset( $_COOKIE['dark_mode'] ) && $_COOKIE['dark_mode'] === 'true' ) {
+		$classes[] = 'dark-mode';
+	}
+
+	// Add class if no sidebar
+	if ( ! is_active_sidebar( 'sidebar-1' ) ) {
+		$classes[] = 'no-sidebar';
+	}
+
+	return $classes;
+}
+add_filter( 'body_class', 'gizmodotech_body_classes' );
 
 /**
  * Custom excerpt length
  */
-function gizmodotech_excerpt_length($length) {
-    return 25;
+function gizmodotech_excerpt_length( $length ) {
+	return 30;
 }
-add_filter('excerpt_length', 'gizmodotech_excerpt_length', 999);
+add_filter( 'excerpt_length', 'gizmodotech_excerpt_length', 999 );
 
 /**
- * Custom excerpt more
+ * Custom excerpt more text
  */
-function gizmodotech_excerpt_more($more) {
-    return '...';
+function gizmodotech_excerpt_more( $more ) {
+	return '...';
 }
-add_filter('excerpt_more', 'gizmodotech_excerpt_more');
+add_filter( 'excerpt_more', 'gizmodotech_excerpt_more' );
 
 /**
- * Add custom classes to body
+ * Add post views counter
  */
-function gizmodotech_body_classes($classes) {
-    // Add a class if dark mode is enabled
-    if (isset($_COOKIE['dark_mode']) && $_COOKIE['dark_mode'] === 'true') {
-        $classes[] = 'dark-mode';
-    }
-    
-    // Add class if sidebar is active
-    if (is_active_sidebar('sidebar-1')) {
-        $classes[] = 'has-sidebar';
-    }
-    
-    return $classes;
+function gizmodotech_set_post_views( $post_id ) {
+	$count_key = 'post_views_count';
+	$count = get_post_meta( $post_id, $count_key, true );
+	if ( $count == '' ) {
+		$count = 0;
+		delete_post_meta( $post_id, $count_key );
+		add_post_meta( $post_id, $count_key, '0' );
+	} else {
+		$count++;
+		update_post_meta( $post_id, $count_key, $count );
+	}
 }
-add_filter('body_class', 'gizmodotech_body_classes');
 
-/**
- * Add custom post meta
- */
-function gizmodotech_post_meta() {
-    ?>
-    <div class="post-meta">
-        <span class="post-author">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 8a3 3 0 100-6 3 3 0 000 6zm2-3a2 2 0 11-4 0 2 2 0 014 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-            </svg>
-            <?php the_author_posts_link(); ?>
-        </span>
-        <span class="post-date">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M3.5 0a.5.5 0 01.5.5V1h8V.5a.5.5 0 011 0V1h1a2 2 0 012 2v11a2 2 0 01-2 2H2a2 2 0 01-2-2V3a2 2 0 012-2h1V.5a.5.5 0 01.5-.5zM1 4v10a1 1 0 001 1h12a1 1 0 001-1V4H1z"/>
-            </svg>
-            <?php echo get_the_date(); ?>
-        </span>
-        <?php if (has_category()) : ?>
-        <span class="post-category">
-            <?php the_category(', '); ?>
-        </span>
-        <?php endif; ?>
-    </div>
-    <?php
+function gizmodotech_get_post_views( $post_id ) {
+	$count_key = 'post_views_count';
+	$count = get_post_meta( $post_id, $count_key, true );
+	if ( $count == '' ) {
+		delete_post_meta( $post_id, $count_key );
+		add_post_meta( $post_id, $count_key, '0' );
+		return "0 Views";
+	}
+	return $count . ' Views';
 }
 
 /**
- * Custom comment output
+ * Calculate reading time
  */
-function gizmodotech_comment($comment, $args, $depth) {
-    $GLOBALS['comment'] = $comment;
-    ?>
-    <li id="comment-<?php comment_ID(); ?>" <?php comment_class('comment-item'); ?>>
-        <article class="comment-body">
-            <div class="comment-author">
-                <?php echo get_avatar($comment, 48); ?>
-                <div class="comment-meta">
-                    <b class="fn"><?php comment_author_link(); ?></b>
-                    <time datetime="<?php comment_date('c'); ?>">
-                        <?php comment_date(); ?>
-                    </time>
-                </div>
-            </div>
-            <div class="comment-content">
-                <?php comment_text(); ?>
-            </div>
-            <div class="comment-reply">
-                <?php comment_reply_link(array_merge($args, array(
-                    'depth'     => $depth,
-                    'max_depth' => $args['max_depth']
-                ))); ?>
-            </div>
-        </article>
-    <?php
+function gizmodotech_reading_time() {
+	$content = get_post_field( 'post_content', get_the_ID() );
+	$word_count = str_word_count( strip_tags( $content ) );
+	$reading_time = ceil( $word_count / 200 );
+	
+	return $reading_time . ' min read';
 }
 
 /**
- * Customizer additions
+ * Add SVG support to media library
  */
-require get_template_directory() . '/inc/customizer.php';
+function gizmodotech_mime_types( $mimes ) {
+	$mimes['svg'] = 'image/svg+xml';
+	return $mimes;
+}
+add_filter( 'upload_mimes', 'gizmodotech_mime_types' );
 
 /**
- * Custom template tags
+ * Sanitize SVG uploads
  */
-require get_template_directory() . '/inc/template-tags.php';
+function gizmodotech_fix_svg() {
+	echo '<style type="text/css">
+		.attachment-266x266, .thumbnail img {
+			width: 100% !important;
+			height: auto !important;
+		}
+	</style>';
+}
+add_action( 'admin_head', 'gizmodotech_fix_svg' );
 
 /**
- * Functions which enhance the theme
+ * Add security headers
  */
-require get_template_directory() . '/inc/template-functions.php';
+function gizmodotech_security_headers() {
+	header( 'X-Content-Type-Options: nosniff' );
+	header( 'X-Frame-Options: SAMEORIGIN' );
+	header( 'X-XSS-Protection: 1; mode=block' );
+}
+add_action( 'send_headers', 'gizmodotech_security_headers' );
 
 /**
- * Load Jetpack compatibility file
+ * Remove WordPress version from head
  */
-if (defined('JETPACK__VERSION')) {
-    require get_template_directory() . '/inc/jetpack.php';
+remove_action( 'wp_head', 'wp_generator' );
+
+/**
+ * Disable XML-RPC
+ */
+add_filter( 'xmlrpc_enabled', '__return_false' );
+
+/**
+ * Pagination function
+ */
+function gizmodotech_pagination() {
+	if ( is_singular() ) {
+		return;
+	}
+
+	global $wp_query;
+
+	if ( $wp_query->max_num_pages <= 1 ) {
+		return;
+	}
+
+	$paged = get_query_var( 'paged' ) ? absint( get_query_var( 'paged' ) ) : 1;
+	$max = intval( $wp_query->max_num_pages );
+
+	if ( $paged >= 1 ) {
+		$links[] = $paged;
+	}
+
+	if ( $paged >= 3 ) {
+		$links[] = $paged - 1;
+		$links[] = $paged - 2;
+	}
+
+	if ( ( $paged + 2 ) <= $max ) {
+		$links[] = $paged + 2;
+		$links[] = $paged + 1;
+	}
+
+	echo '<div class="pagination"><ul>' . "\n";
+
+	if ( get_previous_posts_link() ) {
+		printf( '<li>%s</li>' . "\n", get_previous_posts_link( '← Previous' ) );
+	}
+
+	if ( ! in_array( 1, $links ) ) {
+		$class = 1 == $paged ? ' class="active"' : '';
+		printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( 1 ) ), '1' );
+
+		if ( ! in_array( 2, $links ) ) {
+			echo '<li>…</li>';
+		}
+	}
+
+	sort( $links );
+	foreach ( (array) $links as $link ) {
+		$class = $paged == $link ? ' class="active"' : '';
+		printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( $link ) ), $link );
+	}
+
+	if ( ! in_array( $max, $links ) ) {
+		if ( ! in_array( $max - 1, $links ) ) {
+			echo '<li>…</li>' . "\n";
+		}
+
+		$class = $paged == $max ? ' class="active"' : '';
+		printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( $max ) ), $max );
+	}
+
+	if ( get_next_posts_link() ) {
+		printf( '<li>%s</li>' . "\n", get_next_posts_link( 'Next →' ) );
+	}
+
+	echo '</ul></div>' . "\n";
 }
 
 /**
- * Add theme customization options
+ * Customizer settings
  */
-function gizmodotech_customize_register($wp_customize) {
-    // Add Dark Mode Toggle
-    $wp_customize->add_setting('dark_mode_enabled', array(
-        'default'           => false,
-        'sanitize_callback' => 'gizmodotech_sanitize_checkbox',
-    ));
-    
-    $wp_customize->add_control('dark_mode_enabled', array(
-        'label'    => __('Enable Dark Mode Toggle', 'gizmodotech'),
-        'section'  => 'title_tagline',
-        'type'     => 'checkbox',
-    ));
-    
-    // Add Social Media Links
-    $social_sites = array('facebook', 'twitter', 'instagram', 'youtube', 'linkedin');
-    
-    $wp_customize->add_section('gizmodotech_social', array(
-        'title'    => __('Social Media Links', 'gizmodotech'),
-        'priority' => 30,
-    ));
-    
-    foreach ($social_sites as $social_site) {
-        $wp_customize->add_setting($social_site, array(
-            'default'           => '',
-            'sanitize_callback' => 'esc_url_raw',
-        ));
-        
-        $wp_customize->add_control($social_site, array(
-            'label'   => ucfirst($social_site) . ' URL',
-            'section' => 'gizmodotech_social',
-            'type'    => 'url',
-        ));
-    }
+function gizmodotech_customize_register( $wp_customize ) {
+	
+	// Dark Mode Toggle
+	$wp_customize->add_section( 'gizmodotech_dark_mode', array(
+		'title'    => __( 'Dark Mode', 'gizmodotech' ),
+		'priority' => 30,
+	) );
+
+	$wp_customize->add_setting( 'dark_mode_toggle', array(
+		'default'           => true,
+		'sanitize_callback' => 'gizmodotech_sanitize_checkbox',
+	) );
+
+	$wp_customize->add_control( 'dark_mode_toggle', array(
+		'label'    => __( 'Enable Dark Mode Toggle', 'gizmodotech' ),
+		'section'  => 'gizmodotech_dark_mode',
+		'type'     => 'checkbox',
+	) );
+
+	// Social Media Links
+	$wp_customize->add_section( 'gizmodotech_social', array(
+		'title'    => __( 'Social Media Links', 'gizmodotech' ),
+		'priority' => 40,
+	) );
+
+	$social_links = array(
+		'facebook'  => 'Facebook',
+		'twitter'   => 'Twitter',
+		'instagram' => 'Instagram',
+		'youtube'   => 'YouTube',
+		'linkedin'  => 'LinkedIn',
+	);
+
+	foreach ( $social_links as $key => $label ) {
+		$wp_customize->add_setting( 'social_' . $key, array(
+			'default'           => '',
+			'sanitize_callback' => 'esc_url_raw',
+		) );
+
+		$wp_customize->add_control( 'social_' . $key, array(
+			'label'    => $label . ' ' . __( 'URL', 'gizmodotech' ),
+			'section'  => 'gizmodotech_social',
+			'type'     => 'url',
+		) );
+	}
 }
-add_action('customize_register', 'gizmodotech_customize_register');
+add_action( 'customize_register', 'gizmodotech_customize_register' );
 
 /**
  * Sanitize checkbox
  */
-function gizmodotech_sanitize_checkbox($checked) {
-    return ((isset($checked) && true == $checked) ? true : false);
+function gizmodotech_sanitize_checkbox( $checked ) {
+	return ( ( isset( $checked ) && true == $checked ) ? true : false );
 }
 
 /**
- * Add async/defer attributes to enqueued scripts
+ * Include custom template parts
  */
-function gizmodotech_defer_scripts($tag, $handle, $src) {
-    if (is_admin()) {
-        return $tag;
-    }
-    
-    $defer_scripts = array('gizmodotech-script');
-    
-    if (in_array($handle, $defer_scripts)) {
-        return str_replace(' src', ' defer src', $tag);
-    }
-    
-    return $tag;
-}
-add_filter('script_loader_tag', 'gizmodotech_defer_scripts', 10, 3);
-
-/**
- * Custom search form
- */
-function gizmodotech_search_form() {
-    $form = '<form role="search" method="get" class="search-form" action="' . home_url('/') . '">
-        <input type="search" class="search-field" placeholder="' . esc_attr__('Search...', 'gizmodotech') . '" value="' . get_search_query() . '" name="s" />
-        <button type="submit" class="search-submit">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
-            </svg>
-        </button>
-    </form>';
-    
-    return $form;
-}
-add_filter('get_search_form', 'gizmodotech_search_form');
+require_once GIZMODOTECH_THEME_DIR . '/inc/template-tags.php';
+require_once GIZMODOTECH_THEME_DIR . '/inc/template-functions.php';
