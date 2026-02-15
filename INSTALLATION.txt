@@ -1,0 +1,203 @@
+# Gizmodotech WordPress Theme - Quick Installation Guide
+
+==============================================================
+INSTALLATION STEPS
+==============================================================
+
+METHOD 1: WordPress Admin (Easiest)
+------------------------------------
+1. Zip the entire "gizmodotech-wp-theme" folder
+2. Go to WordPress Admin Dashboard
+3. Navigate to Appearance → Themes
+4. Click "Add New" button
+5. Click "Upload Theme"
+6. Choose the ZIP file
+7. Click "Install Now"
+8. After installation, click "Activate"
+
+METHOD 2: FTP/File Manager
+---------------------------
+1. Extract the theme folder if it's zipped
+2. Connect to your server via FTP (FileZilla, etc.)
+3. Navigate to: /wp-content/themes/
+4. Upload the entire "gizmodotech-wp-theme" folder
+5. Go to WordPress Admin → Appearance → Themes
+6. Find "Gizmodotech" and click "Activate"
+
+METHOD 3: cPanel File Manager
+------------------------------
+1. Login to your cPanel
+2. Open File Manager
+3. Navigate to: public_html/wp-content/themes/
+4. Upload the ZIP file
+5. Right-click and select "Extract"
+6. Go to WordPress Admin → Appearance → Themes
+7. Activate the theme
+
+==============================================================
+AFTER ACTIVATION
+==============================================================
+
+STEP 1: Configure Basic Settings
+---------------------------------
+Go to: Appearance → Customize
+
+- Upload your logo (Site Identity)
+- Add site title and tagline
+- Upload favicon
+- Enable dark mode toggle
+
+STEP 2: Create Menus
+---------------------
+Go to: Appearance → Menus
+
+1. Create a new menu named "Primary Menu"
+2. Add pages: Home, About, Contact, etc.
+3. Assign to "Primary Menu" location
+4. Save menu
+
+5. Create another menu named "Footer Menu"
+6. Add pages: Privacy Policy, Terms, etc.
+7. Assign to "Footer Menu" location
+8. Save menu
+
+STEP 3: Configure Widgets
+--------------------------
+Go to: Appearance → Widgets
+
+Add widgets to:
+- Sidebar (right sidebar on desktop)
+- Footer 1-4 (four footer columns)
+
+Recommended widgets:
+- Recent Posts
+- Categories
+- Tag Cloud
+- Search
+- Custom HTML (for ads)
+
+STEP 4: Add Social Media Links
+-------------------------------
+Go to: Appearance → Customize → Social Media Links
+
+Add URLs for:
+- Facebook
+- Twitter
+- Instagram
+- YouTube
+- LinkedIn
+
+STEP 5: Set Homepage
+--------------------
+Go to: Settings → Reading
+
+Option A: Show latest posts (blog style)
+Option B: Select a static page as homepage
+
+STEP 6: Configure Permalinks
+-----------------------------
+Go to: Settings → Permalinks
+
+Select: Post name (/%postname%/)
+This is SEO-friendly!
+
+==============================================================
+RECOMMENDED PLUGINS
+==============================================================
+
+Essential:
+----------
+□ Yoast SEO or Rank Math (SEO optimization)
+□ Contact Form 7 (contact forms)
+□ WP Super Cache (caching)
+□ Akismet (spam protection)
+
+Optional:
+---------
+□ Jetpack (features pack)
+□ Smush or ShortPixel (image optimization)
+□ UpdraftPlus (backups)
+□ WooCommerce (if selling products)
+
+==============================================================
+CREATING YOUR FIRST POST
+==============================================================
+
+1. Go to: Posts → Add New
+2. Add title
+3. Write content in editor
+4. Add featured image (1200×630px recommended)
+5. Select category
+6. Add tags
+7. Click "Publish"
+
+Featured Image Sizes:
+- Hero/Featured: 1200×630px
+- Standard: 800×450px
+- Thumbnail: 400×300px
+
+==============================================================
+TROUBLESHOOTING
+==============================================================
+
+Theme not activating?
+---------------------
+- Check WordPress version (6.0+  required)
+- Check PHP version (7.4+ required)
+- Ensure all files uploaded correctly
+
+Styles not loading?
+-------------------
+- Clear browser cache (Ctrl + Shift + R)
+- Clear WordPress cache
+- Check if style.css exists in theme folder
+
+Images not showing?
+-------------------
+- Install "Regenerate Thumbnails" plugin
+- Run it to create all image sizes
+
+Mobile menu not working?
+------------------------
+- Ensure jQuery is loading
+- Check browser console for errors
+- Deactivate plugins to find conflicts
+
+==============================================================
+CUSTOMIZATION
+==============================================================
+
+Change Colors:
+--------------
+Edit style.css and find:
+
+:root {
+  --color-primary: #0ea5e9;  /* Your color here */
+  --color-accent: #ef4444;   /* Your color here */
+}
+
+Add Custom CSS:
+---------------
+Go to: Appearance → Customize → Additional CSS
+
+Add Custom Code:
+----------------
+Create a child theme for major modifications
+
+==============================================================
+SUPPORT
+==============================================================
+
+Email: rohit@gizmodotech.com
+Website: https://gizmodotech.com
+Documentation: See README.md file
+
+==============================================================
+
+Theme Version: 1.0.0
+Release Date: February 2026
+Author: Gizmodotech Team
+
+For detailed documentation, see README.md
+
+==============================================================
