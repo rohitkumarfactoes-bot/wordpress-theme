@@ -509,6 +509,13 @@ function gizmodotech_register_custom_widgets() {
 add_action('widgets_init', 'gizmodotech_register_custom_widgets');
 
 /**
+ * Load Block Patterns
+ */
+if (file_exists(get_template_directory() . '/inc/block-patterns.php')) {
+    require get_template_directory() . '/inc/block-patterns.php';
+}
+
+/**
  * Auto-generate Table of Contents for Single Posts
  */
 function gizmodotech_add_toc($content) {
