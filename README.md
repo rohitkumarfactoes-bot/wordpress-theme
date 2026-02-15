@@ -314,13 +314,6 @@ Most SEO plugins auto-generate sitemaps. Submit to:
 This theme is licensed under the GNU General Public License v2 or later.
 See LICENSE file for details.
 
-## 🙏 Credits
-
-**Design Inspiration:**
-- Beebom - Modern UI patterns
-- GSMArena - Tech content layout
-- Gadgets360 - Category organization
-
 **Technologies:**
 - WordPress
 - HTML5, CSS3
