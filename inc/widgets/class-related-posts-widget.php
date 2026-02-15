@@ -54,4 +54,3 @@ function register_related_posts_widget() {
     register_widget('Related_Posts_Widget');
 }
 add_action('widgets_init', 'register_related_posts_widget');
-?>

@@ -146,3 +146,17 @@ if ( ! function_exists( 'gizmodotech_post_thumbnail' ) ) :
 		endif;
 	}
 endif;
+
+if ( ! function_exists( 'gizmodotech_post_meta' ) ) :
+	/**
+	 * Prints HTML with meta information for the current post-date/time and author.
+	 */
+	function gizmodotech_post_meta() {
+		if ( 'post' === get_post_type() ) {
+			echo '<div class="entry-meta">';
+			gizmodotech_posted_on();
+			gizmodotech_posted_by();
+			echo '</div>';
+		}
+	}
+endif;
