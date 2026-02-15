@@ -478,3 +478,36 @@ function gizmodotech_handle_subscribe() {
 }
 add_action('wp_ajax_gizmodotech_subscribe', 'gizmodotech_handle_subscribe');
 add_action('wp_ajax_nopriv_gizmodotech_subscribe', 'gizmodotech_handle_subscribe');
+
+/**
+ * Auto-generate Table of Contents for Single Posts
+ */
+function gizmodotech_add_toc($content) {
+    if (!is_singular('post') || !in_the_loop() || !is_main_query()) {
+        return $content;
+    }
+
+    $toc_items = '';
+    $i = 0;
+
+    // Find H2 and H3 tags, generate links, and add IDs to headings
+    $content = preg_replace_callback('/<h([2-3])(.*?)>(.*?)<\/h\1>/', function($matches) use (&$toc_items, &$i) {
+        $i++;
+        $anchor = 'toc-' . $i;
+        $level = $matches[1];
+        $attrs = $matches[2];
+        $title = $matches[3];
+        
+        $toc_items .= '<li class="toc-item toc-level-' . $level . '"><a href="#' . $anchor . '">' . strip_tags($title) . '</a></li>';
+        
+        return '<h' . $level . $attrs . ' id="' . $anchor . '">' . $title . '</h' . $level . '>';
+    }, $content);
+
+    if ($i >= 2) {
+        $toc_html = '<div class="gizmodotech-toc"><div class="toc-header"><h3 class="toc-title">' . esc_html__('Table of Contents', 'gizmodotech') . '</h3><button class="toc-toggle" aria-label="' . esc_attr__('Toggle TOC', 'gizmodotech') . '"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button></div><ul class="toc-list">' . $toc_items . '</ul></div>';
+        return $toc_html . $content;
+    }
+
+    return $content;
+}
+add_filter('the_content', 'gizmodotech_add_toc');

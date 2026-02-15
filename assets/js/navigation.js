@@ -163,4 +163,14 @@
         });
     });
 
+    // Table of Contents Toggle
+    const tocHeader = document.querySelector('.toc-header');
+    const tocContainer = document.querySelector('.gizmodotech-toc');
+    
+    if (tocHeader && tocContainer) {
+        tocHeader.addEventListener('click', function() {
+            tocContainer.classList.toggle('collapsed');
+        });
+    }
+
 })(jQuery);
