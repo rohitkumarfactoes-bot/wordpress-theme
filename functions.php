@@ -505,6 +505,9 @@ function gizmodotech_register_custom_widgets() {
     if (class_exists('Gizmodotech_Category_Posts_Widget')) {
         register_widget('Gizmodotech_Category_Posts_Widget');
     }
+    if (class_exists('Gizmodotech_Author_Bio_Widget')) {
+        register_widget('Gizmodotech_Author_Bio_Widget');
+    }
 }
 add_action('widgets_init', 'gizmodotech_register_custom_widgets');
 

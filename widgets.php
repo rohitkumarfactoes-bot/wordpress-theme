@@ -196,3 +196,59 @@ class Gizmodotech_Category_Posts_Widget extends WP_Widget {
         return $instance;
     }
 }
+
+/**
+ * Author Bio Widget
+ */
+class Gizmodotech_Author_Bio_Widget extends WP_Widget {
+    public function __construct() {
+        parent::__construct(
+            'gizmodotech_author_bio',
+            esc_html__('Gizmodotech: Author Bio', 'gizmodotech'),
+            array('description' => esc_html__('Displays the author bio on single posts.', 'gizmodotech'))
+        );
+    }
+
+    public function widget($args, $instance) {
+        if (!is_single()) {
+            return;
+        }
+
+        global $post;
+        $author_id = $post->post_author;
+
+        echo $args['before_widget'];
+        
+        $title = !empty($instance['title']) ? $instance['title'] : esc_html__('About the Author', 'gizmodotech');
+        echo $args['before_title'] . esc_html($title) . $args['after_title'];
+        ?>
+        <div class="author-bio-widget">
+            <div class="author-avatar">
+                <?php echo get_avatar($author_id, 80); ?>
+            </div>
+            <div class="author-info">
+                <h4 class="author-name"><?php echo get_the_author_meta('display_name', $author_id); ?></h4>
+                <p class="author-desc"><?php echo get_the_author_meta('description', $author_id); ?></p>
+                <a href="<?php echo esc_url(get_author_posts_url($author_id)); ?>" class="author-link"><?php esc_html_e('View all posts', 'gizmodotech'); ?> &rarr;</a>
+            </div>
+        </div>
+        <?php
+        echo $args['after_widget'];
+    }
+
+    public function form($instance) {
+        $title = !empty($instance['title']) ? $instance['title'] : esc_html__('About the Author', 'gizmodotech');
+        ?>
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title:', 'gizmodotech'); ?></label>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>">
+        </p>
+        <?php
+    }
+
+    public function update($new_instance, $old_instance) {
+        $instance = array();
+        $instance['title'] = (!empty($new_instance['title'])) ? sanitize_text_field($new_instance['title']) : '';
+        return $instance;
+    }
+}

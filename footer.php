@@ -154,6 +154,20 @@ jQuery(document).ready(function($) {
         $(this).closest('.gizmodotech-toc').toggleClass('collapsed');
     });
 
+    // Copy Link Button
+    $('.share-copy').on('click', function() {
+        var btn = $(this);
+        var link = btn.data('link');
+        var originalText = btn.find('span').text();
+        
+        navigator.clipboard.writeText(link).then(function() {
+            btn.find('span').text('Copied!');
+            setTimeout(function() {
+                btn.find('span').text(originalText);
+            }, 2000);
+        });
+    });
+
     // Subscribe Form AJAX
     $('#footer-subscribe-form').on('submit', function(e) {
         e.preventDefault();
