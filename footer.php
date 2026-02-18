@@ -54,7 +54,7 @@
 
                     if ($has_social) :
                     ?>
-                        <div class="social-links" style="justify-content: flex-start;">
+                        <div class="social-links">
                             <?php foreach ($social_networks as $network => $label) : ?>
                                 <?php $url = get_theme_mod('gizmodotech_' . $network . '_url'); ?>
                                 <?php if ($url) : ?>

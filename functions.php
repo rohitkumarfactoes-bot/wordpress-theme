@@ -330,6 +330,69 @@ function gizmodotech_customize_register($wp_customize) {
             'type'    => 'url',
         ));
     }
+
+    // Global Colors
+    $wp_customize->add_section('gizmodotech_colors', array(
+        'title'    => esc_html__('Global Colors', 'gizmodotech'),
+        'priority' => 20,
+    ));
+
+    $colors = array(
+        'primary_color' => array('label' => 'Primary Color', 'default' => '#0ea5e9', 'var' => '--color-primary'),
+        'bg_color'      => array('label' => 'Background Color', 'default' => '#ffffff', 'var' => '--color-bg'),
+        'text_color'    => array('label' => 'Text Color', 'default' => '#1f2937', 'var' => '--color-text'),
+    );
+
+    foreach ($colors as $id => $args) {
+        $wp_customize->add_setting('gizmodotech_' . $id, array(
+            'default'           => $args['default'],
+            'sanitize_callback' => 'sanitize_hex_color',
+        ));
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'gizmodotech_' . $id, array(
+            'label'   => esc_html__($args['label'], 'gizmodotech'),
+            'section' => 'gizmodotech_colors',
+        )));
+    }
+
+    // Typography
+    $wp_customize->add_section('gizmodotech_typography', array(
+        'title'    => esc_html__('Typography', 'gizmodotech'),
+        'priority' => 25,
+    ));
+
+    // Heading Font Family
+    $wp_customize->add_setting('gizmodotech_heading_font', array(
+        'default'           => 'DM Sans',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('gizmodotech_heading_font', array(
+        'label'       => esc_html__('Heading Font Family', 'gizmodotech'),
+        'description' => esc_html__('Enter font family name (e.g., Arial, "DM Sans")', 'gizmodotech'),
+        'section'     => 'gizmodotech_typography',
+        'type'        => 'text',
+    ));
+
+    // Body Font Family
+    $wp_customize->add_setting('gizmodotech_body_font', array(
+        'default'           => 'Inter',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('gizmodotech_body_font', array(
+        'label'       => esc_html__('Body Font Family', 'gizmodotech'),
+        'section'     => 'gizmodotech_typography',
+        'type'        => 'text',
+    ));
+
+    // Base Font Size
+    $wp_customize->add_setting('gizmodotech_base_font_size', array(
+        'default'           => '16',
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('gizmodotech_base_font_size', array(
+        'label'       => esc_html__('Base Font Size (px)', 'gizmodotech'),
+        'section'     => 'gizmodotech_typography',
+        'type'        => 'number',
+    ));
 }
 add_action('customize_register', 'gizmodotech_customize_register');
 
@@ -552,3 +615,123 @@ function gizmodotech_add_toc($content) {
     return $content;
 }
 add_filter('the_content', 'gizmodotech_add_toc');
+
+/**
+ * Output Customizer CSS Variables
+ */
+function gizmodotech_customizer_css() {
+    $primary = get_theme_mod('gizmodotech_primary_color', '#0ea5e9');
+    $bg      = get_theme_mod('gizmodotech_bg_color', '#ffffff');
+    $text    = get_theme_mod('gizmodotech_text_color', '#1f2937');
+    
+    $heading_font = get_theme_mod('gizmodotech_heading_font', 'DM Sans');
+    $body_font    = get_theme_mod('gizmodotech_body_font', 'Inter');
+    $font_size    = get_theme_mod('gizmodotech_base_font_size', '16');
+
+    ?>
+    <style type="text/css">
+        :root {
+            --color-primary: <?php echo esc_attr($primary); ?>;
+            --color-bg: <?php echo esc_attr($bg); ?>;
+            --color-text: <?php echo esc_attr($text); ?>;
+            --font-heading: '<?php echo esc_attr($heading_font); ?>', sans-serif;
+            --font-primary: '<?php echo esc_attr($body_font); ?>', sans-serif;
+        }
+        html {
+            font-size: <?php echo intval($font_size); ?>px;
+        }
+    </style>
+    <?php
+}
+add_action('wp_head', 'gizmodotech_customizer_css');
+
+/**
+ * Image Extraction Functionality
+ */
+
+// Function to extract image URLs from post content
+function gizmodotech_extract_images_from_post($post_content) {
+    // Fixed regex to handle actual HTML tags instead of entities
+    preg_match_all('/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $post_content, $matches);
+    return $matches[1]; // Return only the src attributes
+}
+
+// Function to get the featured image URL
+function gizmodotech_get_featured_image_url($post_id) {
+    $featured_image_url = '';
+    if (has_post_thumbnail($post_id)) {
+        $featured_image_url = get_the_post_thumbnail_url($post_id, 'full');
+    }
+    return $featured_image_url;
+}
+
+// Shortcode function to display extracted images
+function gizmodotech_display_extracted_images($atts) {
+    $atts = shortcode_atts(array(
+        'post_id' => get_the_ID(), // Default to the current post ID
+    ), $atts);
+
+    $post_id = intval($atts['post_id']);
+    if (!$post_id) {
+        return 'Invalid post ID.';
+    }
+
+    $post_content = get_post_field('post_content', $post_id);
+    $images = gizmodotech_extract_images_from_post($post_content);
+
+    // Get the featured image URL
+    $featured_image_url = gizmodotech_get_featured_image_url($post_id);
+    if ($featured_image_url) {
+        array_unshift($images, $featured_image_url); // Add the featured image URL at the beginning
+    }
+
+    if (empty($images)) {
+        return '<div class="extracted-images">No images found in this post.</div>';
+    }
+
+    $output = '<div class="extracted-images-wrapper">';
+    
+    // Main Display Area
+    $output .= '<div id="image-display" class="image-display">';
+    if ($featured_image_url) {
+        $output .= '<img src="' . esc_url($featured_image_url) . '" alt="Full Image">';
+    } elseif (!empty($images)) {
+        $output .= '<img src="' . esc_url($images[0]) . '" alt="Full Image">';
+    }
+    $output .= '</div>';
+
+    // Thumbnails
+    $output .= '<div class="extracted-images-grid">';
+    foreach ($images as $image) {
+        $output .= '<div class="thumbnail"><img src="' . esc_url($image) . '" alt="Thumbnail" data-full-image="' . esc_url($image) . '"></div>';
+    }
+    $output .= '</div>';
+    $output .= '</div>'; // End wrapper
+
+    // Inline Script for functionality
+    $output .= '<script>
+    jQuery(document).ready(function($) {
+        const thumbnails = $(".extracted-images-grid .thumbnail img");
+        const imageDisplay = $("#image-display"); 
+
+        thumbnails.on("click", function() {
+            const fullImageSrc = $(this).data("full-image");
+            imageDisplay.html("<img src=\'" + fullImageSrc + "\' alt=\'Full Image\'>");
+        });
+    });
+    </script>';
+
+    // Inline CSS for basic styling
+    $output .= '<style>
+        .extracted-images-wrapper { margin: 2rem 0; }
+        .image-display { margin-bottom: 1rem; border-radius: 8px; overflow: hidden; }
+        .image-display img { width: 100%; height: auto; display: block; }
+        .extracted-images-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
+        .extracted-images-grid .thumbnail { flex: 0 0 80px; cursor: pointer; border: 2px solid transparent; border-radius: 4px; overflow: hidden; }
+        .extracted-images-grid .thumbnail:hover { border-color: var(--color-primary); }
+        .extracted-images-grid .thumbnail img { width: 100%; height: 60px; object-fit: cover; display: block; }
+    </style>';
+
+    return $output;
+}
+add_shortcode('extracted_images', 'gizmodotech_display_extracted_images');
