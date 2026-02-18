@@ -28,46 +28,50 @@ get_header();
                         <?php the_title('<h1 class="single-post-title">', '</h1>'); ?>
                     </header>
 
-                    <!-- Custom Image Extraction Gallery -->
-                    <div class="mobile-gallery-section">
-                        <?php 
-                        // Display the extracted images gallery
-                        echo do_shortcode('[extracted_images]'); 
-                        ?>
-                    </div>
+                    <div class="mobile-review-layout">
+                        <div class="mobile-review-media">
+                            <!-- Custom Image Extraction Gallery -->
+                            <div class="mobile-gallery-section">
+                                <?php 
+                                // Display the extracted images gallery
+                                echo do_shortcode('[extracted_images]'); 
+                                ?>
+                            </div>
 
-                    <?php
-                    // --- Display Specifications Table ---
-                    $specs_keys = array('display', 'processor', 'ram', 'storage', 'camera', 'battery');
-                    $has_specs = false;
-                    $specs_html = '<div class="mobile-specs-table"><h3>' . esc_html__('Key Specifications', 'gizmodotech') . '</h3><table><tbody>';
+                            <?php
+                            // --- Display Specifications Table ---
+                            $specs_keys = array('display', 'processor', 'ram', 'storage', 'camera', 'battery');
+                            $has_specs = false;
+                            $specs_html = '<div class="mobile-specs-table"><h3>' . esc_html__('Key Specifications', 'gizmodotech') . '</h3><table><tbody>';
 
-                    foreach ($specs_keys as $key) {
-                        $value = get_post_meta(get_the_ID(), '_spec_' . $key, true);
-                        if (!empty($value)) {
-                            $has_specs = true;
-                            $specs_html .= '<tr>';
-                            $specs_html .= '<th>' . esc_html(ucfirst($key)) . '</th>';
-                            $specs_html .= '<td>' . esc_html($value) . '</td>';
-                            $specs_html .= '</tr>';
-                        }
-                    }
-                    $specs_html .= '</tbody></table></div>';
+                            foreach ($specs_keys as $key) {
+                                $value = get_post_meta(get_the_ID(), '_spec_' . $key, true);
+                                if (!empty($value)) {
+                                    $has_specs = true;
+                                    $specs_html .= '<tr>';
+                                    $specs_html .= '<th>' . esc_html(ucfirst($key)) . '</th>';
+                                    $specs_html .= '<td>' . esc_html($value) . '</td>';
+                                    $specs_html .= '</tr>';
+                                }
+                            }
+                            $specs_html .= '</tbody></table></div>';
 
-                    if ($has_specs) {
-                        echo $specs_html;
-                    }
-                    ?>
+                            if ($has_specs) {
+                                echo $specs_html;
+                            }
+                            ?>
+                        </div>
 
-                    <div class="entry-content">
-                        <?php
-                        the_content();
+                        <div class="entry-content">
+                            <?php
+                            the_content();
 
-                        wp_link_pages(array(
-                            'before' => '<div class="page-links">' . esc_html__('Pages:', 'gizmodotech'),
-                            'after'  => '</div>',
-                        ));
-                        ?>
+                            wp_link_pages(array(
+                                'before' => '<div class="page-links">' . esc_html__('Pages:', 'gizmodotech'),
+                                'after'  => '</div>',
+                            ));
+                            ?>
+                        </div>
                     </div>
 
                     <footer class="entry-footer">
@@ -85,6 +89,9 @@ get_header();
                 if (comments_open() || get_comments_number()) :
                     comments_template();
                 endif;
+
+                // Related Posts
+                get_template_part('template-parts/related-posts');
 
             endwhile; // End of the loop.
             ?>

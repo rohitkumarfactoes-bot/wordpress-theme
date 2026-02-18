@@ -29,27 +29,29 @@ get_header();
             endif;
             ?>
 
-            <div class="main-content-grid">
-                <div class="main-column">
-                    <h2 class="section-title"><?php esc_html_e('Latest Updates', 'gizmodotech'); ?></h2>
-                    <?php
-                    // --- Latest Posts Section ---
-                    if (have_posts()) : ?>
-                        <div class="posts-grid">
-                            <?php
-                            while (have_posts()) :
-                                the_post();
-                                get_template_part('template-parts/content', get_post_type());
-                            endwhile;
-                            ?>
-                        </div>
-                        <?php gizmodotech_pagination(); ?>
-                    <?php else : ?>
-                        <?php get_template_part('template-parts/content', 'none'); ?>
-                    <?php endif; ?>
+            <div class="content-area">
+                <div class="main-content">
+                    <section class="latest-posts-section">
+                        <h2 class="section-title"><span><?php esc_html_e('Latest Updates', 'gizmodotech'); ?></span></h2>
+                        <?php
+                        // --- Latest Posts Section ---
+                        if (have_posts()) : ?>
+                            <div class="posts-grid">
+                                <?php
+                                while (have_posts()) :
+                                    the_post();
+                                    get_template_part('template-parts/content', get_post_type());
+                                endwhile;
+                                ?>
+                            </div>
+                            <?php gizmodotech_pagination(); ?>
+                        <?php else : ?>
+                            <?php get_template_part('template-parts/content', 'none'); ?>
+                        <?php endif; ?>
+                    </section>
                 </div>
 
-                <?php if (is_active_sidebar('sidebar-1')) : ?>
+                <?php if (is_active_sidebar('sidebar-1')) : // This ensures the sidebar is part of the main grid ?>
                     <aside class="sidebar">
                         <?php dynamic_sidebar('sidebar-1'); ?>
                     </aside>
@@ -61,12 +63,3 @@ get_header();
 
 <?php
 get_footer();
-
-/* Add this to style.css */
-/*
-.main-content-grid { display: grid; grid-template-columns: 1fr; gap: var(--spacing-2xl); }
-@media (min-width: 1024px) {
-    .main-content-grid { grid-template-columns: 1fr 320px; }
-}
-.section-title { margin-bottom: var(--spacing-lg); }
-*/

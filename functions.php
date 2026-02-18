@@ -818,17 +818,6 @@ function gizmodotech_display_extracted_images($atts) {
     });
     </script>';
 
-    // Inline CSS for basic styling
-    $output .= '<style>
-        .extracted-images-wrapper { margin: 2rem 0; }
-        .image-display { margin-bottom: 1rem; border-radius: 8px; overflow: hidden; }
-        .image-display img { width: 100%; height: auto; display: block; }
-        .extracted-images-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
-        .extracted-images-grid .thumbnail { flex: 0 0 80px; cursor: pointer; border: 2px solid transparent; border-radius: 4px; overflow: hidden; }
-        .extracted-images-grid .thumbnail:hover { border-color: var(--color-primary); }
-        .extracted-images-grid .thumbnail img { width: 100%; height: 60px; object-fit: cover; display: block; }
-    </style>';
-
     return $output;
 }
 add_shortcode('extracted_images', 'gizmodotech_display_extracted_images');

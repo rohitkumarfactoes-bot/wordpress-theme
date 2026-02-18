@@ -66,6 +66,9 @@ get_header();
                         comments_template();
                     endif;
 
+                    // Related Posts
+                    get_template_part('template-parts/related-posts');
+
                 endwhile;
                 ?>
             </div>
