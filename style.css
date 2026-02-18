@@ -914,8 +914,6 @@ em, i {
 8.0 - Sidebar
 --------------------------------------------------------------*/
 .sidebar {
-  position: sticky;
-  top: calc(80px + var(--spacing-lg));
   align-self: start;
 }
 

@@ -132,6 +132,29 @@
 
 <script>
 jQuery(document).ready(function($) {
+    // Mobile Menu Toggle
+    $('.mobile-menu-toggle').on('click', function() {
+        $('.main-navigation').toggleClass('active');
+    });
+
+    // Search Overlay Toggle
+    $('.search-toggle').on('click', function() {
+        $('#search-overlay').fadeIn(200).addClass('active');
+        setTimeout(function() {
+            $('#search-overlay input[type="search"]').focus();
+        }, 100);
+    });
+
+    $('.search-close').on('click', function() {
+        $('#search-overlay').fadeOut(200).removeClass('active');
+    });
+
+    // Table of Contents Toggle
+    $('.toc-toggle').on('click', function() {
+        $(this).closest('.gizmodotech-toc').toggleClass('collapsed');
+    });
+
+    // Subscribe Form AJAX
     $('#footer-subscribe-form').on('submit', function(e) {
         e.preventDefault();
         var form = $(this);

@@ -513,6 +513,8 @@ add_action('widgets_init', 'gizmodotech_register_custom_widgets');
  */
 if (file_exists(get_template_directory() . '/inc/block-patterns.php')) {
     require get_template_directory() . '/inc/block-patterns.php';
+} elseif (file_exists(get_template_directory() . '/block-patterns.php')) {
+    require get_template_directory() . '/block-patterns.php';
 }
 
 /**
