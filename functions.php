@@ -70,6 +70,22 @@ function gizmodotech_setup() {
 add_action('after_setup_theme', 'gizmodotech_setup');
 
 /**
+ * Register custom block styles
+ */
+function gizmodotech_register_block_styles() {
+    if (function_exists('register_block_style')) {
+        register_block_style(
+            'core/post-terms',
+            [
+                'name'  => 'gizmodotech-category-badge',
+                'label' => __('Category Badge', 'gizmodotech'),
+            ]
+        );
+    }
+}
+add_action('init', 'gizmodotech_register_block_styles');
+
+/**
  * Set the content width in pixels
  */
 function gizmodotech_content_width() {

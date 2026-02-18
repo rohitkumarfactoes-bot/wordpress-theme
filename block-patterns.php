@@ -1,83 +1,183 @@
 <?php
 /**
- * Register Block Patterns for Gizmodotech
+ * Gizmodotech Block Patterns
+ *
+ * @package Gizmodotech
+ * @since 1.0.1
  */
 
-function gizmodotech_register_block_patterns() {
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
+/**
+ * Register Block Pattern Category
+ */
+if (function_exists('register_block_pattern_category')) {
     register_block_pattern_category(
         'gizmodotech',
-        array('label' => __('Gizmodotech', 'gizmodotech'))
-    );
-
-    // 1. Hero Section Pattern (Large Left, 2 Small Right)
-    register_block_pattern(
-        'gizmodotech/hero-section',
-        array(
-            'title'       => __('Gizmodotech: Hero Section', 'gizmodotech'),
-            'categories'  => array('gizmodotech'),
-            'description' => __('A hero section with one large featured post and two side posts.', 'gizmodotech'),
-            'content'     => '<!-- wp:group {"align":"full","className":"gizmodotech-hero-section","layout":{"type":"constrained"}} -->
-<div class="wp-block-group alignfull gizmodotech-hero-section"><!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":"2rem"}}} -->
-<div class="wp-block-columns alignwide"><!-- wp:column {"width":"66.66%"} -->
-<div class="wp-block-column" style="flex-basis:66.66%"><!-- wp:query {"query":{"perPage":1,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"displayLayout":{"type":"list"}} -->
-<div class="wp-block-query"><!-- wp:post-template -->
-<!-- wp:group {"className":"hero-main-post relative-card"} -->
-<div class="wp-block-group hero-main-post relative-card"><!-- wp:post-featured-image {"isLink":true,"height":"450px","align":"wide","style":{"border":{"radius":"12px"}}} /-->
-<!-- wp:group {"className":"hero-overlay-content"} -->
-<div class="wp-block-group hero-overlay-content"><!-- wp:post-terms {"term":"category","style":{"typography":{"textTransform":"uppercase","fontSize":"12px","fontWeight":"700"}},"className":"hero-badge"} /-->
-<!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"2rem","fontWeight":"700","lineHeight":"1.2"},"elements":{"link":{"color":{"text":"#ffffff"}}}},"textColor":"white"} /-->
-<!-- wp:post-date {"style":{"typography":{"fontSize":"14px"}},"textColor":"white"} /--></div>
-<!-- /wp:group --></div>
-<!-- /wp:group -->
-<!-- /wp:post-template --></div>
-<!-- /wp:query --></div>
-<!-- /wp:column -->
-
-<!-- wp:column {"width":"33.33%"} -->
-<div class="wp-block-column" style="flex-basis:33.33%"><!-- wp:query {"query":{"perPage":2,"pages":0,"offset":1,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"displayLayout":{"type":"list"}} -->
-<div class="wp-block-query"><!-- wp:post-template -->
-<!-- wp:group {"style":{"spacing":{"margin":{"bottom":"1.5rem"}}},"className":"hero-side-post"} -->
-<div class="wp-block-group hero-side-post" style="margin-bottom:1.5rem"><!-- wp:post-featured-image {"isLink":true,"height":"200px","style":{"border":{"radius":"8px"}}} /-->
-<!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"1.1rem","fontWeight":"600","lineHeight":"1.4"},"spacing":{"margin":{"top":"0.5rem"}}}} /-->
-<!-- wp:post-date {"style":{"typography":{"fontSize":"12px"}},"textColor":"gray"} /--></div>
-<!-- /wp:group -->
-<!-- /wp:post-template --></div>
-<!-- /wp:query --></div>
-<!-- /wp:column --></div>
-<!-- /wp:columns --></div>
-<!-- /wp:group -->',
-        )
-    );
-
-    // 2. Category Grid Pattern
-    register_block_pattern(
-        'gizmodotech/category-grid',
-        array(
-            'title'       => __('Gizmodotech: Category Grid', 'gizmodotech'),
-            'categories'  => array('gizmodotech'),
-            'content'     => '<!-- wp:group {"align":"wide","style":{"spacing":{"margin":{"top":"3rem","bottom":"3rem"}}}} -->
-<div class="wp-block-group alignwide" style="margin-top:3rem;margin-bottom:3rem"><!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"},"style":{"border":{"bottom":{"color":"#e5e7eb","width":"2px"}},"spacing":{"padding":{"bottom":"0.5rem"},"margin":{"bottom":"1.5rem"}}}} -->
-<div class="wp-block-group" style="border-bottom-color:#e5e7eb;border-bottom-width:2px;margin-bottom:1.5rem;padding-bottom:0.5rem"><!-- wp:heading {"style":{"typography":{"fontSize":"1.5rem"}}} -->
-<h2 class="wp-block-heading" style="font-size:1.5rem">Latest Reviews</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph -->
-<p><a href="#">View All →</a></p>
-<!-- /wp:paragraph --></div>
-<!-- /wp:group -->
-
-<!-- wp:query {"query":{"perPage":4,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"displayLayout":{"type":"flex","columns":4}} -->
-<div class="wp-block-query"><!-- wp:post-template -->
-<!-- wp:group {"className":"grid-post-item"} -->
-<div class="wp-block-group grid-post-item"><!-- wp:post-featured-image {"isLink":true,"height":"180px","style":{"border":{"radius":"8px"}}} /-->
-<!-- wp:post-terms {"term":"category","style":{"typography":{"fontSize":"11px","textTransform":"uppercase","fontWeight":"700"},"spacing":{"margin":{"top":"0.75rem","bottom":"0.25rem"}}},"className":"has-primary-color"} /-->
-<!-- wp:post-title {"isLink":true,"style":{"typography":{"fontSize":"1.1rem","fontWeight":"600","lineHeight":"1.4"}}} /-->
-</div>
-<!-- /wp:group -->
-<!-- /wp:post-template --></div>
-<!-- /wp:query --></div>
-<!-- /wp:group -->',
-        )
+        array('label' => esc_html__('Gizmodotech', 'gizmodotech'))
     );
 }
-add_action('init', 'gizmodotech_register_block_patterns');
+
+/**
+ * Register Block Patterns
+ */
+if (function_exists('register_block_pattern')) {
+
+    // Featured News Grid Pattern
+    register_block_pattern(
+        'gizmodotech/featured-news-grid',
+        array(
+            'title'       => esc_html__('Featured News Grid', 'gizmodotech'),
+            'description' => esc_html__('A grid with one large featured post and four smaller posts.', 'gizmodotech'),
+            'categories'  => array('gizmodotech', 'query'),
+            'keywords'    => array('posts', 'grid', 'featured'),
+            'content'     => '
+                <!-- wp:group {"align":"wide","layout":{"type":"constrained"}} -->
+                <div class="wp-block-group alignwide">
+                    <!-- wp:heading {"level":2,"className":"section-title"} -->
+                    <h2 class="wp-block-heading section-title">' . esc_html__('Latest Stories', 'gizmodotech') . '</h2>
+                    <!-- /wp:heading -->
+
+                    <!-- wp:columns {"className":"gizmodotech-featured-grid"} -->
+                    <div class="wp-block-columns gizmodotech-featured-grid">
+                        <!-- wp:column {"width":"50%"} -->
+                        <div class="wp-block-column" style="flex-basis:50%">
+                            <!-- wp:query {"queryId":1,"query":{"perPage":1,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"exclude","inherit":false},"displayLayout":{"type":"list"},"className":"featured-grid-main"} -->
+                            <div class="wp-block-query featured-grid-main">
+                                <!-- wp:post-template -->
+                                    <!-- wp:group {"style":{"spacing":{"blockGap":"0"}},"layout":{"type":"constrained"}} -->
+                                    <div class="wp-block-group">
+                                        <!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9"} /-->
+                                        <!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|40","right":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40"}}},"backgroundColor":"bg-alt","layout":{"type":"constrained"}} -->
+                                        <div class="wp-block-group has-bg-alt-background-color has-background" style="padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
+                                            <!-- wp:post-terms {"term":"category","className":"is-style-gizmodotech-category-badge"} /-->
+                                            <!-- wp:post-title {"isLink":true,"level":3} /-->
+                                            <!-- wp:post-excerpt /-->
+                                            <!-- wp:group {"style":{"spacing":{"blockGap":"0.5em"}},"layout":{"type":"flex"},"fontSize":"small"} -->
+                                            <div class="wp-block-group has-small-font-size">
+                                                <!-- wp:post-author {"showAvatar":false} /-->
+                                                <!-- wp:paragraph -->
+                                                <p>·</p>
+                                                <!-- /wp:paragraph -->
+                                                <!-- wp:post-date /-->
+                                            </div>
+                                            <!-- /wp:group -->
+                                        </div>
+                                        <!-- /wp:group -->
+                                    </div>
+                                    <!-- /wp:group -->
+                                <!-- /wp:post-template -->
+                            </div>
+                            <!-- /wp:query -->
+                        </div>
+                        <!-- /wp:column -->
+
+                        <!-- wp:column {"width":"50%"} -->
+                        <div class="wp-block-column" style="flex-basis:50%">
+                            <!-- wp:query {"queryId":2,"query":{"perPage":4,"pages":0,"offset":1,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"exclude","inherit":false},"displayLayout":{"type":"list"},"className":"featured-grid-secondary"} -->
+                            <div class="wp-block-query featured-grid-secondary">
+                                <!-- wp:post-template -->
+                                    <!-- wp:columns {"verticalAlignment":"center"} -->
+                                    <div class="wp-block-columns are-vertically-aligned-center">
+                                        <!-- wp:column {"width":"33.33%"} -->
+                                        <div class="wp-block-column" style="flex-basis:33.33%">
+                                            <!-- wp:post-featured-image {"isLink":true,"aspectRatio":"1","width":"100%","height":"100%"} /-->
+                                        </div>
+                                        <!-- /wp:column -->
+                                        <!-- wp:column {"width":"66.66%"} -->
+                                        <div class="wp-block-column" style="flex-basis:66.66%">
+                                            <!-- wp:post-terms {"term":"category","className":"is-style-gizmodotech-category-badge","fontSize":"small"} /-->
+                                            <!-- wp:post-title {"isLink":true,"level":4,"fontSize":"medium"} /-->
+                                            <!-- wp:group {"style":{"spacing":{"blockGap":"0.5em"}},"layout":{"type":"flex"},"fontSize":"small"} -->
+                                            <div class="wp-block-group has-small-font-size">
+                                                <!-- wp:post-date /-->
+                                            </div>
+                                            <!-- /wp:group -->
+                                        </div>
+                                        <!-- /wp:column -->
+                                    </div>
+                                    <!-- /wp:columns -->
+                                <!-- /wp:post-template -->
+                            </div>
+                            <!-- /wp:query -->
+                        </div>
+                        <!-- /wp:column -->
+                    </div>
+                    <!-- /wp:columns -->
+                </div>
+                <!-- /wp:group -->
+            ',
+        )
+    );
+
+    // Trending Posts Pattern
+    register_block_pattern(
+        'gizmodotech/trending-posts',
+        array(
+            'title'       => esc_html__('Trending Posts (Horizontal)', 'gizmodotech'),
+            'description' => esc_html__('A horizontal list of posts, ideal for a "Trending" section.', 'gizmodotech'),
+            'categories'  => array('gizmodotech', 'query'),
+            'keywords'    => array('posts', 'horizontal', 'trending', 'slider'),
+            'content'     => '
+                <!-- wp:group {"align":"wide","layout":{"type":"constrained"}} -->
+                <div class="wp-block-group alignwide">
+                    <!-- wp:heading {"level":2,"className":"section-title"} -->
+                    <h2 class="wp-block-heading section-title">' . esc_html__('Trending Now', 'gizmodotech') . '</h2>
+                    <!-- /wp:heading -->
+
+                    <!-- wp:query {"queryId":3,"query":{"perPage":5,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"comment_count","author":"","search":"","exclude":[],"sticky":"exclude","inherit":false},"displayLayout":{"type":"flex","columns":3},"className":"gizmodotech-trending-posts"} -->
+                    <div class="wp-block-query gizmodotech-trending-posts">
+                        <!-- wp:post-template -->
+                            <!-- wp:group {"style":{"spacing":{"blockGap":"0.5em"}},"layout":{"type":"constrained"}} -->
+                            <div class="wp-block-group">
+                                <!-- wp:post-featured-image {"isLink":true,"aspectRatio":"4/3"} /-->
+                                <!-- wp:post-title {"isLink":true,"level":5,"fontSize":"medium"} /-->
+                                <!-- wp:post-date {"fontSize":"small"} /-->
+                            </div>
+                            <!-- /wp:group -->
+                        <!-- /wp:post-template -->
+                    </div>
+                    <!-- /wp:query -->
+                </div>
+                <!-- /wp:group -->
+            ',
+        )
+    );
+
+    // Newsletter CTA Pattern
+    register_block_pattern(
+        'gizmodotech/newsletter-cta',
+        array(
+            'title'       => esc_html__('Newsletter CTA', 'gizmodotech'),
+            'description' => esc_html__('A full-width call-to-action block for newsletter subscriptions.', 'gizmodotech'),
+            'categories'  => array('gizmodotech', 'call-to-action'),
+            'keywords'    => array('newsletter', 'subscribe', 'cta', 'form'),
+            'content'     => '
+                <!-- wp:group {"align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|2xl","bottom":"var:preset|spacing|2xl","left":"var:preset|spacing|lg","right":"var:preset|spacing|lg"}}},"backgroundColor":"bg-alt","layout":{"type":"constrained"}} -->
+                <div class="wp-block-group alignfull has-bg-alt-background-color has-background" style="padding-top:var(--wp--preset--spacing--2xl);padding-bottom:var(--wp--preset--spacing--2xl);padding-right:var(--wp--preset--spacing--lg);padding-left:var(--wp--preset--spacing--lg)">
+                    <!-- wp:group {"layout":{"type":"constrained","contentSize":"800px"}} -->
+                    <div class="wp-block-group">
+                        <!-- wp:heading {"textAlign":"center"} -->
+                        <h2 class="wp-block-heading has-text-align-center">' . esc_html__('Join Our Newsletter', 'gizmodotech') . '</h2>
+                        <!-- /wp:heading -->
+
+                        <!-- wp:paragraph {"align":"center"} -->
+                        <p class="has-text-align-center">' . esc_html__('Get the latest tech news, reviews, and deals delivered to your inbox. No spam, ever.', 'gizmodotech') . '</p>
+                        <!-- /wp:paragraph -->
+
+                        <!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|sm"}},"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center"},"className":"gizmodotech-newsletter-form"} -->
+                        <div class="wp-block-group gizmodotech-newsletter-form">
+                            <!-- wp:search {"label":"Email","showLabel":false,"placeholder":"' . esc_attr__('Enter your email...', 'gizmodotech') . '","width":100,"widthUnit":"%","buttonText":"' . esc_html__('Subscribe', 'gizmodotech') . '","buttonPosition":"button-inside","buttonUseIcon":false} /-->
+                        </div>
+                        <!-- /wp:group -->
+                    </div>
+                    <!-- /wp:group -->
+                </div>
+                <!-- /wp:group -->
+            ',
+        )
+    );
+
+}

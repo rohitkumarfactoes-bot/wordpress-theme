@@ -1,6 +1,7 @@
 (function($) {
     'use strict';
 
+    document.addEventListener('DOMContentLoaded', function() {
     // Mobile Menu Toggle
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const mainNavigation = document.querySelector('.main-navigation');
@@ -172,5 +173,50 @@
             tocContainer.classList.toggle('collapsed');
         });
     }
+
+    // Copy Link Button (Share)
+    const copyButtons = document.querySelectorAll('.share-copy');
+    copyButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const link = this.getAttribute('data-link');
+            const span = this.querySelector('span');
+            const originalText = span.textContent;
+            
+            navigator.clipboard.writeText(link).then(function() {
+                span.textContent = 'Copied!';
+                setTimeout(function() {
+                    span.textContent = originalText;
+                }, 2000);
+            });
+        });
+    });
+
+    // Subscribe Form AJAX
+    $('#footer-subscribe-form').on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var message = form.find('.subscribe-message');
+        var email = form.find('input[name="email"]').val();
+        
+        $.ajax({
+            url: gizmodotech_ajax.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'gizmodotech_subscribe',
+                nonce: gizmodotech_ajax.nonce,
+                email: email
+            },
+            success: function(response) {
+                if (response.success) {
+                    message.removeClass('error').addClass('success').text(response.data.message);
+                    form[0].reset();
+                } else {
+                    message.removeClass('success').addClass('error').text(response.data.message);
+                }
+            }
+        });
+    });
+
+    }); // End DOMContentLoaded
 
 })(jQuery);

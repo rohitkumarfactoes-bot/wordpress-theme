@@ -31,7 +31,8 @@ Gizmodotech is distributed under the terms of the GNU GPL v2 or later.
 9.0 - Footer
 10.0 - Forms
 11.0 - Responsive
-12.0 - Dark Mode
+12.0 - Block Patterns & Styles
+13.0 - Dark Mode
 --------------------------------------------------------------*/
 
 /*--------------------------------------------------------------
@@ -1275,7 +1276,8 @@ input[type="tel"],
 textarea,
 select {
   width: 100%;
-  padding: var(--spacing-md);
+  height: 48px; /* Fixed height for consistency */
+  padding: 0 var(--spacing-md);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
   font-family: var(--font-primary);
@@ -1290,17 +1292,26 @@ textarea:focus,
 select:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+}
+
+textarea {
+  height: auto;
+  padding: var(--spacing-md);
+  line-height: 1.5;
 }
 
 button,
 input[type="submit"],
 .button {
-  display: inline-block;
-  padding: var(--spacing-md) var(--spacing-xl);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px; /* Match input height */
+  padding: 0 var(--spacing-xl);
   background: var(--color-primary);
   color: white;
-  border: none;
+  border: 1px solid transparent; /* Maintain box-model consistency with inputs */
   border-radius: var(--border-radius);
   font-weight: 600;
   font-size: 1rem;
@@ -1319,11 +1330,13 @@ input[type="submit"]:hover,
 /* Search Form */
 .search-form {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
+  align-items: stretch;
 }
 
 .search-form input[type="search"] {
   flex: 1;
+  margin-bottom: 0; /* Prevent bottom margin issues in flex containers */
 }
 
 /*--------------------------------------------------------------
@@ -1438,7 +1451,178 @@ input[type="submit"]:hover,
 }
 
 /*--------------------------------------------------------------
-12.0 - Dark Mode
+12.0 - Block Patterns & Styles
+--------------------------------------------------------------*/
+/* Block: Category Badge Style */
+.is-style-gizmodotech-category-badge a {
+  background: var(--color-primary);
+  color: white !important;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: var(--spacing-sm);
+}
+
+.is-style-gizmodotech-category-badge a:hover {
+  background-color: var(--color-secondary);
+}
+
+/* Pattern: Featured News Grid */
+.gizmodotech-featured-grid {
+  gap: var(--spacing-xl);
+}
+
+.gizmodotech-featured-grid .featured-grid-main .wp-block-post-featured-image {
+  margin-bottom: 0;
+}
+
+.gizmodotech-featured-grid .featured-grid-main .wp-block-post-featured-image img {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.gizmodotech-featured-grid .featured-grid-main .wp-block-group {
+  transition: box-shadow var(--transition-base);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+.gizmodotech-featured-grid .featured-grid-main .wp-block-group:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.gizmodotech-featured-grid .featured-grid-secondary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  height: 100%;
+}
+
+.gizmodotech-featured-grid .featured-grid-secondary .wp-block-columns {
+  gap: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--spacing-lg);
+}
+
+.gizmodotech-featured-grid .featured-grid-secondary > li:last-child .wp-block-columns {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.gizmodotech-featured-grid .featured-grid-secondary .wp-block-post-featured-image img {
+  border-radius: var(--border-radius-sm);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.gizmodotech-featured-grid .wp-block-post-title a {
+  text-decoration: none;
+}
+
+.gizmodotech-featured-grid .wp-block-post-title a:hover {
+  color: var(--color-primary);
+}
+
+/* Remove default query pagination and spacing */
+.wp-block-query .wp-block-query-pagination {
+  display: none;
+}
+
+.wp-block-post-template {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Responsive for Featured Grid */
+@media (max-width: 782px) {
+  .gizmodotech-featured-grid {
+    flex-direction: column;
+  }
+}
+
+/* Pattern: Trending Posts */
+.gizmodotech-trending-posts .wp-block-post-template {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 70%;
+  overflow-x: auto;
+  gap: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; /* Firefox */
+}
+
+.gizmodotech-trending-posts .wp-block-post-template::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+@media (min-width: 600px) {
+  .gizmodotech-trending-posts .wp-block-post-template {
+    grid-auto-columns: 40%;
+  }
+}
+
+@media (min-width: 900px) {
+  .gizmodotech-trending-posts .wp-block-post-template {
+    grid-auto-columns: 25%;
+  }
+}
+
+.gizmodotech-trending-posts .wp-block-post {
+  scroll-snap-align: start;
+}
+
+.gizmodotech-trending-posts .wp-block-post-featured-image img {
+  border-radius: var(--border-radius);
+}
+
+.gizmodotech-trending-posts .wp-block-post-title {
+  margin-top: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Pattern: Newsletter CTA */
+.gizmodotech-newsletter-form .wp-block-search__inside-wrapper {
+  padding: 0;
+  border: none;
+}
+
+.gizmodotech-newsletter-form .wp-block-search__input {
+  border: 1px solid var(--color-border);
+  border-right: none;
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
+}
+
+.gizmodotech-newsletter-form .wp-block-search__button {
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+/* Enhanced Mobile Menu */
+body.menu-open {
+  overflow: hidden;
+}
+
+body.menu-open::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(17, 24, 39, 0.6); /* --color-bg dark with opacity */
+  z-index: 9998;
+}
+
+/*--------------------------------------------------------------
+13.0 - Dark Mode
 --------------------------------------------------------------*/
 [data-theme="dark"] {
   --color-text: #f3f4f6;
@@ -1482,6 +1666,10 @@ input[type="submit"]:hover,
 
 [data-theme="dark"] .primary-menu .sub-menu {
   background: var(--color-bg-dark);
+}
+
+[data-theme="dark"] body.menu-open::before {
+  background: rgba(17, 24, 39, 0.8);
 }
 
 /* Smooth dark mode transition */
