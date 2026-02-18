@@ -81,13 +81,8 @@ add_action('after_setup_theme', 'gizmodotech_content_width', 0);
  * Enqueue scripts and styles
  */
 function gizmodotech_scripts() {
-    // Google Fonts
-    wp_enqueue_style(
-        'gizmodotech-fonts',
-        'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@700&display=swap',
-        array(),
-        null
-    );
+    // Dynamically enqueue Google Fonts selected in the Customizer
+    gizmodotech_enqueue_google_fonts();
 
     // Main stylesheet
     wp_enqueue_style('gizmodotech-style', get_stylesheet_uri(), array(), '1.0.0');
@@ -354,45 +349,81 @@ function gizmodotech_customize_register($wp_customize) {
         )));
     }
 
-    // Typography
+    // --- Enhanced Typography Section ---
     $wp_customize->add_section('gizmodotech_typography', array(
         'title'    => esc_html__('Typography', 'gizmodotech'),
         'priority' => 25,
     ));
 
-    // Heading Font Family
-    $wp_customize->add_setting('gizmodotech_heading_font', array(
-        'default'           => 'DM Sans',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('gizmodotech_heading_font', array(
-        'label'       => esc_html__('Heading Font Family', 'gizmodotech'),
-        'description' => esc_html__('Enter font family name (e.g., Arial, "DM Sans")', 'gizmodotech'),
-        'section'     => 'gizmodotech_typography',
-        'type'        => 'text',
-    ));
+    $google_fonts = gizmodotech_get_google_fonts();
+    $font_weights = array(
+        '300' => 'Light (300)',
+        '400' => 'Normal (400)',
+        '500' => 'Medium (500)',
+        '600' => 'Semi-Bold (600)',
+        '700' => 'Bold (700)',
+        '800' => 'Extra-Bold (800)',
+    );
+    $text_transforms = array(
+        'none'       => 'None',
+        'uppercase'  => 'Uppercase',
+        'lowercase'  => 'Lowercase',
+        'capitalize' => 'Capitalize',
+    );
 
-    // Body Font Family
-    $wp_customize->add_setting('gizmodotech_body_font', array(
-        'default'           => 'Inter',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('gizmodotech_body_font', array(
-        'label'       => esc_html__('Body Font Family', 'gizmodotech'),
-        'section'     => 'gizmodotech_typography',
-        'type'        => 'text',
-    ));
+    $elements = array(
+        'body' => array('label' => 'Body', 'defaults' => ['family' => 'Inter', 'size' => 16, 'weight' => '400', 'transform' => 'none']),
+        'h1'   => array('label' => 'Heading 1', 'defaults' => ['family' => 'DM Sans', 'size' => 40, 'weight' => '700', 'transform' => 'none']),
+        'h2'   => array('label' => 'Heading 2', 'defaults' => ['family' => 'DM Sans', 'size' => 32, 'weight' => '700', 'transform' => 'none']),
+        'h3'   => array('label' => 'Heading 3', 'defaults' => ['family' => 'DM Sans', 'size' => 28, 'weight' => '700', 'transform' => 'none']),
+        'h4'   => array('label' => 'Heading 4', 'defaults' => ['family' => 'DM Sans', 'size' => 24, 'weight' => '700', 'transform' => 'none']),
+        'h5'   => array('label' => 'Heading 5', 'defaults' => ['family' => 'DM Sans', 'size' => 20, 'weight' => '700', 'transform' => 'none']),
+        'h6'   => array('label' => 'Heading 6', 'defaults' => ['family' => 'DM Sans', 'size' => 18, 'weight' => '700', 'transform' => 'none']),
+    );
 
-    // Base Font Size
-    $wp_customize->add_setting('gizmodotech_base_font_size', array(
-        'default'           => '16',
-        'sanitize_callback' => 'absint',
-    ));
-    $wp_customize->add_control('gizmodotech_base_font_size', array(
-        'label'       => esc_html__('Base Font Size (px)', 'gizmodotech'),
-        'section'     => 'gizmodotech_typography',
-        'type'        => 'number',
-    ));
+    $priority = 10;
+
+    foreach ($elements as $id => $props) {
+        // Font Family
+        $wp_customize->add_setting("gizmodotech_{$id}_font_family", ['default' => $props['defaults']['family'], 'sanitize_callback' => 'sanitize_text_field']);
+        $wp_customize->add_control("gizmodotech_{$id}_font_family", [
+            'label' => $props['label'] . ' Font Family',
+            'section' => 'gizmodotech_typography',
+            'type' => 'select',
+            'choices' => $google_fonts,
+            'priority' => $priority++,
+        ]);
+
+        // Font Size
+        $wp_customize->add_setting("gizmodotech_{$id}_font_size", ['default' => $props['defaults']['size'], 'sanitize_callback' => 'absint']);
+        $wp_customize->add_control("gizmodotech_{$id}_font_size", [
+            'label' => $props['label'] . ' Font Size (px)',
+            'section' => 'gizmodotech_typography',
+            'type' => 'number',
+            'input_attrs' => ['min' => 8, 'max' => 100, 'step' => 1],
+            'priority' => $priority++,
+        ]);
+
+        // Font Weight
+        $wp_customize->add_setting("gizmodotech_{$id}_font_weight", ['default' => $props['defaults']['weight'], 'sanitize_callback' => 'sanitize_text_field']);
+        $wp_customize->add_control("gizmodotech_{$id}_font_weight", [
+            'label' => $props['label'] . ' Font Weight',
+            'section' => 'gizmodotech_typography',
+            'type' => 'select',
+            'choices' => $font_weights,
+            'priority' => $priority++,
+        ]);
+
+        // Text Transform
+        $wp_customize->add_setting("gizmodotech_{$id}_text_transform", ['default' => $props['defaults']['transform'], 'sanitize_callback' => 'sanitize_text_field']);
+        $wp_customize->add_control("gizmodotech_{$id}_text_transform", [
+            'label' => $props['label'] . ' Text Transform',
+            'section' => 'gizmodotech_typography',
+            'type' => 'select',
+            'choices' => $text_transforms,
+            'priority' => $priority++,
+        ]);
+    }
 }
 add_action('customize_register', 'gizmodotech_customize_register');
 
@@ -620,30 +651,96 @@ add_filter('the_content', 'gizmodotech_add_toc');
  * Output Customizer CSS Variables
  */
 function gizmodotech_customizer_css() {
-    $primary = get_theme_mod('gizmodotech_primary_color', '#0ea5e9');
-    $bg      = get_theme_mod('gizmodotech_bg_color', '#ffffff');
-    $text    = get_theme_mod('gizmodotech_text_color', '#1f2937');
-    
-    $heading_font = get_theme_mod('gizmodotech_heading_font', 'DM Sans');
-    $body_font    = get_theme_mod('gizmodotech_body_font', 'Inter');
-    $font_size    = get_theme_mod('gizmodotech_base_font_size', '16');
-
     ?>
     <style type="text/css">
         :root {
-            --color-primary: <?php echo esc_attr($primary); ?>;
-            --color-bg: <?php echo esc_attr($bg); ?>;
-            --color-text: <?php echo esc_attr($text); ?>;
-            --font-heading: '<?php echo esc_attr($heading_font); ?>', sans-serif;
-            --font-primary: '<?php echo esc_attr($body_font); ?>', sans-serif;
+            --color-primary: <?php echo esc_attr(get_theme_mod('gizmodotech_primary_color', '#0ea5e9')); ?>;
+            --color-bg: <?php echo esc_attr(get_theme_mod('gizmodotech_bg_color', '#ffffff')); ?>;
+            --color-text: <?php echo esc_attr(get_theme_mod('gizmodotech_text_color', '#1f2937')); ?>;
         }
-        html {
-            font-size: <?php echo intval($font_size); ?>px;
+
+        <?php
+        $elements = array(
+            'body' => array('selector' => 'body', 'defaults' => ['family' => 'Inter', 'size' => 16, 'weight' => '400', 'transform' => 'none']),
+            'h1'   => array('selector' => 'h1, .h1, .single-post-title, .page-title', 'defaults' => ['family' => 'DM Sans', 'size' => 40, 'weight' => '700', 'transform' => 'none']),
+            'h2'   => array('selector' => 'h2, .h2, .widget-title', 'defaults' => ['family' => 'DM Sans', 'size' => 32, 'weight' => '700', 'transform' => 'none']),
+            'h3'   => array('selector' => 'h3, .h3, .article-title', 'defaults' => ['family' => 'DM Sans', 'size' => 28, 'weight' => '700', 'transform' => 'none']),
+            'h4'   => array('selector' => 'h4, .h4', 'defaults' => ['family' => 'DM Sans', 'size' => 24, 'weight' => '700', 'transform' => 'none']),
+            'h5'   => array('selector' => 'h5, .h5', 'defaults' => ['family' => 'DM Sans', 'size' => 20, 'weight' => '700', 'transform' => 'none']),
+            'h6'   => array('selector' => 'h6, .h6', 'defaults' => ['family' => 'DM Sans', 'size' => 18, 'weight' => '700', 'transform' => 'none']),
+        );
+
+        foreach ($elements as $id => $props) {
+            $family = get_theme_mod("gizmodotech_{$id}_font_family", $props['defaults']['family']);
+            $size = get_theme_mod("gizmodotech_{$id}_font_size", $props['defaults']['size']);
+            $weight = get_theme_mod("gizmodotech_{$id}_font_weight", $props['defaults']['weight']);
+            $transform = get_theme_mod("gizmodotech_{$id}_text_transform", $props['defaults']['transform']);
+
+            echo "{$props['selector']} {\n";
+            if ($family) echo "    font-family: '{$family}', sans-serif;\n";
+            if ($size) echo "    font-size: {$size}px;\n";
+            if ($weight) echo "    font-weight: {$weight};\n";
+            if ($transform) echo "    text-transform: {$transform};\n";
+            echo "}\n\n";
         }
+
+        // Base font size for rem units
+        $base_size = get_theme_mod("gizmodotech_body_font_size", 16);
+        echo "html { font-size: {$base_size}px; }\n";
+        ?>
     </style>
     <?php
 }
 add_action('wp_head', 'gizmodotech_customizer_css');
+
+/**
+ * Helper function to get a list of Google Fonts.
+ */
+function gizmodotech_get_google_fonts() {
+    return array(
+        'DM Sans'          => 'DM Sans',
+        'Inter'            => 'Inter',
+        'Roboto'           => 'Roboto',
+        'Open Sans'        => 'Open Sans',
+        'Lato'             => 'Lato',
+        'Montserrat'       => 'Montserrat',
+        'Poppins'          => 'Poppins',
+        'Source Sans Pro'  => 'Source Sans Pro',
+        'Oswald'           => 'Oswald',
+        'Raleway'          => 'Raleway',
+        'Nunito'           => 'Nunito',
+        'Merriweather'     => 'Merriweather',
+        'Playfair Display' => 'Playfair Display',
+        'PT Serif'         => 'PT Serif',
+    );
+}
+
+/**
+ * Enqueue selected Google Fonts from Customizer.
+ */
+function gizmodotech_enqueue_google_fonts() {
+    $elements = array('body', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6');
+    $font_families = array();
+
+    foreach ($elements as $el) {
+        $default_font = ($el === 'body') ? 'Inter' : 'DM Sans';
+        $font_families[] = get_theme_mod('gizmodotech_' . $el . '_font_family', $default_font);
+    }
+
+    $unique_fonts = array_unique(array_filter($font_families));
+
+    if (empty($unique_fonts)) {
+        return;
+    }
+
+    $font_query_args = array(
+        'family' => urlencode(implode('|', $unique_fonts) . ':300,400,500,600,700,800'),
+        'display' => 'swap',
+    );
+
+    $fonts_url = add_query_arg($font_query_args, 'https://fonts.googleapis.com/css');
+    wp_enqueue_style('gizmodotech-google-fonts', $fonts_url, array(), null);
+}
 
 /**
  * Image Extraction Functionality
@@ -735,3 +832,79 @@ function gizmodotech_display_extracted_images($atts) {
     return $output;
 }
 add_shortcode('extracted_images', 'gizmodotech_display_extracted_images');
+
+/**
+ * Remove images from post content on 'mobile' post type single views.
+ * This prevents images from showing twice (in the gallery and in the content).
+ */
+function gizmodotech_strip_images_from_content($content) {
+    if (is_singular('mobile') && in_the_loop() && is_main_query()) {
+        $content = preg_replace('/<img[^>]+>/i', '', $content);
+    }
+    return $content;
+}
+add_filter('the_content', 'gizmodotech_strip_images_from_content', 20);
+
+/**
+ * Adds a meta box for mobile specifications.
+ */
+function gizmodotech_add_specs_meta_box() {
+    add_meta_box(
+        'gizmodotech_specs_box',
+        __('Mobile Specifications', 'gizmodotech'),
+        'gizmodotech_specs_meta_box_html',
+        'mobile', // Only show on 'mobile' post type
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'gizmodotech_add_specs_meta_box');
+
+/**
+ * Renders the HTML for the specifications meta box.
+ */
+function gizmodotech_specs_meta_box_html($post) {
+    wp_nonce_field('gizmodotech_specs_save', 'gizmodotech_specs_nonce');
+    $specs = array(
+        'display' => __('Display', 'gizmodotech'),
+        'processor' => __('Processor', 'gizmodotech'),
+        'ram' => __('RAM', 'gizmodotech'),
+        'storage' => __('Storage', 'gizmodotech'),
+        'camera' => __('Camera', 'gizmodotech'),
+        'battery' => __('Battery', 'gizmodotech'),
+    );
+
+    echo '<table>';
+    foreach ($specs as $key => $label) {
+        $value = get_post_meta($post->ID, '_spec_' . $key, true);
+        echo '<tr>';
+        echo '<td><label for="spec_' . esc_attr($key) . '">' . esc_html($label) . '</label></td>';
+        echo '<td><input type="text" id="spec_' . esc_attr($key) . '" name="spec_' . esc_attr($key) . '" value="' . esc_attr($value) . '" style="width:100%;"></td>';
+        echo '</tr>';
+    }
+    echo '</table>';
+}
+
+/**
+ * Saves the custom meta box data.
+ */
+function gizmodotech_save_specs_meta_box($post_id) {
+    if (!isset($_POST['gizmodotech_specs_nonce']) || !wp_verify_nonce($_POST['gizmodotech_specs_nonce'], 'gizmodotech_specs_save')) {
+        return;
+    }
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    $specs = array('display', 'processor', 'ram', 'storage', 'camera', 'battery');
+
+    foreach ($specs as $key) {
+        if (isset($_POST['spec_' . $key])) {
+            update_post_meta($post_id, '_spec_' . $key, sanitize_text_field($_POST['spec_' . $key]));
+        }
+    }
+}
+add_action('save_post', 'gizmodotech_save_specs_meta_box');

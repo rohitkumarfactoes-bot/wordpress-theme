@@ -33,17 +33,11 @@ get_header();
                     <?php gizmodotech_pagination(); ?>
 
                 <?php else : ?>
-
                     <?php get_template_part('template-parts/content', 'none'); ?>
-
                 <?php endif; ?>
             </div>
 
-            <?php if (is_active_sidebar('sidebar-1')) : ?>
-                <aside class="sidebar">
-                    <?php dynamic_sidebar('sidebar-1'); ?>
-                </aside>
-            <?php endif; ?>
+            <?php get_sidebar(); ?>
         </div>
     </div>
 </main>

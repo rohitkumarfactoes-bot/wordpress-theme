@@ -36,6 +36,29 @@ get_header();
                         ?>
                     </div>
 
+                    <?php
+                    // --- Display Specifications Table ---
+                    $specs_keys = array('display', 'processor', 'ram', 'storage', 'camera', 'battery');
+                    $has_specs = false;
+                    $specs_html = '<div class="mobile-specs-table"><h3>' . esc_html__('Key Specifications', 'gizmodotech') . '</h3><table><tbody>';
+
+                    foreach ($specs_keys as $key) {
+                        $value = get_post_meta(get_the_ID(), '_spec_' . $key, true);
+                        if (!empty($value)) {
+                            $has_specs = true;
+                            $specs_html .= '<tr>';
+                            $specs_html .= '<th>' . esc_html(ucfirst($key)) . '</th>';
+                            $specs_html .= '<td>' . esc_html($value) . '</td>';
+                            $specs_html .= '</tr>';
+                        }
+                    }
+                    $specs_html .= '</tbody></table></div>';
+
+                    if ($has_specs) {
+                        echo $specs_html;
+                    }
+                    ?>
+
                     <div class="entry-content">
                         <?php
                         the_content();

@@ -11,47 +11,19 @@ get_header();
 <main id="primary" class="site-content">
     <div class="container">
         <div class="content-area">
-            <div class="main-content">
-                <?php
-                while (have_posts()) :
-                    the_post();
-                    ?>
-                    <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-                        <header class="entry-header">
-                            <?php the_title('<h1 class="entry-title">', '</h1>'); ?>
-                        </header>
+            <?php
+            while (have_posts()) :
+                the_post();
 
-                        <?php if (has_post_thumbnail()) : ?>
-                            <div class="post-thumbnail">
-                                <?php the_post_thumbnail('gizmodotech-featured'); ?>
-                            </div>
-                        <?php endif; ?>
+                get_template_part('template-parts/content', 'page');
 
-                        <div class="entry-content">
-                            <?php
-                            the_content();
+                // If comments are open or we have at least one comment, load up the comment template.
+                if (comments_open() || get_comments_number()) :
+                    comments_template();
+                endif;
 
-                            wp_link_pages(array(
-                                'before' => '<div class="page-links">' . esc_html__('Pages:', 'gizmodotech'),
-                                'after'  => '</div>',
-                            ));
-                            ?>
-                        </div>
-                    </article>
-
-                    <?php
-                    if (comments_open() || get_comments_number()) :
-                        comments_template();
-                    endif;
-                endwhile;
-                ?>
-            </div>
-
-            <?php if (is_active_sidebar('sidebar-1')) : ?>
-                <aside class="sidebar">
-                    <?php dynamic_sidebar('sidebar-1'); ?>
-                </aside>
-            <?php endif; ?>
+            endwhile; // End of the loop.
+            ?>
         </div>
     </div>
 </main>

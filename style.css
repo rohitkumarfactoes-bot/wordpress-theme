@@ -573,6 +573,37 @@ em, i {
   color: var(--color-text-light);
 }
 
+/* 404 Page */
+.error-404 {
+    text-align: center;
+    padding: var(--spacing-2xl) 0;
+}
+
+.error-404 .page-title {
+    font-size: 5rem;
+    margin-bottom: 0;
+}
+
+.error-404 .error-subtitle {
+    font-size: 1.25rem;
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Extracted Images Gallery (from single-mobile.php) */
+.extracted-images-wrapper { margin: 2rem 0; }
+.image-display { margin-bottom: 1rem; border-radius: var(--border-radius); overflow: hidden; }
+.image-display img { width: 100%; height: auto; display: block; }
+.extracted-images-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
+.extracted-images-grid .thumbnail { flex: 0 0 80px; cursor: pointer; border: 2px solid transparent; border-radius: var(--border-radius-sm); overflow: hidden; }
+.extracted-images-grid .thumbnail:hover { border-color: var(--color-primary); }
+.extracted-images-grid .thumbnail img { width: 100%; height: 60px; object-fit: cover; display: block; }
+
+.archive-description {
+    margin-top: var(--spacing-md);
+    color: var(--color-text-light);
+}
+
 /* Pagination */
 .pagination {
   display: flex;
