@@ -967,88 +967,6 @@ em, i {
   color: var(--color-text-light);
 }
 
-/*--------------------------------------------------------------
-  WordPress default tables (classic + block editor)
---------------------------------------------------------------*/
-.entry-content table,
-.wp-block-table {
-  width: 100%;
-  margin: var(--spacing-xl) 0;
-  border-collapse: collapse;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  font-size: 0.9375rem;
-  box-shadow: var(--shadow-sm);
-}
-
-.wp-block-table {
-  display: block;
-  margin: var(--spacing-xl) 0;
-}
-.wp-block-table table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 0;
-}
-
-.entry-content table th,
-.entry-content table td,
-.wp-block-table th,
-.wp-block-table td {
-  padding: var(--spacing-md) var(--spacing-lg);
-  text-align: left;
-  border: 1px solid var(--color-border);
-}
-
-.entry-content table thead th,
-.wp-block-table thead th {
-  background: var(--color-bg-dark);
-  font-weight: 600;
-  color: var(--color-text);
-  border-bottom: 2px solid var(--color-border-dark);
-}
-
-.entry-content table tbody tr,
-.wp-block-table tbody tr {
-  transition: background-color var(--transition-fast);
-}
-.entry-content table tbody tr:hover,
-.wp-block-table tbody tr:hover {
-  background: var(--color-bg-alt);
-}
-
-.entry-content table tbody td,
-.wp-block-table tbody td {
-  vertical-align: top;
-}
-
-/* Striped style (WordPress block option: is-style-stripes) */
-.wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
-  background: var(--color-bg-alt);
-}
-.wp-block-table.is-style-stripes tbody tr:nth-child(odd):hover {
-  background: var(--color-bg-dark);
-}
-
-.wp-block-table figcaption {
-  margin-top: var(--spacing-sm);
-  font-size: 0.875rem;
-  color: var(--color-text-light);
-  text-align: center;
-}
-
-/* Responsive tables */
-.entry-content .wp-block-table,
-.entry-content table {
-  display: block;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-.entry-content .wp-block-table table,
-.entry-content table {
-  min-width: 320px;
-}
-
 .entry-footer {
   margin-top: var(--spacing-xl);
 }
@@ -1606,6 +1524,312 @@ em, i {
 .related-posts-section {
   margin-top: var(--spacing-2xl);
 }
+
+/*--------------------------------------------------------------
+  Shortcodes: related_posts, tech_related_posts, review_related_posts, all_recent_posts_slider
+--------------------------------------------------------------*/
+.gizmodotech-no-posts {
+  color: var(--color-text-light);
+  font-size: 0.9375rem;
+  margin: var(--spacing-lg) 0;
+}
+
+/* [related_posts] */
+.gizmodotech-related-posts,
+.related-posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+  margin: var(--spacing-xl) 0;
+}
+
+.gizmodotech-related-card.card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.gizmodotech-related-card.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.gizmodotech-related-card .img-wrapper {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--color-bg-dark);
+}
+
+.gizmodotech-related-card .img-wrapper a {
+  display: block;
+  height: 100%;
+}
+
+.gizmodotech-related-card .img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.gizmodotech-related-card:hover .img-wrapper img {
+  transform: scale(1.05);
+}
+
+.gizmodotech-related-card .text-cm {
+  display: block;
+  padding: var(--spacing-md);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.gizmodotech-related-card .text-cm:hover {
+  color: var(--color-primary);
+}
+
+/* [tech_related_posts] */
+.gizmodotech-tech-related .tech-related-posts,
+.tech-related-container .tech-related-posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-xl);
+  margin: var(--spacing-xl) 0;
+}
+
+.gizmodotech-tech-card,
+.tech-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  transition: box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+.gizmodotech-tech-card:hover,
+.tech-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-dark);
+}
+
+.tech-img-wrapper.aspect-img,
+.review-img-wrapper.aspect-img {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--color-bg-dark);
+}
+
+.tech-img-wrapper a,
+.review-img-wrapper a {
+  display: block;
+  height: 100%;
+}
+
+.tech-img-wrapper img,
+.review-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.gizmodotech-tech-card:hover .tech-img-wrapper img,
+.tech-card:hover .tech-img-wrapper img {
+  transform: scale(1.05);
+}
+
+.tech-desc-wrapper,
+.review-desc-wrapper {
+  padding: var(--spacing-lg);
+}
+
+.tech-title,
+.review-title {
+  font-weight: 600;
+  font-size: 1.0625rem;
+  color: var(--color-text);
+  text-decoration: none;
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  transition: color var(--transition-fast);
+}
+
+.tech-title:hover,
+.review-title:hover {
+  color: var(--color-primary);
+}
+
+.tech-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* [review_related_posts] */
+.gizmodotech-review-related .review-related-posts,
+.review-related-container .review-related-posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-xl);
+  margin: var(--spacing-xl) 0;
+}
+
+.review-card,
+.gizmodotech-review-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  transition: box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+.review-card:hover,
+.gizmodotech-review-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-dark);
+}
+
+.review-img-wrapper a {
+  display: block;
+  height: 100%;
+}
+
+.review-card:hover .review-img-wrapper img,
+.gizmodotech-review-card:hover .review-img-wrapper img {
+  transform: scale(1.05);
+}
+
+/* [all_recent_posts_slider] */
+.post-slider-container,
+.gizmodotech-post-slider {
+  margin: var(--spacing-2xl) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.post-slider-track {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-lg);
+  transition: transform var(--transition-base);
+  will-change: transform;
+}
+
+.post-item-card {
+  flex: 0 0 300px;
+  min-width: 280px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  transition: box-shadow var(--transition-base);
+}
+
+.post-item-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.post-img-wrapper.aspect-img {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--color-bg-dark);
+}
+
+.post-img-wrapper a {
+  display: block;
+  height: 100%;
+}
+
+.post-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.post-item-card:hover .post-img-wrapper img {
+  transform: scale(1.05);
+}
+
+.post-desc-wrapper {
+  padding: var(--spacing-lg);
+}
+
+.post-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-text);
+  text-decoration: none;
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  transition: color var(--transition-fast);
+}
+
+.post-title:hover {
+  color: var(--color-primary);
+}
+
+.post-excerpt {
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  margin: 0 0 var(--spacing-sm);
+  line-height: 1.5;
+}
+
+.post-date {
+  font-size: 0.8125rem;
+  color: var(--color-text-lighter);
+}
+
+.slider-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.slider-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-pill);
+  background: var(--color-bg);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.slider-button:hover {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.slider-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .post-item-card {
+    flex: 0 0 260px;
+    min-width: 260px;
+  }
+  .gizmodotech-related-posts {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+}
+
 /*--------------------------------------------------------------
 8.0 - Sidebar
 --------------------------------------------------------------*/
@@ -2539,4 +2763,613 @@ input, textarea, select {
   top: var(--spacing-md);
   outline: 2px solid white;
   outline-offset: 2px;
+}
+
+
+/* old css */
+
+/* breadcrumb */
+.ast-header-breadcrumb {
+	font-size: 13px !important;
+}
+
+/* faq */
+.faq-custom {
+	margin-top: 15px !important;
+}
+.faq-custom .uagb-question {
+	font-size: 18px;
+	margin-top: 0px !important;
+	
+}
+
+.custom-img-2 img {
+	width: 100%;
+}
+.custom-img {
+	    display: flex;
+    justify-content: center;
+}
+.review-custom .uagb-post__image img  {
+	border-radius: 8px;
+}	
+/* slider2 */ 
+.slider-2cu .uagb-post__image img {
+	max-height: 210px;
+	object-fit: contain;
+}
+.thumbnail {
+	cursor: pointer;
+}
+
+.wp-block-post-author__avatar img{
+	border-radius: 30px ;
+}
+.ad-wrap{
+	
+    justify-content: center;
+    display: flex;
+    align-items: center;
+   
+	
+}
+.ad-container {
+	position: fixed;
+    bottom: 0px;
+    background: white;
+    width: 100%;
+	 z-index: 999;
+	display: flex;
+    justify-content: center;
+	padding: 10px 15px;
+}
+.close {
+	position: absolute;
+    z-index: 9999;
+    top: -32px;
+    right: 0;
+    margin-right: 10px;
+	cursor: pointer;
+}
+
+.close  svg {
+	width: 15px;
+	height: 15px;
+}
+.text-sm {
+	margin-bottom:0px !important;
+}
+.tech-related-posts, .related-posts, .review-related-posts{
+	margin-bottom: 35px;
+}
+.entry-content .wp-block-image {
+	margin-top: 10px !important;
+	margin-bottom: 10px !important;
+}
+.swiper-wrapper{
+	min-height: unset !important;
+}
+
+
+/* social button */
+.social-media-wrapper {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+margin: 15px 0px;
+}
+.card-wrap {
+    min-width: 160px;
+    width: 100%;
+    flex: 1;
+}
+.social-button-s {
+display: flex;
+align-items: center;
+justify-content: center;
+	text-decoration:none;
+padding: 0.01rem 0.2rem;
+gap: 2px;
+transition: transform 0.3s ease, background-color 0.3s ease;
+border-radius: 0.375rem;
+}
+
+.fb-button {
+background-color: #3b5998;
+color: white !important;
+}
+.fb-button .icon-wrapper {
+fill: #3b5998 !important;
+}
+.googlenews-button svg {
+	height: fit-content !important;
+}
+
+.googlenews-button{
+	    color: white;
+    background-color: #4b9dfd;
+}
+.googlenews-button:hover{
+	 color: white;
+}
+
+.twitter-button {
+background-color: #1da1f2;
+color: white !important;
+}
+
+.linkedin-button {
+background-color: #0077b5;
+color: white !important;
+}
+
+.whatsapp-button {
+background-color: #25d366;
+color: white !important;
+}
+
+.copy-button {
+background-color: #4b4b4b;
+color: white !important;
+display: flex;
+gap: 4px;
+align-items: center;
+border-radius: 0.375rem;
+padding: 0.25rem;
+border-color: unset;
+transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.social-button-s:hover {
+
+transform: scale(1.05);
+}
+.copy-button:hover {
+background-color: #4b4b4b !important;
+transform: scale(1.05);
+}
+.copy-button:focus:not(:focus-visible) {
+background-color: #4b4b4b !important;
+}
+
+.compare-button {
+background-color: #0d8888;
+color: white;
+fill: white;
+display: flex;
+gap: 4px;
+border-color: unset;
+align-items: center;
+font-weight: 500;
+font-size: 12px;
+padding: 0.25rem 0.75rem;
+border-radius: 0.375rem;
+transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.compare-button:hover {
+background-color: #096f6f;
+transform: scale(1.05);
+}
+.social-button:hover {
+transform: scale(1.05);
+}
+.compare-button:focus:not(:focus-visible) {
+background-color: #096f6f;
+}
+.compare-button svg {
+font-size: 16px;
+}
+.icon-wrapper {
+display: flex;
+justify-content: center;
+width:1.5em;
+fill: white;
+}
+
+.icon-circle {
+background-color: white;
+width: 17px;
+height: 17px;
+display: flex;
+justify-content: center;
+align-items: center;
+border-radius: 50%;
+}
+
+.icon {
+color: currentColor;
+width: 1em;
+height: 1em;
+}
+
+.button-text {
+font-size: 0.75rem;
+padding-right: 0.75rem;
+font-weight: 500;
+display: flex;
+align-items: center;
+}
+/* review */ 
+.review-custom .uagb-post__title {
+	display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	margin-top: 0px !important;
+ 
+}
+.img-wrapper img {
+	object-fit: contain;
+    max-height: 114px;
+}
+.text-cm {
+	display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	font-size: 16px;
+	position: relative;
+	margin-top: 10px;
+	font-family: "Lexend", sans-serif;
+	font-weight:500;
+	 line-height: 1.3;
+}
+
+.news-text .uagb-post__title {
+	
+	display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	font-size: 16px !important;
+	position: relative;
+	margin-top: 0px !important;
+	font-family: "Lexend", sans-serif;
+	font-weight:500;
+	 line-height: 1.3;
+}
+h2, h3, h4 {
+	margin-top: 15px !important;
+	
+}
+/* related-post */ 
+.review-related-posts, .tech-related-posts, .related-posts {
+	display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 1024px){
+	.review-related-posts, .tech-related-posts, .related-posts {
+	display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+}
+}
+@media (max-width: 767px){
+	.review-related-posts, .tech-related-posts, .related-posts {
+	display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+	}
+}
+
+}
+@media (max-width: 360px){
+	.review-related-posts, .tech-related-posts, .related-posts {
+	display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+	}
+	
+}
+.review-title, .tech-title {
+   font-size: 16px;
+	position: relative;
+    margin-top: 10px;
+    line-height: 1.3;
+	font-family: "Lexend", sans-serif;
+    font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tech-desc, .related-desc  {
+	display: none;
+}
+
+/* how to  */
+.how-custom .uagb-post__image img{
+	max-height: 190px;
+}
+.how-custom .uagb-post__text {
+	    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-height: 64px;
+    text-overflow: ellipsis;
+}
+/* tech custom */
+.tech-custom .uagb-post__image img {
+	border-radius: 9px;
+}
+
+/* follow us */
+.social-ico-2 {
+	margin-left: 0px !important;
+	font-size: 20px !important;
+}
+/* sidebar */
+.side-bar .wp-block-uagb-container{
+	overflow: hidden;
+	border-radius: 16px;
+}
+.ft-img  img{
+ margin-bottom: 0px !important;
+max-height: 420px !important;
+	object-fit:fill !important;
+	
+	
+}
+
+/* Amazon */
+.amazon-auto-links {
+	    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.amazon-products-container-list {
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+	gap: 20px;
+}
+
+.compare-amazon .amazon-products-container-list {
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+	gap: 5px;
+}
+.pricing-disclaimer {
+	display: none;
+}
+.amazon-auto-links-product {
+	display: flex;
+	flex-direction: column;
+	gap:0px;
+}
+
+.amazon-products-container-list .amazon-auto-links-product-image {
+	width: auto !important;
+}
+.amazon-product-thumbnail {
+	width: 100% !important;
+	padding: 0 !important;
+	max-width: 160px !important;
+}
+.amazon-products-container-list .amazon-auto-links-product-body {
+	width: 100%;
+	
+}
+.amazon-product-title {
+	font-size: 15px;
+	margin: 5px 0px !important;
+}
+
+@media screen and (max-width: 1024px) {
+    .amazon-products-container-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+.compare-amazon	.amazon-products-container-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media screen and (max-width: 767px) {
+    .amazon-products-container-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+.compare-amazon	.amazon-products-container-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.comment-notes {
+	margin-top:10px !important; 
+}
+@media screen and (max-width: 400px) {
+    
+.compare-amazon	.amazon-products-container-list {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+
+.wp-block-post-featured-image img {
+	
+    margin-bottom: 20px;
+}
+
+/* template custom  */
+.tetx-bold {
+	font-weight: 600;
+   color: #1A202C;
+}
+
+.poniter {
+	cursor: pointer;
+}
+.poniter:hover {
+  transform: scale(1.1);
+	transition: transform 0.3s ease-in-out;
+  
+}
+.tetx-bold  a{
+  font-weight: 500;
+	position: relative; /* Needed for absolute positioning of the pseudo-element */
+  display: inline; 
+	color: #1A202C !important;
+	background-image: unset !important;
+	text-decoration: none !important;
+}
+.tetx-bold a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; /* Adjust as needed for underline position */
+  left: 0;
+  width: 0%;
+  height: 1px; /* Adjust as needed for underline thickness */
+  background-color: #1A202C !important; /* Choose your underline color */
+  transition: width 0.3s ease-in-out; /* Adjust duration and animation timing */
+}
+.tetx-bold a:hover::after {
+  width: 100%;
+	color: #1A202C !important;
+}
+
+.mg-none {
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+}
+.ico-list .uagb-icon-list__label {
+	font-size: 12px !important;
+	font-weight: 400 !Important;
+}
+
+
+
+
+/* image */
+.obj-contain img{
+	object-fit: contain;
+    height: 300px;
+}
+
+/* seperator */
+.wp-block-separator {
+	display: none;
+}
+
+
+
+/* pros-cons */
+
+	
+
+.pros-cons-main{
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 24px;
+	margin: 15px 0;
+}
+@media (max-width: 767px) {
+	.pros-cons-main{
+	grid-template-columns: 1fr ;
+	}
+}
+.pros {
+	display: flex;
+	flex-direction: column;
+	padding: 20px 16px;
+	background-color: #4ed25d17;
+    border-radius: 0.75rem;
+   transition: all 0.3s ease-in-out;
+}
+.pros p, .cons p {
+	margin-bottom: 10px;
+}
+.cons {
+	display: flex;
+	flex-direction: column;
+	padding: 20px 16px;
+	background-color: #f0232312;
+	border-radius: 0.75rem;
+	transition: all 0.3s ease-in-out;
+
+}
+.cons:hover {
+	
+    box-shadow: 0px 0px 10px #f0232370;
+}
+.pros:hover {
+	
+    box-shadow: 0px 0px 10px #4ed25d70;
+}
+
+.cons ul, .pros ul {
+	list-style: none !important;
+	padding-left: 0;
+}
+.cons ul li , .pros ul li {
+	margin-bottom: 5px;
+	display: flex;
+	font-size: 14px !important;
+	align-items: flex-start;
+}
+.cons ul li:before {
+    content: url('https://gizmodotech.com/wp-content/uploads/2025/02/cons.svg');
+    width: 16px;
+   height : 16px;
+    display: flex;
+	margin-right: 5px;
+	margin-top: 3px;
+}
+
+.pros ul li:before {
+    content: url('https://gizmodotech.com/wp-content/uploads/2025/02/pros.svg');
+    width: 16px;
+     height : 16px;
+    display: flex;
+	margin-right: 5px;
+	margin-top: 3px;
+}
+
+/* mobile page */
+
+.mobile-content  .wp-block-image{
+	display: none;
+}
+.extracted-images {
+display: flex;
+align-items: center;
+gap: 20px;
+}	
+.mobile-wrap {
+	display: flex;
+	flex-direction: column-reverse !important;
+}
+.thumbnail {
+ width: 170px;
+height: 128px;
+padding: 8px;
+border: 1px solid  #e5e7eb;
+border-radius: .375rem;
+}
+.thumbnail img {
+ width : 100%;
+height: 100%;
+object-fit: contain! important;
+}
+.image-display {
+	display: flex;
+    justify-content: center;
+}
+.image-display img{
+	object-fit: contain;
+    height: 350px;
+}
+.reviews-sl .uagb-post__image img , .technews-sl .uagb-post__image img {
+ 	aspect-ratio: 16/9 !important;
+	object-fit: fill;
+}
+.aspect-img img{
+	aspect-ratio: 16/9 !important;
+	object-fit: fill;
 }

@@ -261,37 +261,13 @@ function gizmodotech_customize_register($wp_customize) {
 add_action('customize_register', 'gizmodotech_customize_register');
 
 /**
- * Output Customizer CSS Variables (colors, layout)
+ * Output Customizer CSS Variables
  */
 function gizmodotech_customizer_css() {
-    $primary = get_theme_mod('gizmodotech_primary_color', '#0ea5e9');
-    $accent  = get_theme_mod('gizmodotech_accent_color', '#8b5cf6');
-
-    $container = get_theme_mod('gizmodotech_container_style', 'default');
-    $container_widths = array('narrow' => '960px', 'default' => '1200px', 'wide' => '1400px');
-    $container_width = isset($container_widths[ $container ]) ? $container_widths[ $container ] : '1200px';
-
-    $radius = get_theme_mod('gizmodotech_border_radius', 'default');
-    $radius_map = array(
-        'sharp'   => array('base' => '2px', 'sm' => '2px', 'lg' => '4px'),
-        'default' => array('base' => '10px', 'sm' => '6px', 'lg' => '16px'),
-        'rounded' => array('base' => '20px', 'sm' => '12px', 'lg' => '24px'),
-    );
-    $radius_vals = isset($radius_map[ $radius ]) ? $radius_map[ $radius ] : $radius_map['default'];
-
     ?>
     <style type="text/css">
         :root {
-            --color-primary: <?php echo esc_attr($primary); ?>;
-            --color-accent: <?php echo esc_attr($accent); ?>;
-            --color-accent-soft: <?php echo esc_attr(gizmodotech_hex_to_rgba($accent, 0.12)); ?>;
-            --container-width: <?php echo esc_attr($container_width); ?>;
-            --border-radius: <?php echo esc_attr($radius_vals['base']); ?>;
-            --border-radius-sm: <?php echo esc_attr($radius_vals['sm']); ?>;
-            --border-radius-lg: <?php echo esc_attr($radius_vals['lg']); ?>;
-        }
-        .gradient-primary-dynamic {
-            background: linear-gradient(135deg, <?php echo esc_attr($primary); ?> 0%, <?php echo esc_attr($accent); ?> 100%) !important;
+            --color-primary: <?php echo esc_attr(get_theme_mod('gizmodotech_primary_color', '#3b82f6')); ?>;
         }
 
         <?php
@@ -319,6 +295,7 @@ function gizmodotech_customizer_css() {
             echo "}\n\n";
         }
 
+        // Base font size for rem units
         $base_size = get_theme_mod("gizmodotech_body_font_size", 16);
         echo "html { font-size: {$base_size}px; }\n";
         ?>
@@ -326,37 +303,6 @@ function gizmodotech_customizer_css() {
     <?php
 }
 add_action('wp_head', 'gizmodotech_customizer_css');
-
-/**
- * Hex to rgba helper for customizer
- */
-function gizmodotech_hex_to_rgba($hex, $alpha = 1) {
-    $hex = ltrim($hex, '#');
-    if (strlen($hex) === 3) {
-        $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
-    }
-    $r = hexdec(substr($hex, 0, 2));
-    $g = hexdec(substr($hex, 2, 2));
-    $b = hexdec(substr($hex, 4, 2));
-    return "rgba({$r},{$g},{$b},{$alpha})";
-}
-
-/**
- * Add customizer-based body classes for layout
- */
-function gizmodotech_body_classes_layout($classes) {
-    $header = get_theme_mod('gizmodotech_header_layout', 'default');
-    $container = get_theme_mod('gizmodotech_container_style', 'default');
-    $hero = get_theme_mod('gizmodotech_hero_style', 'default');
-
-    $classes[] = 'theme-header-' . sanitize_html_class($header);
-    $classes[] = 'theme-container-' . sanitize_html_class($container);
-    if (is_front_page()) {
-        $classes[] = 'theme-hero-' . sanitize_html_class($hero);
-    }
-    return $classes;
-}
-add_filter('body_class', 'gizmodotech_body_classes_layout');
 
 /**
  * Helper function to get a list of Google Fonts.

@@ -261,6 +261,11 @@ require get_template_directory() . '/inc/block-patterns.php';
 require get_template_directory() . '/inc/mobile-features.php';
 
 /**
+ * Load Shortcodes (related posts, tech/review sections, post slider).
+ */
+require get_template_directory() . '/inc/shortcodes.php';
+
+/**
  * Enqueue selected Google Fonts from Customizer.
  */
 function gizmodotech_enqueue_google_fonts() {
