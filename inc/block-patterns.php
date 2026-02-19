@@ -11,29 +11,27 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Register Block Pattern Category
+ * Register Block Patterns and Categories
  */
-if (function_exists('register_block_pattern_category')) {
-    register_block_pattern_category(
-        'gizmodotech',
-        array('label' => esc_html__('Gizmodotech', 'gizmodotech'))
-    );
-}
+function gizmodotech_register_block_patterns() {
+    if (function_exists('register_block_pattern_category')) {
+        register_block_pattern_category(
+            'gizmodotech',
+            array('label' => esc_html__('Gizmodotech', 'gizmodotech'))
+        );
+    }
 
-/**
- * Register Block Patterns
- */
-if (function_exists('register_block_pattern')) {
+    if (function_exists('register_block_pattern')) {
 
-    // Featured News Grid Pattern
-    register_block_pattern(
-        'gizmodotech/featured-news-grid',
-        array(
-            'title'       => esc_html__('Featured News Grid', 'gizmodotech'),
-            'description' => esc_html__('A grid with one large featured post and four smaller posts.', 'gizmodotech'),
-            'categories'  => array('gizmodotech', 'query'),
-            'keywords'    => array('posts', 'grid', 'featured'),
-            'content'     => '
+        // Featured News Grid Pattern
+        register_block_pattern(
+            'gizmodotech/featured-news-grid',
+            array(
+                'title'       => esc_html__('Featured News Grid', 'gizmodotech'),
+                'description' => esc_html__('A grid with one large featured post and four smaller posts.', 'gizmodotech'),
+                'categories'  => array('gizmodotech', 'query'),
+                'keywords'    => array('posts', 'grid', 'featured'),
+                'content'     => '
                 <!-- wp:group {"align":"wide","layout":{"type":"constrained"}} -->
                 <div class="wp-block-group alignwide">
                     <!-- wp:heading {"level":2,"className":"section-title"} -->
@@ -108,19 +106,19 @@ if (function_exists('register_block_pattern')) {
                     <!-- /wp:columns -->
                 </div>
                 <!-- /wp:group -->
-            ',
-        )
-    );
+                ',
+            )
+        );
 
-    // Trending Posts Pattern
-    register_block_pattern(
-        'gizmodotech/trending-posts',
-        array(
-            'title'       => esc_html__('Trending Posts (Horizontal)', 'gizmodotech'),
-            'description' => esc_html__('A horizontal list of posts, ideal for a "Trending" section.', 'gizmodotech'),
-            'categories'  => array('gizmodotech', 'query'),
-            'keywords'    => array('posts', 'horizontal', 'trending', 'slider'),
-            'content'     => '
+        // Trending Posts Pattern
+        register_block_pattern(
+            'gizmodotech/trending-posts',
+            array(
+                'title'       => esc_html__('Trending Posts (Horizontal)', 'gizmodotech'),
+                'description' => esc_html__('A horizontal list of posts, ideal for a "Trending" section.', 'gizmodotech'),
+                'categories'  => array('gizmodotech', 'query'),
+                'keywords'    => array('posts', 'horizontal', 'trending', 'slider'),
+                'content'     => '
                 <!-- wp:group {"align":"wide","layout":{"type":"constrained"}} -->
                 <div class="wp-block-group alignwide">
                     <!-- wp:heading {"level":2,"className":"section-title"} -->
@@ -142,19 +140,19 @@ if (function_exists('register_block_pattern')) {
                     <!-- /wp:query -->
                 </div>
                 <!-- /wp:group -->
-            ',
-        )
-    );
+                ',
+            )
+        );
 
-    // Newsletter CTA Pattern
-    register_block_pattern(
-        'gizmodotech/newsletter-cta',
-        array(
-            'title'       => esc_html__('Newsletter CTA', 'gizmodotech'),
-            'description' => esc_html__('A full-width call-to-action block for newsletter subscriptions.', 'gizmodotech'),
-            'categories'  => array('gizmodotech', 'call-to-action'),
-            'keywords'    => array('newsletter', 'subscribe', 'cta', 'form'),
-            'content'     => '
+        // Newsletter CTA Pattern
+        register_block_pattern(
+            'gizmodotech/newsletter-cta',
+            array(
+                'title'       => esc_html__('Newsletter CTA', 'gizmodotech'),
+                'description' => esc_html__('A full-width call-to-action block for newsletter subscriptions.', 'gizmodotech'),
+                'categories'  => array('gizmodotech', 'call-to-action'),
+                'keywords'    => array('newsletter', 'subscribe', 'cta', 'form'),
+                'content'     => '
                 <!-- wp:group {"align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|2xl","bottom":"var:preset|spacing|2xl","left":"var:preset|spacing|lg","right":"var:preset|spacing|lg"}}},"backgroundColor":"bg-alt","layout":{"type":"constrained"}} -->
                 <div class="wp-block-group alignfull has-bg-alt-background-color has-background" style="padding-top:var(--wp--preset--spacing--2xl);padding-bottom:var(--wp--preset--spacing--2xl);padding-right:var(--wp--preset--spacing--lg);padding-left:var(--wp--preset--spacing--lg)">
                     <!-- wp:group {"layout":{"type":"constrained","contentSize":"800px"}} -->
@@ -176,8 +174,9 @@ if (function_exists('register_block_pattern')) {
                     <!-- /wp:group -->
                 </div>
                 <!-- /wp:group -->
-            ',
-        )
-    );
-
+                ',
+            )
+        );
+    }
 }
+add_action('init', 'gizmodotech_register_block_patterns');

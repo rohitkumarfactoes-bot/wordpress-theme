@@ -75,12 +75,7 @@ get_header();
                     </div>
 
                     <footer class="entry-footer">
-                        <div class="gizmodotech-share-buttons">
-                            <span class="share-label"><?php esc_html_e('Share:', 'gizmodotech'); ?></span>
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(get_permalink()); ?>" target="_blank" class="share-btn share-fb">Facebook</a>
-                            <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(get_permalink()); ?>&text=<?php echo urlencode(get_the_title()); ?>" target="_blank" class="share-btn share-tw">Twitter</a>
-                            <a href="https://api.whatsapp.com/send?text=<?php echo urlencode(get_the_title() . ' ' . get_permalink()); ?>" target="_blank" class="share-btn share-wa">WhatsApp</a>
-                        </div>
+                        <?php gizmodotech_the_social_share_buttons(); ?>
                     </footer>
                 </article>
 
