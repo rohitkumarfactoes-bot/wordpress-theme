@@ -3056,7 +3056,7 @@ h2, h3, h4 {
 	}
 }
 
-}
+
 @media (max-width: 360px){
 	.review-related-posts, .tech-related-posts, .related-posts {
 	display: grid;
