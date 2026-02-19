@@ -20,23 +20,19 @@ get_header();
                 ?>
 
                 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+                    <div class="mobile-gallery-section mobile-gallery-above-header">
+                        <?php echo do_shortcode('[extracted_images]'); ?>
+                    </div>
+
                     <header class="single-post-header">
                         <div class="single-post-meta">
                             <?php gizmodotech_post_meta(); ?>
                         </div>
-                        
                         <?php the_title('<h1 class="single-post-title">', '</h1>'); ?>
                     </header>
 
                     <div class="mobile-review-layout">
                         <div class="mobile-review-media">
-                            <!-- Custom Image Extraction Gallery -->
-                            <div class="mobile-gallery-section">
-                                <?php 
-                                // Display the extracted images gallery
-                                echo do_shortcode('[extracted_images]'); 
-                                ?>
-                            </div>
 
                             <?php
                             // --- Display Specifications Table ---

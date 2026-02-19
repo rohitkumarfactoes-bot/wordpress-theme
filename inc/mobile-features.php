@@ -42,62 +42,32 @@ function gizmodotech_display_extracted_images($atts) {
 
     $post_content = get_post_field('post_content', $post_id);
     $images = gizmodotech_extract_images_from_post($post_content);
-
-    // Get the featured image URL
     $featured_image_url = gizmodotech_get_featured_image_url($post_id);
+
     if ($featured_image_url) {
-        array_unshift($images, $featured_image_url); // Add the featured image URL at the beginning
+        array_unshift($images, $featured_image_url);
     }
 
     if (empty($images)) {
-        return '<div class="extracted-images">No images found in this post.</div>';
+        return '<div class="extracted-images extracted-images-empty">No images found in this post.</div>';
     }
 
+    $first_src = $images[0];
     $output = '<div class="extracted-images-wrapper">';
-    
-    // Main Display Area
-    $output .= '<div id="image-display" class="image-display">';
-    if ($featured_image_url) {
-        $output .= '<img src="' . esc_url($featured_image_url) . '" alt="Full Image">';
-    } elseif (!empty($images)) {
-        $output .= '<img src="' . esc_url($images[0]) . '" alt="Full Image">';
-    }
+    $output .= '<div id="image-display" class="image-display image-display-aspect">';
+    $output .= '<img src="' . esc_url($first_src) . '" alt="' . esc_attr__('Gallery image', 'gizmodotech') . '" loading="eager">';
     $output .= '</div>';
-
-    // Thumbnails
     $output .= '<div class="extracted-images-grid">';
     foreach ($images as $image) {
-        $output .= '<div class="thumbnail"><img src="' . esc_url($image) . '" alt="Thumbnail" data-full-image="' . esc_url($image) . '"></div>';
+        $output .= '<div class="thumbnail thumbnail-aspect"><img src="' . esc_url($image) . '" alt="" role="presentation" data-full-image="' . esc_url($image) . '" loading="lazy"></div>';
     }
-    $output .= '</div>';
-    $output .= '</div>'; // End wrapper
+    $output .= '</div></div>';
 
     return $output;
 }
 add_shortcode('extracted_images', 'gizmodotech_display_extracted_images');
 
-/**
- * Show extracted images gallery on single posts (type "post") that have category "mobile".
- * single-mobile.php already outputs the shortcode for post type "mobile"; this handles standard posts.
- */
-function gizmodotech_maybe_prepend_extracted_images($content) {
-    if (!is_singular() || !in_the_loop() || !is_main_query()) {
-        return $content;
-    }
-    $post = get_queried_object();
-    if (!is_a($post, 'WP_Post') || $post->post_type !== 'post') {
-        return $content;
-    }
-    if (!has_category('mobile', $post)) {
-        return $content;
-    }
-    $gallery = do_shortcode('[extracted_images post_id="' . intval($post->ID) . '"]');
-    if (strpos($gallery, 'No images found') !== false) {
-        return $content;
-    }
-    return '<div class="mobile-gallery-section">' . $gallery . '</div>' . $content;
-}
-add_filter('the_content', 'gizmodotech_maybe_prepend_extracted_images', 5);
+/* Gallery is output above single-post-header in content-single.php (category mobile) and single-mobile.php (CPT mobile). */
 
 /**
  * Adds a meta box for mobile specifications.
