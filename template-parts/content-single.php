@@ -11,7 +11,7 @@
     // Display breadcrumbs
     gizmodotech_breadcrumbs(); ?>
     <?php if (has_post_thumbnail()) : ?>
-        <div class="single-post-thumbnail" style="margin-bottom: 2rem;">
+        <div class="single-post-thumbnail">
             <?php the_post_thumbnail('gizmodotech-featured'); ?>
         </div>
     <?php endif; ?>

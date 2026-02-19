@@ -8,19 +8,19 @@
 get_header();
 ?>
 
-<main id="primary" class="site-content">
+<main id="primary" class="site-content site-content--home">
     <div class="container">
-        <div class="content-area">
+        <div class="home-content">
+            <div class="hero-featured-wrapper">
             <?php
             // --- Featured Post Section ---
             $featured_args = array(
                 'posts_per_page' => 1,
                 'ignore_sticky_posts' => 1,
-                'tag' => 'featured', // Example: You can tag a post as "featured"
+                'tag' => 'featured',
             );
             $featured_query = new WP_Query($featured_args);
 
-            // Fallback: If no post has 'featured' tag, get the latest post
             if ( ! $featured_query->have_posts() ) {
                 $featured_args = array(
                     'posts_per_page' => 1,
@@ -30,14 +30,14 @@ get_header();
 
             if ($featured_query->have_posts()) :
                 while ($featured_query->have_posts()) : $featured_query->the_post();
-                    // You can create a new template part for a more dramatic featured post
                     get_template_part('template-parts/content', 'featured');
                 endwhile;
                 wp_reset_postdata();
             endif;
             ?>
+            </div><!-- .hero-featured-wrapper -->
 
-            <div class="content-area">
+            <div class="content-area has-sidebar">
                 <div class="main-content">
                     <section class="latest-posts-section">
                         <h2 class="section-title"><span><?php esc_html_e('Latest Updates', 'gizmodotech'); ?></span></h2>

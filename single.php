@@ -8,10 +8,10 @@
 get_header();
 ?>
 
-<main id="primary" class="site-content">
+<main id="primary" class="site-content site-content--single">
     <div class="container">
-        <div class="content-area">
-            <div class="main-content">
+        <div class="content-area has-sidebar">
+            <div class="main-content single-main">
                 <?php
                 while (have_posts()) :
                     the_post();
