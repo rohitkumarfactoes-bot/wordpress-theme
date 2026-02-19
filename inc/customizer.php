@@ -66,21 +66,17 @@ function gizmodotech_customize_register($wp_customize) {
     ));
 
     $colors = array(
-        'primary_color' => array('label' => 'Primary Color', 'default' => '#0ea5e9', 'var' => '--color-primary'),
-        'bg_color'      => array('label' => 'Background Color', 'default' => '#ffffff', 'var' => '--color-bg'),
-        'text_color'    => array('label' => 'Text Color', 'default' => '#1f2937', 'var' => '--color-text'),
+        'primary_color' => array('label' => 'Primary Color', 'default' => '#3b82f6'),
     );
 
-    foreach ($colors as $id => $args) {
-        $wp_customize->add_setting('gizmodotech_' . $id, array(
-            'default'           => $args['default'],
-            'sanitize_callback' => 'sanitize_hex_color',
-        ));
-        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'gizmodotech_' . $id, array(
-            'label'   => esc_html__($args['label'], 'gizmodotech'),
-            'section' => 'gizmodotech_colors',
-        )));
-    }
+    $wp_customize->add_setting('gizmodotech_primary_color', array(
+        'default'           => $colors['primary_color']['default'],
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'gizmodotech_primary_color', array(
+        'label'   => esc_html__($colors['primary_color']['label'], 'gizmodotech'),
+        'section' => 'gizmodotech_colors',
+    )));
 
     // --- Enhanced Typography Section ---
     $wp_customize->add_panel('gizmodotech_typography_panel', array(
@@ -167,9 +163,7 @@ function gizmodotech_customizer_css() {
     ?>
     <style type="text/css">
         :root {
-            --color-primary: <?php echo esc_attr(get_theme_mod('gizmodotech_primary_color', '#0ea5e9')); ?>;
-            --color-bg: <?php echo esc_attr(get_theme_mod('gizmodotech_bg_color', '#ffffff')); ?>;
-            --color-text: <?php echo esc_attr(get_theme_mod('gizmodotech_text_color', '#1f2937')); ?>;
+            --color-primary: <?php echo esc_attr(get_theme_mod('gizmodotech_primary_color', '#3b82f6')); ?>;
         }
 
         <?php
@@ -227,4 +221,3 @@ function gizmodotech_get_google_fonts() {
         'PT Serif'         => 'PT Serif',
     );
 }
-

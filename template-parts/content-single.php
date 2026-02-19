@@ -7,6 +7,9 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+    <?php
+    // Display breadcrumbs
+    gizmodotech_breadcrumbs(); ?>
     <?php if (has_post_thumbnail()) : ?>
         <div class="single-post-thumbnail" style="margin-bottom: 2rem;">
             <?php the_post_thumbnail('gizmodotech-featured'); ?>
@@ -60,17 +63,4 @@
         ));
         ?>
     </div>
-
-    <?php if (has_tag()) : ?>
-        <footer class="entry-footer">
-            <div class="post-tags">
-                <?php
-                the_tags(
-                    '<span class="tags-label">' . esc_html__('Tags:', 'gizmodotech') . '</span> ',
-                    ', '
-                );
-                ?>
-            </div>
-        </footer>
-    <?php endif; ?>
 </article>

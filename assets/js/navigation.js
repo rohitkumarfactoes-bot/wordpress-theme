@@ -102,4 +102,35 @@
         });
     }
 
+    // Search Overlay
+    const searchToggle = document.querySelector('.search-toggle');
+    const searchOverlay = document.getElementById('search-overlay');
+    const searchClose = document.querySelector('.search-close');
+    const searchInput = searchOverlay ? searchOverlay.querySelector('.search-field') : null;
+
+    if (searchToggle && searchOverlay && searchClose && searchInput) {
+        searchToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            searchOverlay.classList.add('active');
+            setTimeout(() => searchInput.focus(), 300); // Focus after transition
+        });
+
+        searchClose.addEventListener('click', function(e) {
+            e.preventDefault();
+            searchOverlay.classList.remove('active');
+        });
+    }
+
+    // Header scroll effect
+    const header = document.getElementById('masthead');
+    if (header) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    }
+
 })();

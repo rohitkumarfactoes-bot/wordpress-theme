@@ -66,15 +66,15 @@ add_filter('excerpt_more', 'gizmodotech_excerpt_more');
  * Auto-generate Table of Contents for Single Posts
  */
 function gizmodotech_add_toc($content) {
-    if (!is_singular('post') || !in_the_loop() || !is_main_query()) {
+    if ( ! is_singular( array( 'post', 'mobile' ) ) || ! in_the_loop() || ! is_main_query() ) {
         return $content;
     }
 
     $toc_items = '';
     $i = 0;
 
-    // Find H2 and H3 tags, generate links, and add IDs to headings
-    $content = preg_replace_callback('/<h([2-3])([^>]*)>(.*?)<\/h\1>/si', function($matches) use (&$toc_items, &$i) {
+    // Find H2 tags only, generate links, and add IDs to headings
+    $content = preg_replace_callback('/<h(2)([^>]*)>(.*?)<\/h\1>/si', function($matches) use (&$toc_items, &$i) {
         $i++;
         $anchor = 'toc-' . $i;
         $level = $matches[1];
