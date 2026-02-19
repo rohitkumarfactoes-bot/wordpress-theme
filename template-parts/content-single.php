@@ -14,6 +14,16 @@
     <?php endif; ?>
 
     <header class="single-post-header">
+        <?php
+        $categories = get_the_category();
+        if ( ! empty( $categories ) ) {
+            printf(
+                '<a href="%s" class="is-style-gizmodotech-category-badge">%s</a>',
+                esc_url( get_category_link( $categories[0]->term_id ) ),
+                esc_html( $categories[0]->name )
+            );
+        }
+        ?>
         <?php the_title('<h1 class="single-post-title">', '</h1>'); ?>
 
         <div class="single-post-meta">
@@ -34,17 +44,6 @@
                 );
                 ?>
             </span>
-
-            <?php if (has_category()) : ?>
-                <span class="categories">
-                    <?php
-                    printf(
-                        esc_html__('In %s', 'gizmodotech'),
-                        get_the_category_list(', ')
-                    );
-                    ?>
-                </span>
-            <?php endif; ?>
 
         </div>
 

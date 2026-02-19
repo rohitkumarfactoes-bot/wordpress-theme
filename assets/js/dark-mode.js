@@ -1,70 +1,26 @@
-(function() {
-    'use strict';
-
+/**
+ * Dark Mode Toggle Logic
+ */
+document.addEventListener('DOMContentLoaded', function() {
     const darkModeToggle = document.querySelector('.dark-mode-toggle');
-    const sunIcon = document.querySelector('.sun-icon');
-    const moonIcon = document.querySelector('.moon-icon');
     const html = document.documentElement;
+    
+    // Check for saved preference on load is handled by inline script in head to prevent FOUC
+    // This script handles the toggle interaction
 
-    // Check for saved theme preference or default to light mode
-    const currentTheme = localStorage.getItem('theme') || 'light';
-
-    // Apply theme on page load
-    if (currentTheme === 'dark') {
-        html.setAttribute('data-theme', 'dark');
-        if (sunIcon && moonIcon) {
-            sunIcon.style.display = 'none';
-            moonIcon.style.display = 'block';
-        }
-    }
-
-    // Toggle dark mode
     if (darkModeToggle) {
-        darkModeToggle.addEventListener('click', function() {
-            const currentTheme = html.getAttribute('data-theme');
+        darkModeToggle.addEventListener('click', function(e) {
+            e.preventDefault();
             
-            if (currentTheme === 'dark') {
-                // Switch to light mode
-                html.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
-                
-                if (sunIcon && moonIcon) {
-                    sunIcon.style.display = 'block';
-                    moonIcon.style.display = 'none';
-                }
-            } else {
-                // Switch to dark mode
+            let theme = 'light';
+            if (html.getAttribute('data-theme') !== 'dark') {
                 html.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                
-                if (sunIcon && moonIcon) {
-                    sunIcon.style.display = 'none';
-                    moonIcon.style.display = 'block';
-                }
+                theme = 'dark';
+            } else {
+                html.removeAttribute('data-theme');
             }
+            
+            localStorage.setItem('theme', theme);
         });
     }
-
-    // Detect system preference change
-    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    darkModeMediaQuery.addEventListener('change', function(e) {
-        // Only auto-switch if user hasn't manually set preference
-        if (!localStorage.getItem('theme')) {
-            if (e.matches) {
-                html.setAttribute('data-theme', 'dark');
-                if (sunIcon && moonIcon) {
-                    sunIcon.style.display = 'none';
-                    moonIcon.style.display = 'block';
-                }
-            } else {
-                html.setAttribute('data-theme', 'light');
-                if (sunIcon && moonIcon) {
-                    sunIcon.style.display = 'block';
-                    moonIcon.style.display = 'none';
-                }
-            }
-        }
-    });
-
-})();
+});

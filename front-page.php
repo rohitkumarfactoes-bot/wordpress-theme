@@ -20,6 +20,14 @@ get_header();
             );
             $featured_query = new WP_Query($featured_args);
 
+            // Fallback: If no post has 'featured' tag, get the latest post
+            if ( ! $featured_query->have_posts() ) {
+                $featured_args = array(
+                    'posts_per_page' => 1,
+                );
+                $featured_query = new WP_Query($featured_args);
+            }
+
             if ($featured_query->have_posts()) :
                 while ($featured_query->have_posts()) : $featured_query->the_post();
                     // You can create a new template part for a more dramatic featured post

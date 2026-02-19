@@ -48,4 +48,58 @@
         });
     });
 
+    // Interactive Table of Contents
+    const tocContainer = document.querySelector('.gizmodotech-toc');
+    if (tocContainer) {
+        const tocToggle = tocContainer.querySelector('.toc-toggle');
+        const tocList = tocContainer.querySelector('.toc-list');
+
+        if (tocToggle && tocList) {
+            // Collapse on mobile by default for a cleaner initial view
+            if (window.innerWidth < 768) {
+                tocContainer.classList.add('collapsed');
+            }
+
+            tocToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                tocContainer.classList.toggle('collapsed');
+            });
+        }
+    }
+
+    // Comments Toggle
+    const toggleCommentsButton = document.getElementById('toggle-comments-button');
+    const commentsWrapper = document.getElementById('comments-wrapper');
+
+    if (toggleCommentsButton && commentsWrapper) {
+        toggleCommentsButton.addEventListener('click', function() {
+            const isHidden = commentsWrapper.classList.contains('comments-hidden');
+
+            if (isHidden) {
+                commentsWrapper.classList.remove('comments-hidden');
+                this.textContent = gizmodotech_vars.hideComments;
+                // Scroll to the comments section after it becomes visible
+                setTimeout(() => {
+                    commentsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            } else {
+                commentsWrapper.classList.add('comments-hidden');
+                this.textContent = gizmodotech_vars.leaveComment;
+            }
+        });
+    }
+
+    // Extracted Images Gallery (Mobile Reviews)
+    const thumbnails = document.querySelectorAll('.extracted-images-grid .thumbnail img');
+    const imageDisplay = document.getElementById('image-display');
+
+    if (thumbnails.length > 0 && imageDisplay) {
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                const fullImageSrc = this.getAttribute('data-full-image');
+                imageDisplay.innerHTML = '<img src="' + fullImageSrc + '" alt="Full Image">';
+            });
+        });
+    }
+
 })();

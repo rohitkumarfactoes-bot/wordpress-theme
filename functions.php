@@ -102,14 +102,16 @@ function gizmodotech_scripts() {
     // Main stylesheet
     wp_enqueue_style('gizmodotech-style', get_stylesheet_uri(), array(), '1.0.0');
 
-    // Localize script for Ajax
-    wp_localize_script('gizmodotech-navigation', 'gizmodotech_ajax', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce'    => wp_create_nonce('gizmodotech_subscribe_nonce')
-    ));
-
     // Navigation script (no jQuery dependency needed)
     wp_enqueue_script('gizmodotech-navigation', get_template_directory_uri() . '/assets/js/navigation.js', array(), '1.0.0', true);
+
+    // Localize script for Ajax
+    wp_localize_script('gizmodotech-navigation', 'gizmodotech_vars', array(
+        'ajax_url'     => admin_url('admin-ajax.php'),
+        'nonce'        => wp_create_nonce('gizmodotech_subscribe_nonce'),
+        'leaveComment' => esc_html__( 'Leave a Comment', 'gizmodotech' ),
+        'hideComments' => esc_html__( 'Hide Comments', 'gizmodotech' ),
+    ));
 
     // Dark mode script
     wp_enqueue_script(

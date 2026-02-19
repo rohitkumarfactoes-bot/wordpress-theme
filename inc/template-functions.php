@@ -96,10 +96,11 @@ function gizmodotech_add_toc($content) {
 add_filter('the_content', 'gizmodotech_add_toc');
 
 /**
- * Remove images from post content on 'mobile' post type single views.
+ * Remove images from post content on 'mobile' post type single views or posts in 'mobile' category.
  */
 function gizmodotech_strip_images_from_content($content) {
-    if (is_singular('mobile') && in_the_loop() && is_main_query()) {
+    // Strip images if it's a 'mobile' CPT OR a standard post in the 'mobile' category.
+    if ( (is_singular('mobile') || (is_singular('post') && has_category('mobile'))) && in_the_loop() && is_main_query() ) {
         $content = preg_replace('/<img[^>]+>/i', '', $content);
     }
     return $content;

@@ -72,19 +72,6 @@ function gizmodotech_display_extracted_images($atts) {
     $output .= '</div>';
     $output .= '</div>'; // End wrapper
 
-    // Inline Script for functionality
-    $output .= '<script>
-    jQuery(document).ready(function($) {
-        const thumbnails = $(".extracted-images-grid .thumbnail img");
-        const imageDisplay = $("#image-display"); 
-
-        thumbnails.on("click", function() {
-            const fullImageSrc = $(this).data("full-image");
-            imageDisplay.html("<img src=\'" + fullImageSrc + "\' alt=\'Full Image\'>");
-        });
-    });
-    </script>';
-
     return $output;
 }
 add_shortcode('extracted_images', 'gizmodotech_display_extracted_images');

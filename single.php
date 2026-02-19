@@ -61,11 +61,18 @@ get_header();
                         </nav>
                     <?php endif;
 
-                    // Comments
-                    if (comments_open() || get_comments_number()) :
-                        comments_template();
+                    // Comments Toggle
+                    if ( comments_open() || get_comments_number() ) :
+                    ?>
+                        <button id="toggle-comments-button" class="button">
+                            <?php esc_html_e( 'Leave a Comment', 'gizmodotech' ); ?>
+                        </button>
+                        <div id="comments-wrapper" class="comments-wrapper comments-hidden">
+                            <?php comments_template(); ?>
+                        </div>
+                    <?php
                     endif;
-
+                    
                     // Related Posts
                     get_template_part('template-parts/related-posts');
 
