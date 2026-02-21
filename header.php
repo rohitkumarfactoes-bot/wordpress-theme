@@ -44,6 +44,18 @@
                     ?>
                 </div>
 
+                <nav class="main-navigation" id="site-navigation">
+                    <?php
+                    wp_nav_menu(array(
+                        'theme_location' => 'primary',
+                        'menu_id'        => 'primary-menu',
+                        'menu_class'     => 'primary-menu',
+                        'container'      => false,
+                        'fallback_cb'    => false,
+                    ));
+                    ?>
+                </nav>
+
                 <div class="header-actions">
                     <div class="header-search-wrapper" id="header-search-wrapper">
                         <div class="header-search-form">
@@ -66,20 +78,6 @@
                         <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
                 </div>
-            </div>
-
-            <div class="header-navigation-bar">
-                <nav class="main-navigation" id="site-navigation">
-                    <?php
-                    wp_nav_menu(array(
-                        'theme_location' => 'primary',
-                        'menu_id'        => 'primary-menu',
-                        'menu_class'     => 'primary-menu',
-                        'container'      => false,
-                        'fallback_cb'    => false,
-                    ));
-                    ?>
-                </nav>
             </div>
         </div>
     </header>

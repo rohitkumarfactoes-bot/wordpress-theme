@@ -109,6 +109,8 @@ function gizmodotech_scripts() {
     wp_localize_script('gizmodotech-navigation', 'gizmodotech_vars', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('gizmodotech_subscribe_nonce'),
+        'leaveComment' => __('Leave a Comment', 'gizmodotech'),
+        'hideComments' => __('Hide Comments', 'gizmodotech'),
     ));
 
     // Comment reply script
@@ -262,7 +264,7 @@ function gizmodotech_enqueue_google_fonts() {
     }
 
     $font_query_args = array(
-        'family' => urlencode(implode('|', $unique_fonts) . ':300,400,500,600,700,800'),
+        'family' => implode('|', $unique_fonts) . ':300,400,500,600,700,800',
         'display' => 'swap',
     );
 
@@ -277,7 +279,7 @@ function gizmodotech_resource_hints( $urls, $relation_type ) {
     if ( wp_style_is( 'gizmodotech-google-fonts', 'queue' ) && 'preconnect' === $relation_type ) {
         $urls[] = array(
             'href' => 'https://fonts.gstatic.com',
-            'crossorigin',
+            'crossorigin' => 'anonymous',
         );
     }
     return $urls;

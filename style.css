@@ -203,9 +203,8 @@ em {
 .site-header {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--bg-dark);
-  border-top: 4px solid var(--accent);
-  /* Blogsy-style top border */
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-top: none;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -223,13 +222,6 @@ em {
   align-items: center;
   padding: var(--spacing-lg) 0;
   gap: var(--spacing-xl);
-}
-
-/* Navigation bar row (below header-inner) */
-.header-navigation-bar {
-  background-color: var(--primary);
-  padding: 0;
-  color: white;
 }
 
 .site-branding {
@@ -274,6 +266,7 @@ em {
 .main-navigation {
   display: flex;
   align-items: center;
+  margin-left: auto; /* Push to right or center depending on layout preference */
 }
 
 .primary-menu {
@@ -292,7 +285,7 @@ em {
 .primary-menu>li>a {
   display: block;
   padding: 1rem 1.5rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-primary);
   font-weight: 500;
   font-size: var(--font-size-sm);
   transition: all var(--transition-fast);
@@ -301,8 +294,8 @@ em {
 .primary-menu>li>a:hover,
 .primary-menu>li.current-menu-item>a,
 .primary-menu>li.current-menu-ancestor>a {
-  color: white;
-  background: var(--accent);
+  color: var(--accent);
+  background: transparent;
 }
 
 /* Dropdown Menu */
@@ -374,7 +367,10 @@ em {
   transition: all var(--transition-base);
   position: absolute;
   right: 100%;
-  margin-right: var(--spacing-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 10px;
+  z-index: 20;
 }
 
 .header-search-wrapper.active .header-search-form {
@@ -389,7 +385,7 @@ em {
   width: 40px;
   height: 40px;
   border: 1px solid var(--bg-dark);
-  background: var(--bg-secondary);
+  background: transparent;
   border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
@@ -400,12 +396,20 @@ em {
   flex-shrink: 0;
 }
 
+.search-toggle svg,
+.dark-mode-toggle svg,
+.mobile-menu-toggle svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+}
+
 .search-toggle:hover,
 .dark-mode-toggle:hover,
 .mobile-menu-toggle:hover {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
+  background: var(--bg-secondary);
+  color: var(--accent);
+  border-color: var(--bg-dark);
 }
 
 /* Dark Mode Toggle Icons */
@@ -2429,11 +2433,6 @@ select:focus {
   border-bottom-color: var(--bg-dark);
 }
 
-[data-theme="dark"] .header-navigation-bar {
-  background-color: var(--bg-secondary);
-  border-top-color: var(--bg-dark);
-}
-
 [data-theme="dark"] .widget,
 [data-theme="dark"] .article-card,
 [data-theme="dark"] .mobile-specs-table,
@@ -2457,11 +2456,6 @@ select:focus {
     border-bottom-color: var(--bg-dark);
   }
 
-  .header-navigation-bar {
-    background-color: var(--bg-secondary);
-    border-top-color: var(--bg-dark);
-  }
-
   .widget,
   .article-card,
   .mobile-specs-table,
@@ -2483,10 +2477,6 @@ select:focus {
 [data-theme="light"] .site-header {
   background: rgba(255, 255, 255, 0.95);
   border-bottom-color: var(--bg-dark);
-}
-
-[data-theme="light"] .header-navigation-bar {
-  background-color: var(--primary);
 }
 
 [data-theme="light"] .widget,
