@@ -743,7 +743,7 @@
     align-items: start;
   }
   
-  main-content,
+  .main-content,
 .single-main {
   width: 100%;
   min-width: 0; /* prevent grid blowout */
@@ -809,6 +809,55 @@
     padding-left: var(--spacing-md);
   }
   
+  /* Standard WP Widget Styles */
+  .widget_search .search-form {
+    display: flex;
+    gap: var(--spacing-sm);
+  }
+  .widget_search .search-field {
+    width: 100%;
+    border-radius: var(--radius-md);
+  }
+  .widget_search .search-submit {
+    padding: 0 var(--spacing-md);
+  }
+
+  .widget_calendar table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .widget_calendar th, .widget_calendar td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid var(--bg-dark);
+  }
+  .widget_calendar caption {
+    font-weight: bold;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+  }
+
+  .widget_tag_cloud .tagcloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+  .widget_tag_cloud a {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-dark);
+    border-radius: 50px;
+    font-size: 0.8rem !important; /* Override inline style */
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+  }
+  .widget_tag_cloud a:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
   /* ============================================================================
      9b. CUSTOM WIDGET STYLES
      ============================================================================ */
@@ -1970,6 +2019,19 @@
     border-radius: var(--radius-sm);
   }
   
+  /* Alignment Classes */
+  .alignwide {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .alignfull {
+    max-width: 100vw;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
   /* ============================================================================
      22. PRINT STYLES
      ============================================================================ */

@@ -126,7 +126,7 @@ add_action('wp_enqueue_scripts', 'gizmodotech_scripts');
  */
 function gizmodotech_load_tailwind_cdn() {
     ?>
-      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: ['class', '[data-theme="dark"]'],
