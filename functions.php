@@ -100,7 +100,7 @@ function gizmodotech_scripts() {
     gizmodotech_enqueue_google_fonts();
 
     // Main stylesheet
-    // wp_enqueue_style('gizmodotech-tailwind', get_template_directory_uri() . '/dist/main.css', array(), '1.0.0'); // Disabled for CDN usage
+    wp_enqueue_style('gizmodotech-style', get_stylesheet_uri(), array(), '1.0.0');
 
     // Navigation script (no jQuery dependency needed)
     wp_enqueue_script('gizmodotech-navigation', get_template_directory_uri() . '/assets/js/navigation.js', array(), '1.0.0', true);
@@ -133,18 +133,18 @@ function gizmodotech_load_tailwind_cdn() {
             theme: {
                 extend: {
                     colors: {
-                        primary: { DEFAULT: 'var(--color-primary)', dark: 'var(--color-primary-dark)' },
-                        secondary: 'var(--color-secondary)',
-                        text: { DEFAULT: 'var(--color-text)', light: 'var(--color-text-light)', lighter: 'var(--color-text-lighter)' },
-                        bg: { DEFAULT: 'var(--color-bg)', alt: 'var(--color-bg-alt)', dark: 'var(--color-bg-dark)' },
-                        border: { DEFAULT: 'var(--color-border)', dark: 'var(--color-border-dark)' },
+                        primary: { DEFAULT: 'var(--primary)', dark: 'var(--primary-light)' },
+                        accent: { DEFAULT: 'var(--accent)', dark: 'var(--accent-dark)', light: 'var(--accent-light)' },
+                        text: { DEFAULT: 'var(--text-primary)', secondary: 'var(--text-secondary)', light: 'var(--text-light)', lighter: 'var(--text-lighter)' },
+                        bg: { DEFAULT: 'var(--bg-primary)', alt: 'var(--bg-secondary)', dark: 'var(--bg-dark)' },
+                        border: { DEFAULT: 'var(--bg-dark)', dark: 'var(--bg-dark)' },
                     },
                     fontFamily: {
-                        primary: 'var(--font-primary)',
+                        primary: 'var(--font-family)',
                         heading: 'var(--font-heading)',
                     },
                     maxWidth: {
-                        container: 'var(--container-width)',
+                        container: '1200px',
                     }
                 }
             }
@@ -309,11 +309,6 @@ require get_template_directory() . '/inc/block-patterns.php';
  * Load Mobile Features (Specs, Image Extraction).
  */
 require get_template_directory() . '/inc/mobile-features.php';
-
-/**
- * Load Shortcodes (related posts, tech/review sections, post slider).
- */
-require get_template_directory() . '/inc/shortcodes.php';
 
 /**
  * Enqueue selected Google Fonts from Customizer.
