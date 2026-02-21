@@ -736,7 +736,7 @@
     width: 100%;
   }
   
-  .content-area.has-sidebar {
+  .has-sidebar .content-area {
     display: grid;
     grid-template-columns: 1fr 300px;
     gap: var(--spacing-3xl);
@@ -757,8 +757,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xl);
-    position: sticky;
-    top: 100px; /* below fixed header */
+    position: static;
   }
   
   .widget {
@@ -1273,6 +1272,43 @@
   .share-linkedin { background: #0a66c2; }
   .share-whatsapp { background: #25d366; }
   
+  /* Standardized Social Share Buttons (gizmodotech_the_social_share_buttons) */
+  .gizmodotech-share-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-lg) 0;
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-dark);
+    border-radius: var(--radius-md);
+  }
+
+  .gizmodotech-share-buttons .share-label {
+    font-weight: 600;
+    margin-right: var(--spacing-sm);
+    color: var(--text-primary);
+  }
+
+  .gizmodotech-share-buttons .share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: opacity 0.2s;
+    text-decoration: none;
+  }
+
+  .gizmodotech-share-buttons .share-btn:hover {
+    opacity: 0.9;
+    color: #fff;
+  }
+
   /* Comments toggle */
   #toggle-comments-button {
     margin: var(--spacing-xl) 0 var(--spacing-md);
@@ -1808,7 +1844,7 @@
      ============================================================================ */
   
   @media (max-width: 1024px) {
-    .content-area.has-sidebar {
+    .has-sidebar .content-area {
       grid-template-columns: 1fr;
     }
   

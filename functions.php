@@ -280,31 +280,6 @@ function gizmodotech_enqueue_google_fonts() {
 }
 
 /**
- * Feature: Reading Progress Bar
- * Adds a sticky progress bar to the top of the page using Tailwind CSS.
- */
-function gizmodotech_reading_progress_bar() {
-    if (!is_singular('post')) {
-        return;
-    }
-    ?>
-    <div id="reading-progress" class="reading-progress-bar"></div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const progressBar = document.getElementById('reading-progress');
-            window.addEventListener('scroll', function() {
-                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrollPercent = (scrollTop / scrollHeight) * 100;
-                progressBar.style.width = scrollPercent + '%';
-            });
-        });
-    </script>
-    <?php
-}
-add_action('wp_footer', 'gizmodotech_reading_progress_bar');
-
-/**
  * Feature: Back to Top Button
  */
 function gizmodotech_back_to_top_button() {
