@@ -7,11 +7,18 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+    <?php gizmodotech_breadcrumbs(); ?>
+
     <?php
-    // Display breadcrumbs
-    gizmodotech_breadcrumbs(); ?>
-    <?php if (has_post_thumbnail()) : ?>
-        <div class="single-post-thumbnail" style="margin-bottom: 2rem;">
+    if (has_category('mobile')) {
+        echo '<div class="mobile-gallery-section mobile-gallery-above-header">';
+        echo do_shortcode('[extracted_images post_id="' . get_the_ID() . '"]');
+        echo '</div>';
+    }
+    ?>
+
+    <?php if (has_post_thumbnail() && !has_category('mobile')) : ?>
+        <div class="single-post-thumbnail">
             <?php the_post_thumbnail('gizmodotech-featured'); ?>
         </div>
     <?php endif; ?>

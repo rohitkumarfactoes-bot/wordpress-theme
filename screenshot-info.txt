@@ -1,5 +1,0 @@
-Screenshot placeholder - Replace with actual 1200x900px screenshot
-This file is just a text placeholder. For the actual theme, you should:
-1. Take a screenshot of your homepage at 1200x900px resolution
-2. Save it as screenshot.png in the theme root directory
-3. This is required for the theme to display properly in WordPress theme selector

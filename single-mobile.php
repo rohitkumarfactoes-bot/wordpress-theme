@@ -19,24 +19,20 @@ get_header();
                 // otherwise this file automatically applies to 'mobile' CPT.
                 ?>
 
-                <article id="post-<?php the_ID(); ?>" <?php post_class('max-w-4xl mx-auto'); ?>>
-                    <header class="mb-8">
-                        <div class="mb-4 text-sm text-text-light">
+                <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+                    <div class="mobile-gallery-section mobile-gallery-above-header">
+                        <?php echo do_shortcode('[extracted_images]'); ?>
+                    </div>
+
+                    <header class="single-post-header">
+                        <div class="single-post-meta">
                             <?php gizmodotech_post_meta(); ?>
                         </div>
-                        
-                        <?php the_title('<h1 class="text-3xl md:text-4xl font-bold font-heading text-text dark:text-text">', '</h1>'); ?>
+                        <?php the_title('<h1 class="single-post-title">', '</h1>'); ?>
                     </header>
 
-                    <div class="mt-8 lg:grid lg:grid-cols-[350px_1fr] lg:gap-12">
-                        <div class="mobile-review-media lg:order-1">
-                            <!-- Custom Image Extraction Gallery -->
-                            <div class="mobile-gallery-section mb-8">
-                                <?php 
-                                // Display the extracted images gallery
-                                echo do_shortcode('[extracted_images]'); 
-                                ?>
-                            </div>
+                    <div class="mobile-review-layout">
+                        <div class="mobile-review-media">
 
                             <?php
                             // --- Display Specifications Table ---

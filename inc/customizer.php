@@ -65,18 +65,122 @@ function gizmodotech_customize_register($wp_customize) {
         'priority' => 20,
     ));
 
-    $colors = array(
-        'primary_color' => array('label' => 'Primary Color', 'default' => '#3b82f6'),
-    );
-
     $wp_customize->add_setting('gizmodotech_primary_color', array(
-        'default'           => $colors['primary_color']['default'],
+        'default'           => '#0ea5e9',
         'sanitize_callback' => 'sanitize_hex_color',
     ));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'gizmodotech_primary_color', array(
-        'label'   => esc_html__($colors['primary_color']['label'], 'gizmodotech'),
+        'label'   => esc_html__('Primary Color', 'gizmodotech'),
         'section' => 'gizmodotech_colors',
     )));
+
+    $wp_customize->add_setting('gizmodotech_accent_color', array(
+        'default'           => '#8b5cf6',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'gizmodotech_accent_color', array(
+        'label'   => esc_html__('Accent Color', 'gizmodotech'),
+        'description' => esc_html__('Used for gradients and highlights.', 'gizmodotech'),
+        'section' => 'gizmodotech_colors',
+    )));
+
+    // Theme Layout panel
+    $wp_customize->add_panel('gizmodotech_layout_panel', array(
+        'title'    => esc_html__('Theme Layout', 'gizmodotech'),
+        'priority' => 22,
+    ));
+
+    $wp_customize->add_section('gizmodotech_container', array(
+        'title' => esc_html__('Container & Width', 'gizmodotech'),
+        'panel'  => 'gizmodotech_layout_panel',
+    ));
+
+    $wp_customize->add_setting('gizmodotech_container_style', array(
+        'default'           => 'default',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('gizmodotech_container_style', array(
+        'label'   => esc_html__('Container Width', 'gizmodotech'),
+        'section' => 'gizmodotech_container',
+        'type'    => 'select',
+        'choices' => array(
+            'narrow'  => esc_html__('Narrow (960px)', 'gizmodotech'),
+            'default' => esc_html__('Default (1200px)', 'gizmodotech'),
+            'wide'    => esc_html__('Wide (1400px)', 'gizmodotech'),
+        ),
+    ));
+
+    $wp_customize->add_section('gizmodotech_corners', array(
+        'title' => esc_html__('Border Radius', 'gizmodotech'),
+        'panel'  => 'gizmodotech_layout_panel',
+    ));
+
+    $wp_customize->add_setting('gizmodotech_border_radius', array(
+        'default'           => 'default',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('gizmodotech_border_radius', array(
+        'label'   => esc_html__('Corner Style', 'gizmodotech'),
+        'section' => 'gizmodotech_corners',
+        'type'    => 'select',
+        'choices' => array(
+            'sharp'   => esc_html__('Sharp (2px)', 'gizmodotech'),
+            'default' => esc_html__('Default (10px)', 'gizmodotech'),
+            'rounded' => esc_html__('Rounded (20px)', 'gizmodotech'),
+        ),
+    ));
+
+    $wp_customize->add_section('gizmodotech_header_style', array(
+        'title' => esc_html__('Header Style', 'gizmodotech'),
+        'panel'  => 'gizmodotech_layout_panel',
+    ));
+
+    $wp_customize->add_setting('gizmodotech_header_layout', array(
+        'default'           => 'default',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('gizmodotech_header_layout', array(
+        'label'   => esc_html__('Header Layout', 'gizmodotech'),
+        'section' => 'gizmodotech_header_style',
+        'type'    => 'select',
+        'choices' => array(
+            'default'  => esc_html__('Default (logo left, nav below)', 'gizmodotech'),
+            'compact'  => esc_html__('Compact (single row)', 'gizmodotech'),
+            'centered' => esc_html__('Centered (logo and nav centered)', 'gizmodotech'),
+        ),
+    ));
+
+    // Homepage section
+    $wp_customize->add_section('gizmodotech_homepage', array(
+        'title'    => esc_html__('Homepage', 'gizmodotech'),
+        'priority' => 35,
+    ));
+
+    $wp_customize->add_setting('gizmodotech_hero_style', array(
+        'default'           => 'default',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('gizmodotech_hero_style', array(
+        'label'       => esc_html__('Featured Hero Style', 'gizmodotech'),
+        'description' => esc_html__('Layout of the main featured post on the homepage.', 'gizmodotech'),
+        'section'     => 'gizmodotech_homepage',
+        'type'        => 'select',
+        'choices'     => array(
+            'default' => esc_html__('Full-width hero (default)', 'gizmodotech'),
+            'minimal'  => esc_html__('Minimal card', 'gizmodotech'),
+            'bold'     => esc_html__('Bold overlay', 'gizmodotech'),
+        ),
+    ));
+
+    $wp_customize->add_setting('gizmodotech_show_hero_read_more', array(
+        'default'           => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('gizmodotech_show_hero_read_more', array(
+        'label'   => esc_html__('Show "Read more" on featured hero', 'gizmodotech'),
+        'section' => 'gizmodotech_homepage',
+        'type'    => 'checkbox',
+    ));
 
     // --- Enhanced Typography Section ---
     $wp_customize->add_panel('gizmodotech_typography_panel', array(
