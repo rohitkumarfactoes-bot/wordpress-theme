@@ -6,12 +6,12 @@
  */
 ?>
 
-<section class="no-results not-found">
-    <header class="page-header">
-        <h1 class="page-title"><?php esc_html_e('Nothing Found', 'gizmodotech'); ?></h1>
+<section class="no-results not-found text-center py-16 md:py-24">
+    <header class="page-header mb-4">
+        <h1 class="text-4xl font-bold font-heading"><?php esc_html_e('Nothing Found', 'gizmodotech'); ?></h1>
     </header>
 
-    <div class="page-content">
+    <div class="page-content max-w-xl mx-auto text-text-light">
         <?php if (is_home() && current_user_can('publish_posts')) : ?>
 
             <p>

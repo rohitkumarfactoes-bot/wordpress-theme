@@ -82,12 +82,12 @@ function gizmodotech_add_toc($content) {
         $title = $matches[3];
         
         $toc_items .= '<li class="toc-item toc-level-' . $level . '"><a href="#' . $anchor . '">' . strip_tags($title) . '</a></li>';
-        
-        return '<h' . $level . $attrs . ' id="' . $anchor . '">' . $title . '</h' . $level . '>';
+
+        return '<h' . $level . ' id="' . $anchor . '"' . $attrs . '>' . $title . '</h' . $level . '>';
     }, $content);
 
     if ($i >= 2) {
-        $toc_html = '<div class="gizmodotech-toc"><div class="toc-header"><h3 class="toc-title">' . esc_html__('Table of Contents', 'gizmodotech') . '</h3><button class="toc-toggle" aria-label="' . esc_attr__('Toggle TOC', 'gizmodotech') . '"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button></div><ul class="toc-list">' . $toc_items . '</ul></div>';
+        $toc_html = '<div class="gizmodotech-toc bg-bg-alt dark:bg-bg-alt border border-border dark:border-border rounded-lg p-6 mb-8"><div class="toc-header flex justify-between items-center cursor-pointer"><h3 class="text-lg font-bold font-heading m-0">' . esc_html__('Table of Contents', 'gizmodotech') . '</h3><button class="toc-toggle text-text dark:text-text" aria-label="' . esc_attr__('Toggle TOC', 'gizmodotech') . '"><svg class="w-5 h-5 transition-transform" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button></div><ul class="toc-list list-none p-0 mt-4 space-y-2">' . $toc_items . '</ul></div>';
         return $toc_html . $content;
     }
 
@@ -106,3 +106,19 @@ function gizmodotech_strip_images_from_content($content) {
     return $content;
 }
 add_filter('the_content', 'gizmodotech_strip_images_from_content', 20);
+
+/**
+ * Calculate Estimated Reading Time
+ *
+ * @return string Reading time in minutes.
+ */
+function gizmodotech_get_reading_time() {
+    $content = get_post_field('post_content', get_the_ID());
+    $word_count = str_word_count(strip_tags($content));
+    $reading_time = ceil($word_count / 200); // Average reading speed: 200 words/min
+
+    if ($reading_time < 1) {
+        return '1 ' . __('min read', 'gizmodotech');
+    }
+    return $reading_time . ' ' . __('min read', 'gizmodotech');
+}

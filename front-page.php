@@ -28,8 +28,10 @@ get_header();
                 $featured_query = new WP_Query($featured_args);
             }
 
+            $featured_post_id = 0;
             if ($featured_query->have_posts()) :
                 while ($featured_query->have_posts()) : $featured_query->the_post();
+                    $featured_post_id = get_the_ID();
                     // You can create a new template part for a more dramatic featured post
                     get_template_part('template-parts/content', 'featured');
                 endwhile;
@@ -48,6 +50,9 @@ get_header();
                                 <?php
                                 while (have_posts()) :
                                     the_post();
+                                    if (get_the_ID() === $featured_post_id) {
+                                        continue;
+                                    }
                                     get_template_part('template-parts/content', get_post_type());
                                 endwhile;
                                 ?>

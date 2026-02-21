@@ -133,4 +133,21 @@
         });
     }
 
+    // Back to Top Button
+    const backToTopButton = document.getElementById('back-to-top');
+    if (backToTopButton) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTopButton.classList.remove('translate-y-20', 'opacity-0');
+            } else {
+                backToTopButton.classList.add('translate-y-20', 'opacity-0');
+            }
+        });
+
+        backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
 })();

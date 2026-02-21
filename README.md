@@ -39,46 +39,65 @@ A modern, SEO-optimized WordPress theme designed specifically for tech news, gad
 4. Find "Gizmodotech" and click **Activate**
 
 ## Initial Setup
+Follow the standard WordPress theme setup for menus, widgets, and the Customizer.
 
-1. **Configure Site Identity**
-   - Go to Appearance → Customize → Site Identity
-   - Upload logo, set title and tagline
+## Development & Customization
 
-2. **Create Menus**
-   - Go to Appearance → Menus
-   - Create Primary Menu and Footer Menu
-   - Assign to their locations
+This theme uses Tailwind CSS for styling. To make changes to the CSS, you need to set up a build process **on your local computer**.
 
-3. **Configure Widgets**
-   - Go to Appearance → Widgets
-   - Add widgets to Sidebar and Footer areas
+### Requirements
+- [Node.js](https://nodejs.org/) (v16 or higher) installed on your **local computer**.
+- npm (comes with Node.js).
 
-4. **Social Media Links**
-   - Go to Appearance → Customize → Social Media Links
-   - Add your social media URLs
+### Build Setup (Local Computer)
 
-5. **Dark Mode**
-   - Go to Appearance → Customize → Dark Mode
-   - Enable/disable the dark mode toggle
+1.  **Install Dependencies**: Open a terminal in the theme's root directory **on your computer** and run:
+    ```bash
+    npm install
+    ```
 
-## Customization
+2.  **Start Development**: To watch for changes and automatically recompile the CSS while you work locally:
+    ```bash
+    npm run watch
+    ```
+
+3.  **Build for Production**: Before uploading to your server, generate the final CSS file:
+    ```bash
+    npm run build
+    ```
+
+### Deployment
+
+**CRITICAL:** When uploading the theme to your WordPress hosting, you must **EXCLUDE** the development files.
+
+**✅ DO UPLOAD:**
+- `dist/main.css` (The generated style file)
+- All PHP files (`*.php`)
+- `style.css` (Theme information)
+- `assets/` folder
+- `inc/` folder
+
+**❌ DO NOT UPLOAD:**
+- `node_modules/` (This is huge and for local use only)
+- `package.json`, `package-lock.json`
+- `tailwind.config.js`, `postcss.config.js`
 
 ### Custom CSS
 
-Add custom CSS via **Appearance → Customize → Additional CSS**
+For small tweaks, you can add custom CSS via **Appearance → Customize → Additional CSS**.
 
 ### Child Theme
 
-For extensive customizations, create a child theme:
+For extensive customizations, it is highly recommended to use a child theme. This ensures your changes are not lost when the parent theme is updated.
 
 1. Create folder: `/wp-content/themes/gizmodotech-child/`
 2. Create `style.css`:
 
 ```css
 /*
-Theme Name: Gizmodotech Child
-Template: gizmodotech-wp-theme
-Version: 1.0.0
+ Theme Name: Gizmodotech Child
+ Template: gizmodotech-wp-theme
+ Version: 1.0.0
 */
 ```
 
@@ -88,6 +107,8 @@ Version: 1.0.0
 <?php
 function gizmodotech_child_enqueue_styles() {
     wp_enqueue_style('parent-style', get_template_directory_uri() . '/style.css');
+    // Enqueue the child theme's style.css, making sure it loads after the parent's Tailwind CSS
+    wp_enqueue_style('child-style', get_stylesheet_uri(), array('gizmodotech-tailwind'), wp_get_theme()->get('Version'));
 }
 add_action('wp_enqueue_scripts', 'gizmodotech_child_enqueue_styles');
 ```

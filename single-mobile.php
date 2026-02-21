@@ -9,7 +9,7 @@ get_header();
 ?>
 
 <main id="primary" class="site-content">
-    <div class="container">
+    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="content-area">
             <?php
             while (have_posts()) :
@@ -19,19 +19,19 @@ get_header();
                 // otherwise this file automatically applies to 'mobile' CPT.
                 ?>
 
-                <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-                    <header class="single-post-header">
-                        <div class="single-post-meta">
+                <article id="post-<?php the_ID(); ?>" <?php post_class('max-w-4xl mx-auto'); ?>>
+                    <header class="mb-8">
+                        <div class="mb-4 text-sm text-text-light">
                             <?php gizmodotech_post_meta(); ?>
                         </div>
                         
-                        <?php the_title('<h1 class="single-post-title">', '</h1>'); ?>
+                        <?php the_title('<h1 class="text-3xl md:text-4xl font-bold font-heading text-text dark:text-text">', '</h1>'); ?>
                     </header>
 
-                    <div class="mobile-review-layout">
-                        <div class="mobile-review-media">
+                    <div class="mt-8 lg:grid lg:grid-cols-[350px_1fr] lg:gap-12">
+                        <div class="mobile-review-media lg:order-1">
                             <!-- Custom Image Extraction Gallery -->
-                            <div class="mobile-gallery-section">
+                            <div class="mobile-gallery-section mb-8">
                                 <?php 
                                 // Display the extracted images gallery
                                 echo do_shortcode('[extracted_images]'); 
@@ -42,15 +42,15 @@ get_header();
                             // --- Display Specifications Table ---
                             $specs_keys = array('display', 'processor', 'ram', 'storage', 'camera', 'battery');
                             $has_specs = false;
-                            $specs_html = '<div class="mobile-specs-table"><h3>' . esc_html__('Key Specifications', 'gizmodotech') . '</h3><table><tbody>';
+                            $specs_html = '<div class="my-8 bg-bg-alt dark:bg-bg-alt border border-border dark:border-border rounded-lg p-6"><h3 class="text-lg font-bold font-heading mb-4">' . esc_html__('Key Specifications', 'gizmodotech') . '</h3><table class="w-full"><tbody>';
 
                             foreach ($specs_keys as $key) {
                                 $value = get_post_meta(get_the_ID(), '_spec_' . $key, true);
                                 if (!empty($value)) {
                                     $has_specs = true;
-                                    $specs_html .= '<tr>';
-                                    $specs_html .= '<th>' . esc_html(ucfirst($key)) . '</th>';
-                                    $specs_html .= '<td>' . esc_html($value) . '</td>';
+                                    $specs_html .= '<tr class="border-b border-border dark:border-border last:border-0">';
+                                    $specs_html .= '<th class="p-3 text-left font-semibold text-text-light text-sm w-28">' . esc_html(ucfirst($key)) . '</th>';
+                                    $specs_html .= '<td class="p-3 text-left text-sm">' . esc_html($value) . '</td>';
                                     $specs_html .= '</tr>';
                                 }
                             }
@@ -62,7 +62,7 @@ get_header();
                             ?>
                         </div>
 
-                        <div class="entry-content">
+                        <div class="entry-content lg:order-2 text-base leading-relaxed">
                             <?php
                             the_content();
 
@@ -74,7 +74,7 @@ get_header();
                         </div>
                     </div>
 
-                    <footer class="entry-footer">
+                    <footer class="mt-12 pt-8 border-t border-border dark:border-border">
                         <?php gizmodotech_the_social_share_buttons(); ?>
                     </footer>
                 </article>

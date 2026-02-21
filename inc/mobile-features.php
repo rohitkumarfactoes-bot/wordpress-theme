@@ -15,9 +15,25 @@ if (!defined('ABSPATH')) {
 
 // Function to extract image URLs from post content
 function gizmodotech_extract_images_from_post($post_content) {
-    // Fixed regex to handle actual HTML tags instead of entities
-    preg_match_all('/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $post_content, $matches);
-    return $matches[1]; // Return only the src attributes
+    if (empty($post_content)) {
+        return array();
+    }
+
+    $dom = new DOMDocument();
+    // Suppress warnings for malformed HTML and handle UTF-8
+    libxml_use_internal_errors(true);
+    $dom->loadHTML(mb_convert_encoding($post_content, 'HTML-ENTITIES', 'UTF-8'));
+    libxml_clear_errors();
+
+    $images = array();
+    foreach ($dom->getElementsByTagName('img') as $img) {
+        $src = $img->getAttribute('src');
+        if ($src) {
+            $images[] = $src;
+        }
+    }
+
+    return $images;
 }
 
 // Function to get the featured image URL

@@ -35,12 +35,12 @@ function gizmodotech_register_block_patterns() {
         $featured_news_grid_content = <<<EOT
         <!-- wp:group {"align":"wide","layout":{"type":"constrained"}} -->
         <div class="wp-block-group alignwide">
-            <!-- wp:heading {"level":2,"className":"section-title"} -->
-            <h2 class="wp-block-heading section-title">{$latest_stories_title}</h2>
+            <!-- wp:heading {"level":2,"className":"text-2xl font-bold mb-6"} -->
+            <h2 class="wp-block-heading text-2xl font-bold mb-6">{$latest_stories_title}</h2>
             <!-- /wp:heading -->
 
-            <!-- wp:columns {"className":"gizmodotech-featured-grid"} -->
-            <div class="wp-block-columns gizmodotech-featured-grid">
+            <!-- wp:columns {"className":"gap-8"} -->
+            <div class="wp-block-columns gap-8">
                 <!-- wp:column {"width":"50%"} -->
                 <div class="wp-block-column" style="flex-basis:50%">
                     <!-- wp:query {"queryId":1,"query":{"perPage":1,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"exclude","inherit":false},"displayLayout":{"type":"list"},"className":"featured-grid-main"} -->
@@ -48,7 +48,7 @@ function gizmodotech_register_block_patterns() {
                         <!-- wp:post-template -->
                             <!-- wp:group {"style":{"spacing":{"blockGap":"0"}},"layout":{"type":"constrained"}} -->
                             <div class="wp-block-group">
-                                <!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9"} /-->
+                                <!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","className":"rounded-t-lg"} /-->
                                 <!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|40","right":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40"}}},"backgroundColor":"bg-alt","layout":{"type":"constrained"}} -->
                                 <div class="wp-block-group has-bg-alt-background-color has-background" style="padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
                                     <!-- wp:post-terms {"term":"category","className":"is-style-gizmodotech-category-badge"} /-->
@@ -125,8 +125,8 @@ EOT;
         $trending_posts_content = <<<EOT
         <!-- wp:group {"align":"wide","layout":{"type":"constrained"}} -->
         <div class="wp-block-group alignwide">
-            <!-- wp:heading {"level":2,"className":"section-title"} -->
-            <h2 class="wp-block-heading section-title">{$trending_now_title}</h2>
+            <!-- wp:heading {"level":2,"className":"text-2xl font-bold mb-6"} -->
+            <h2 class="wp-block-heading text-2xl font-bold mb-6">{$trending_now_title}</h2>
             <!-- /wp:heading -->
 
             <!-- wp:query {"queryId":3,"query":{"perPage":5,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"comment_count","author":"","search":"","exclude":[],"sticky":"exclude","inherit":false},"displayLayout":{"type":"flex","columns":3},"className":"gizmodotech-trending-posts"} -->
@@ -171,8 +171,8 @@ EOT;
                 <p class="has-text-align-center">{$newsletter_desc}</p>
                 <!-- /wp:paragraph -->
 
-                <!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|sm"}},"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center"},"className":"gizmodotech-newsletter-form"} -->
-                <div class="wp-block-group gizmodotech-newsletter-form">
+                <!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|sm"}},"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center"}} -->
+                <div class="wp-block-group">
                     <!-- wp:search {"label":"Email","showLabel":false,"placeholder":"{$newsletter_placeholder}","width":100,"widthUnit":"%","buttonText":"{$newsletter_button}","buttonPosition":"button-inside","buttonUseIcon":false} /-->
                 </div>
                 <!-- /wp:group -->

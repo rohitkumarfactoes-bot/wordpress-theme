@@ -100,27 +100,19 @@ function gizmodotech_scripts() {
     gizmodotech_enqueue_google_fonts();
 
     // Main stylesheet
-    wp_enqueue_style('gizmodotech-style', get_stylesheet_uri(), array(), '1.0.0');
+    // wp_enqueue_style('gizmodotech-tailwind', get_template_directory_uri() . '/dist/main.css', array(), '1.0.0'); // Disabled for CDN usage
 
     // Navigation script (no jQuery dependency needed)
     wp_enqueue_script('gizmodotech-navigation', get_template_directory_uri() . '/assets/js/navigation.js', array(), '1.0.0', true);
 
     // Localize script for Ajax
     wp_localize_script('gizmodotech-navigation', 'gizmodotech_vars', array(
-        'ajax_url'     => admin_url('admin-ajax.php'),
-        'nonce'        => wp_create_nonce('gizmodotech_subscribe_nonce'),
-        'leaveComment' => esc_html__( 'Leave a Comment', 'gizmodotech' ),
-        'hideComments' => esc_html__( 'Hide Comments', 'gizmodotech' ),
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('gizmodotech_subscribe_nonce'),
     ));
 
-    // Dark mode script
-    wp_enqueue_script(
-        'gizmodotech-dark-mode',
-        get_template_directory_uri() . '/assets/js/dark-mode.js',
-        array(),
-        '1.0.0',
-        true
-    );
+    // Dark mode JS is still needed for the toggle functionality.
+    wp_enqueue_script('gizmodotech-dark-mode', get_template_directory_uri() . '/assets/js/dark-mode.js', array(), '1.0.0', true);
 
     // Comment reply script
     if (is_singular() && comments_open() && get_option('thread_comments')) {
@@ -128,6 +120,64 @@ function gizmodotech_scripts() {
     }
 }
 add_action('wp_enqueue_scripts', 'gizmodotech_scripts');
+
+/**
+ * Load Tailwind CDN (Alternative to Build Process)
+ */
+function gizmodotech_load_tailwind_cdn() {
+    ?>
+      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ['class', '[data-theme="dark"]'],
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: 'var(--color-primary)', dark: 'var(--color-primary-dark)' },
+                        secondary: 'var(--color-secondary)',
+                        text: { DEFAULT: 'var(--color-text)', light: 'var(--color-text-light)', lighter: 'var(--color-text-lighter)' },
+                        bg: { DEFAULT: 'var(--color-bg)', alt: 'var(--color-bg-alt)', dark: 'var(--color-bg-dark)' },
+                        border: { DEFAULT: 'var(--color-border)', dark: 'var(--color-border-dark)' },
+                    },
+                    fontFamily: {
+                        primary: 'var(--font-primary)',
+                        heading: 'var(--font-heading)',
+                    },
+                    maxWidth: {
+                        container: 'var(--container-width)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-bg text-text font-primary antialiased transition-colors duration-300;
+            }
+            /* Typography Defaults */
+            .entry-content h2, .entry-content h3, .entry-content h4 {
+                @apply font-heading font-bold text-text mb-4 mt-10 scroll-mt-24;
+            }
+            .entry-content h2 { @apply text-2xl lg:text-3xl tracking-tight; }
+            .entry-content h3 { @apply text-xl lg:text-2xl tracking-tight; }
+            .entry-content h4 { @apply text-lg lg:text-xl; }
+            .entry-content p { @apply mb-6 leading-relaxed text-lg text-text-light; }
+            .entry-content a { @apply text-primary hover:text-primary-dark underline decoration-2 underline-offset-2 transition-colors; }
+            .entry-content img { @apply rounded-xl my-8 shadow-md w-full h-auto; }
+            .entry-content ul { @apply list-disc pl-6 my-6 space-y-2 text-text-light marker:text-primary; }
+            .entry-content ol { @apply list-decimal pl-6 my-6 space-y-2 text-text-light marker:text-primary font-medium; }
+            .entry-content blockquote { @apply border-l-4 border-primary pl-6 py-2 my-8 italic text-xl text-text font-heading bg-bg-alt rounded-r-lg; }
+            
+            /* Form Elements */
+            input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], textarea {
+                @apply w-full px-4 py-3 rounded-lg border border-border bg-bg text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all;
+            }
+        }
+    </style>
+    <?php
+}
+add_action('wp_head', 'gizmodotech_load_tailwind_cdn');
 
 /**
  * Register widget areas
@@ -286,3 +336,42 @@ function gizmodotech_enqueue_google_fonts() {
     $fonts_url = add_query_arg($font_query_args, 'https://fonts.googleapis.com/css');
     wp_enqueue_style('gizmodotech-google-fonts', $fonts_url, array(), null);
 }
+
+/**
+ * Feature: Reading Progress Bar
+ * Adds a sticky progress bar to the top of the page using Tailwind CSS.
+ */
+function gizmodotech_reading_progress_bar() {
+    if (!is_singular('post')) {
+        return;
+    }
+    ?>
+    <div id="reading-progress" class="fixed top-0 left-0 h-1 bg-primary z-50 w-0 transition-all duration-150 ease-out"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBar = document.getElementById('reading-progress');
+            window.addEventListener('scroll', function() {
+                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrollPercent = (scrollTop / scrollHeight) * 100;
+                progressBar.style.width = scrollPercent + '%';
+            });
+        });
+    </script>
+    <?php
+}
+add_action('wp_footer', 'gizmodotech_reading_progress_bar');
+
+/**
+ * Feature: Back to Top Button
+ */
+function gizmodotech_back_to_top_button() {
+    ?>
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-primary hover:bg-primary-dark text-white p-3 rounded-full shadow-lg translate-y-20 opacity-0 transition-all duration-300 z-40 group" aria-label="Back to top">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </button>
+    <?php
+}
+add_action('wp_footer', 'gizmodotech_back_to_top_button');
