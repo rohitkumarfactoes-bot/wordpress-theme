@@ -115,9 +115,6 @@ function gizmodotech_scripts() {
         'nonce'    => wp_create_nonce('gizmodotech_subscribe_nonce'),
     ));
 
-    // Dark mode JS is still needed for the toggle functionality.
-    wp_enqueue_script('gizmodotech-dark-mode', get_template_directory_uri() . '/assets/js/dark-mode.js', array(), '1.0.0', true);
-
     // Comment reply script
     if (is_singular() && comments_open() && get_option('thread_comments')) {
         wp_enqueue_script('comment-reply');

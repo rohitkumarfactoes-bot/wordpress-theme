@@ -105,6 +105,17 @@
     color: var(--accent-dark);
   }
   
+  /* Feather Icons */
+  .feather {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
+
   /* ============================================================================
      2. TYPOGRAPHY STYLES
      ============================================================================ */
@@ -174,6 +185,7 @@
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--bg-dark);
+    border-top: 4px solid var(--accent); /* Blogsy-style top border */
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -195,8 +207,9 @@
   
   /* Navigation bar row (below header-inner) */
   .header-navigation-bar {
-    border-top: 1px solid var(--bg-dark);
-    padding: var(--spacing-xs) 0;
+    background-color: var(--primary);
+    padding: 0;
+    color: white;
   }
   
   .site-branding {
@@ -258,19 +271,18 @@
   
   .primary-menu > li > a {
     display: block;
-    padding: var(--spacing-sm) var(--spacing-md);
-    color: var(--text-secondary);
+    padding: 1rem 1.5rem;
+    color: rgba(255, 255, 255, 0.85);
     font-weight: 500;
     font-size: var(--font-size-sm);
-    border-radius: var(--radius-md);
     transition: all var(--transition-fast);
   }
   
   .primary-menu > li > a:hover,
   .primary-menu > li.current-menu-item > a,
   .primary-menu > li.current-menu-ancestor > a {
-    color: var(--accent);
-    background: rgba(59, 130, 246, 0.1);
+    color: white;
+    background: var(--accent);
   }
   
   /* Dropdown Menu */
@@ -351,6 +363,19 @@
     color: white;
     border-color: var(--accent);
   }
+
+  /* Dark Mode Toggle Icons */
+  [data-theme="dark"] .moon-icon { display: none; }
+  [data-theme="dark"] .sun-icon { display: block; }
+  
+  :root:not([data-theme="dark"]) .moon-icon { display: block; }
+  :root:not([data-theme="dark"]) .sun-icon { display: none; }
+
+  /* System preference fallback if no data-theme set */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) .moon-icon { display: none; }
+    :root:not([data-theme]) .sun-icon { display: block; }
+  }
   
   /* Mobile menu toggle — visible only on mobile */
   .mobile-menu-toggle {
@@ -361,7 +386,7 @@
   .search-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.85);
+    background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(6px);
     z-index: 9999;
     display: flex;
@@ -379,20 +404,21 @@
   
   .search-overlay-inner {
     position: relative;
-    width: 100%;
+    width: 90%;
     max-width: 600px;
-    padding: var(--spacing-xl);
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--bg-dark);
+    padding: var(--spacing-lg);
   }
   
   .search-close {
     position: absolute;
-    top: -40px;
-    right: var(--spacing-xl);
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.15);
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    background: transparent;
     border: none;
-    border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -401,29 +427,27 @@
     transition: background var(--transition-fast);
   }
   
-  .search-close:hover {
-    background: rgba(255, 255, 255, 0.3);
+  .search-close:hover .feather {
+    stroke: var(--accent);
   }
   
   .search-overlay .search-form {
     display: flex;
-    gap: var(--spacing-sm);
+    align-items: center;
+    margin: 0;
   }
   
   .search-overlay .search-field {
-    flex: 1;
-    padding: var(--spacing-md) var(--spacing-lg);
-    border-radius: var(--radius-md);
-    border: 2px solid transparent;
-    font-size: var(--font-size-lg);
-    background: white;
-    color: var(--text-primary);
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: var(--spacing-md) var(--spacing-xl) var(--spacing-md) var(--spacing-sm);
+    font-size: var(--font-size-xl);
+    border-radius: 0;
+    box-shadow: none;
   }
   
-  .search-overlay .search-field:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
+  .search-overlay .search-field:focus { box-shadow: none; border: none; }
   
   .search-overlay .search-submit {
     padding: var(--spacing-md) var(--spacing-xl);
@@ -581,13 +605,18 @@
      ============================================================================ */
   
   .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-xl);
+    display: block;
+    column-count: 3;
+    column-gap: var(--spacing-xl);
     margin-bottom: var(--spacing-3xl);
   }
   
   .article-card {
+    display: inline-block; /* Essential for Masonry */
+    width: 100%;
+    margin-bottom: var(--spacing-xl);
+    break-inside: avoid;
+    vertical-align: top;
     background: var(--bg-primary);
     border: 1px solid var(--bg-dark);
     border-radius: var(--radius-lg);
@@ -1854,7 +1883,7 @@
     }
   
     .posts-grid {
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      column-count: 2;
     }
   
     .footer-custom-top {
@@ -1937,7 +1966,7 @@
     }
   
     .posts-grid {
-      grid-template-columns: 1fr;
+      column-count: 1;
       gap: var(--spacing-lg);
     }
   
@@ -2249,26 +2278,32 @@
     --bg-dark: #475569;
   }
   
+  /* Apply Dark Mode Styles when class is present OR media query matches (and no class overrides) */
+  [data-theme="dark"] .site-header,
   @media (prefers-color-scheme: dark) {
-    :root {
-      --text-primary: #f1f5f9;
-      --text-secondary: #cbd5e1;
-      --text-light: #94a3b8;
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-tertiary: #334155;
-      --bg-dark: #475569;
-    }
+    .site-header { background: rgba(15, 23, 42, 0.95); border-bottom-color: var(--bg-dark); }
+    .header-navigation-bar { background-color: var(--bg-secondary); border-top-color: var(--bg-dark); }
+    .widget, .article-card, .mobile-specs-table, .comment-body { background: var(--bg-secondary); border-color: var(--bg-dark); }
+    .search-overlay-inner { background: var(--bg-secondary); border-color: var(--bg-dark); }
+    .search-overlay .search-field { color: var(--text-primary); }
+    .subscribe-form input[type="email"] { background: rgba(255, 255, 255, 0.08); }
+  }
+
+  /* Explicitly force light mode styles if data-theme="light" is set, overriding media query */
+  [data-theme="light"] .site-header { background: rgba(255, 255, 255, 0.95); border-bottom-color: var(--bg-dark); }
+  [data-theme="light"] .header-navigation-bar { background-color: var(--primary); }
+  [data-theme="light"] .widget, [data-theme="light"] .article-card { background: var(--bg-primary); }
   
-    .site-header {
-      background: rgba(15, 23, 42, 0.95);
-      border-bottom-color: var(--bg-dark);
-    }
-  
-    .header-navigation-bar {
-      border-top-color: var(--bg-dark);
-    }
-  
+  /* Consolidate Dark Mode Element Overrides */
+  [data-theme="dark"] .site-header,
+  [data-theme="dark"] .header-navigation-bar,
+  [data-theme="dark"] .widget,
+  [data-theme="dark"] .article-card {
+    /* Styles handled by shared block above or variables */
+  }
+
+  /* Legacy media query block for specific overrides not handled by vars */
+  @media (prefers-color-scheme: dark) {
     .widget,
     .article-card,
     .mobile-specs-table,
