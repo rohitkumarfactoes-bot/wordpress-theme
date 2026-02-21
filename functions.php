@@ -105,6 +105,10 @@ function gizmodotech_scripts() {
     // Navigation script (no jQuery dependency needed)
     wp_enqueue_script('gizmodotech-navigation', get_template_directory_uri() . '/assets/js/navigation.js', array(), '1.0.0', true);
 
+    // Feather Icons (Required for UI icons)
+    wp_enqueue_script('gizmodotech-feather-icons', 'https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js', array(), '4.29.0', true);
+    wp_add_inline_script('gizmodotech-feather-icons', 'document.addEventListener("DOMContentLoaded", function() { feather.replace(); });');
+
     // Localize script for Ajax
     wp_localize_script('gizmodotech-navigation', 'gizmodotech_vars', array(
         'ajax_url' => admin_url('admin-ajax.php'),
@@ -285,7 +289,7 @@ function gizmodotech_enqueue_google_fonts() {
 function gizmodotech_back_to_top_button() {
     ?>
     <button id="back-to-top" class="back-to-top-button" aria-label="Back to top">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
     </button>
