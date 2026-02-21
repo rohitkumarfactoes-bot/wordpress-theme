@@ -138,9 +138,9 @@
     if (backToTopButton) {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 500) {
-                backToTopButton.classList.remove('translate-y-20', 'opacity-0');
+                backToTopButton.classList.add('is-visible');
             } else {
-                backToTopButton.classList.add('translate-y-20', 'opacity-0');
+                backToTopButton.classList.remove('is-visible');
             }
         });
 

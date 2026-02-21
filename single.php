@@ -8,17 +8,17 @@
 get_header();
 ?>
 
-<main id="primary" class="site-content site-content--single">
+<main id="primary" class="site-content">
     <div class="container">
-        <div class="content-area has-sidebar">
-            <div class="main-content single-main">
+        <div class="content-area">
+            <div class="main-content">
                 <?php
                 while (have_posts()) :
                     the_post();
                     
                     // --- Added: Reading Time & Meta ---
                     ?>
-                    <div class="post-meta-header flex items-center gap-4 text-sm text-text-light mb-6">
+                    <div class="post-meta-header">
                         <span class="flex items-center gap-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             <?php echo esc_html(gizmodotech_get_reading_time()); ?>
@@ -34,13 +34,13 @@ get_header();
 
                     // --- Added: Social Share ---
                     ?>
-                    <div class="social-share my-8 p-6 bg-bg-alt rounded-xl border border-border">
+                    <div class="social-share-box">
                         <h4 class="font-heading font-bold mb-4 text-lg"><?php esc_html_e('Share this article', 'gizmodotech'); ?></h4>
-                        <div class="flex gap-3 flex-wrap">
-                            <a href="https://twitter.com/intent/tweet?text=<?php echo urlencode(get_the_title()); ?>&url=<?php echo urlencode(get_permalink()); ?>" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-black text-white rounded-lg hover:opacity-80 transition-opacity text-sm font-medium">X (Twitter)</a>
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(get_permalink()); ?>" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:opacity-80 transition-opacity text-sm font-medium">Facebook</a>
-                            <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?php echo urlencode(get_permalink()); ?>" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-blue-700 text-white rounded-lg hover:opacity-80 transition-opacity text-sm font-medium">LinkedIn</a>
-                            <a href="mailto:?subject=<?php echo urlencode(get_the_title()); ?>&body=<?php echo urlencode(get_permalink()); ?>" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:opacity-80 transition-opacity text-sm font-medium">Email</a>
+                        <div class="social-share-links">
+                            <a href="https://twitter.com/intent/tweet?text=<?php echo urlencode(get_the_title()); ?>&url=<?php echo urlencode(get_permalink()); ?>" target="_blank" rel="noopener noreferrer" class="share-button share-x">X (Twitter)</a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(get_permalink()); ?>" target="_blank" rel="noopener noreferrer" class="share-button share-fb">Facebook</a>
+                            <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?php echo urlencode(get_permalink()); ?>" target="_blank" rel="noopener noreferrer" class="share-button share-li">LinkedIn</a>
+                            <a href="mailto:?subject=<?php echo urlencode(get_the_title()); ?>&body=<?php echo urlencode(get_permalink()); ?>" class="share-button share-email">Email</a>
                         </div>
                     </div>
                     <?php

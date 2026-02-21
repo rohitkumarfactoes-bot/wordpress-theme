@@ -122,64 +122,6 @@ function gizmodotech_scripts() {
 add_action('wp_enqueue_scripts', 'gizmodotech_scripts');
 
 /**
- * Load Tailwind CDN (Alternative to Build Process)
- */
-function gizmodotech_load_tailwind_cdn() {
-    ?>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: ['class', '[data-theme="dark"]'],
-            theme: {
-                extend: {
-                    colors: {
-                        primary: { DEFAULT: 'var(--primary)', dark: 'var(--primary-light)' },
-                        accent: { DEFAULT: 'var(--accent)', dark: 'var(--accent-dark)', light: 'var(--accent-light)' },
-                        text: { DEFAULT: 'var(--text-primary)', secondary: 'var(--text-secondary)', light: 'var(--text-light)', lighter: 'var(--text-lighter)' },
-                        bg: { DEFAULT: 'var(--bg-primary)', alt: 'var(--bg-secondary)', dark: 'var(--bg-dark)' },
-                        border: { DEFAULT: 'var(--bg-dark)', dark: 'var(--bg-dark)' },
-                    },
-                    fontFamily: {
-                        primary: 'var(--font-family)',
-                        heading: 'var(--font-heading)',
-                    },
-                    maxWidth: {
-                        container: '1200px',
-                    }
-                }
-            }
-        }
-    </script>
-    <style type="text/tailwindcss">
-        @layer base {
-            body {
-                @apply bg-bg text-text font-primary antialiased transition-colors duration-300;
-            }
-            /* Typography Defaults */
-            .entry-content h2, .entry-content h3, .entry-content h4 {
-                @apply font-heading font-bold text-text mb-4 mt-10 scroll-mt-24;
-            }
-            .entry-content h2 { @apply text-2xl lg:text-3xl tracking-tight; }
-            .entry-content h3 { @apply text-xl lg:text-2xl tracking-tight; }
-            .entry-content h4 { @apply text-lg lg:text-xl; }
-            .entry-content p { @apply mb-6 leading-relaxed text-lg text-text-light; }
-            .entry-content a { @apply text-primary hover:text-primary-dark underline decoration-2 underline-offset-2 transition-colors; }
-            .entry-content img { @apply rounded-xl my-8 shadow-md w-full h-auto; }
-            .entry-content ul { @apply list-disc pl-6 my-6 space-y-2 text-text-light marker:text-primary; }
-            .entry-content ol { @apply list-decimal pl-6 my-6 space-y-2 text-text-light marker:text-primary font-medium; }
-            .entry-content blockquote { @apply border-l-4 border-primary pl-6 py-2 my-8 italic text-xl text-text font-heading bg-bg-alt rounded-r-lg; }
-            
-            /* Form Elements */
-            input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], textarea {
-                @apply w-full px-4 py-3 rounded-lg border border-border bg-bg text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all;
-            }
-        }
-    </style>
-    <?php
-}
-add_action('wp_head', 'gizmodotech_load_tailwind_cdn');
-
-/**
  * Register widget areas
  */
 function gizmodotech_widgets_init() {
@@ -346,7 +288,7 @@ function gizmodotech_reading_progress_bar() {
         return;
     }
     ?>
-    <div id="reading-progress" class="fixed top-0 left-0 h-1 bg-primary z-50 w-0 transition-all duration-150 ease-out"></div>
+    <div id="reading-progress" class="reading-progress-bar"></div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const progressBar = document.getElementById('reading-progress');
@@ -367,7 +309,7 @@ add_action('wp_footer', 'gizmodotech_reading_progress_bar');
  */
 function gizmodotech_back_to_top_button() {
     ?>
-    <button id="back-to-top" class="fixed bottom-8 right-8 bg-primary hover:bg-primary-dark text-white p-3 rounded-full shadow-lg translate-y-20 opacity-0 transition-all duration-300 z-40 group" aria-label="Back to top">
+    <button id="back-to-top" class="back-to-top-button" aria-label="Back to top">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>

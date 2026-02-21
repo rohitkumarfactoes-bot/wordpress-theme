@@ -9,7 +9,7 @@ get_header();
 ?>
 
 <main id="primary" class="site-content">
-    <div class="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="container">
         <div class="content-area">
             <?php
             while (have_posts()) :
@@ -38,15 +38,15 @@ get_header();
                             // --- Display Specifications Table ---
                             $specs_keys = array('display', 'processor', 'ram', 'storage', 'camera', 'battery');
                             $has_specs = false;
-                            $specs_html = '<div class="my-8 bg-bg-alt dark:bg-bg-alt border border-border dark:border-border rounded-lg p-6"><h3 class="text-lg font-bold font-heading mb-4">' . esc_html__('Key Specifications', 'gizmodotech') . '</h3><table class="w-full"><tbody>';
+                            $specs_html = '<div class="mobile-specs-box"><h3 class="specs-title">' . esc_html__('Key Specifications', 'gizmodotech') . '</h3><table class="specs-table"><tbody>';
 
                             foreach ($specs_keys as $key) {
                                 $value = get_post_meta(get_the_ID(), '_spec_' . $key, true);
                                 if (!empty($value)) {
                                     $has_specs = true;
-                                    $specs_html .= '<tr class="border-b border-border dark:border-border last:border-0">';
-                                    $specs_html .= '<th class="p-3 text-left font-semibold text-text-light text-sm w-28">' . esc_html(ucfirst($key)) . '</th>';
-                                    $specs_html .= '<td class="p-3 text-left text-sm">' . esc_html($value) . '</td>';
+                                    $specs_html .= '<tr class="specs-row">';
+                                    $specs_html .= '<th class="specs-label">' . esc_html(ucfirst($key)) . '</th>';
+                                    $specs_html .= '<td class="specs-value">' . esc_html($value) . '</td>';
                                     $specs_html .= '</tr>';
                                 }
                             }
@@ -58,7 +58,7 @@ get_header();
                             ?>
                         </div>
 
-                        <div class="entry-content lg:order-2 text-base leading-relaxed">
+                        <div class="entry-content">
                             <?php
                             the_content();
 
@@ -70,7 +70,7 @@ get_header();
                         </div>
                     </div>
 
-                    <footer class="mt-12 pt-8 border-t border-border dark:border-border">
+                    <footer class="mobile-footer">
                         <?php gizmodotech_the_social_share_buttons(); ?>
                     </footer>
                 </article>

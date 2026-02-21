@@ -2033,6 +2033,150 @@
   }
 
   /* ============================================================================
+     21b. CUSTOM COMPONENTS (Replaces Tailwind)
+     ============================================================================ */
+
+  /* Reading Progress Bar */
+  .reading-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background-color: var(--accent);
+    z-index: 9999;
+    width: 0;
+    transition: width 0.1s ease-out;
+  }
+
+  /* Back to Top Button */
+  .back-to-top-button {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: var(--accent);
+    color: white;
+    padding: 0.75rem;
+    border-radius: 50%;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all var(--transition-base);
+    z-index: 999;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .back-to-top-button.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .back-to-top-button:hover {
+    background-color: var(--accent-dark);
+    transform: translateY(-4px);
+  }
+
+  /* 404 Page */
+  .error-404-content {
+    text-align: center;
+    padding: 5rem 0;
+  }
+
+  .error-code {
+    font-size: 6rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  .error-title {
+    font-size: 1.875rem;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .error-text {
+    font-size: 1.125rem;
+    color: var(--text-light);
+    max-width: 28rem;
+    margin: 0 auto;
+  }
+
+  /* Single Post Extras */
+  .post-meta-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: var(--font-size-sm);
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+  }
+
+  .social-share-box {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--bg-dark);
+  }
+
+  .social-share-links {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .share-button {
+    padding: 0.5rem 1rem;
+    color: white;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    transition: opacity var(--transition-fast);
+  }
+
+  .share-button:hover {
+    opacity: 0.8;
+    color: white;
+  }
+
+  .share-x { background-color: #000; }
+  .share-fb { background-color: #2563eb; }
+  .share-li { background-color: #1d4ed8; }
+  .share-email { background-color: #4b5563; }
+
+  /* Mobile Specs Table */
+  .mobile-specs-box {
+    margin: 2rem 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-dark);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+
+  .specs-title {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    font-family: var(--font-heading);
+    margin-bottom: 1rem;
+  }
+
+  /* Table of Contents */
+  .gizmodotech-toc { background: var(--bg-secondary); border: 1px solid var(--bg-dark); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 2rem; }
+  .toc-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+  .toc-title { font-size: 1.125rem; font-weight: 700; font-family: var(--font-heading); margin: 0; }
+  .toc-list { list-style: none; padding: 0; margin-top: 1rem; }
+  .toc-list li { margin-bottom: 0.5rem; }
+
+  /* ============================================================================
      22. PRINT STYLES
      ============================================================================ */
   
