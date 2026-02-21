@@ -16,9 +16,6 @@ get_header();
                 while (have_posts()) :
                     the_post();
                     
-                    // Display standard post meta (Category, Date)
-                    gizmodotech_post_meta();
-
                     get_template_part('template-parts/content', 'single');
 
                     // Social Share Buttons

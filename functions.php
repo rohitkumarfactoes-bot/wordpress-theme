@@ -105,10 +105,6 @@ function gizmodotech_scripts() {
     // Navigation script (no jQuery dependency needed)
     wp_enqueue_script('gizmodotech-navigation', get_template_directory_uri() . '/assets/js/navigation.js', array(), '1.0.0', true);
 
-    // Feather Icons (Required for UI icons)
-    wp_enqueue_script('gizmodotech-feather-icons', 'https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js', array(), '4.29.0', true);
-    wp_add_inline_script('gizmodotech-feather-icons', 'document.addEventListener("DOMContentLoaded", function() { feather.replace(); });');
-
     // Localize script for Ajax
     wp_localize_script('gizmodotech-navigation', 'gizmodotech_vars', array(
         'ajax_url' => admin_url('admin-ajax.php'),
@@ -184,12 +180,6 @@ remove_action('wp_head', 'wlwmanifest_link');
 // Remove emoji scripts
 remove_action('wp_head', 'print_emoji_detection_script', 7);
 remove_action('wp_print_styles', 'print_emoji_styles');
-
-// Disable embeds
-function gizmodotech_disable_embeds() {
-    wp_deregister_script('wp-embed');
-}
-add_action('wp_footer', 'gizmodotech_disable_embeds');
 
 /**
  * Handle Subscription AJAX
@@ -279,6 +269,36 @@ function gizmodotech_enqueue_google_fonts() {
     $fonts_url = add_query_arg($font_query_args, 'https://fonts.googleapis.com/css');
     wp_enqueue_style('gizmodotech-google-fonts', $fonts_url, array(), null);
 }
+
+/**
+ * Optimization: Preconnect to Google Fonts
+ */
+function gizmodotech_resource_hints( $urls, $relation_type ) {
+    if ( wp_style_is( 'gizmodotech-google-fonts', 'queue' ) && 'preconnect' === $relation_type ) {
+        $urls[] = array(
+            'href' => 'https://fonts.gstatic.com',
+            'crossorigin',
+        );
+    }
+    return $urls;
+}
+add_filter( 'wp_resource_hints', 'gizmodotech_resource_hints', 10, 2 );
+
+/**
+ * Optimization: Add fetchpriority='high' to the LCP image (Featured Image on single posts)
+ */
+function gizmodotech_optimize_lcp_image($attr, $attachment, $size) {
+    // Only apply to main query single post featured image
+    if (is_singular() && is_main_query() && isset($attr['class']) && strpos($attr['class'], 'wp-post-image') !== false) {
+        // Check if this is the featured image
+        if ($attachment->ID === get_post_thumbnail_id()) {
+            $attr['fetchpriority'] = 'high';
+            $attr['loading'] = 'eager'; // Ensure LCP image isn't lazy loaded
+        }
+    }
+    return $attr;
+}
+add_filter('wp_get_attachment_image_attributes', 'gizmodotech_optimize_lcp_image', 10, 3);
 
 /**
  * Feature: Back to Top Button

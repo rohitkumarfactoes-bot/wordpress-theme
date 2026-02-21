@@ -102,22 +102,18 @@
         });
     }
 
-    // Search Overlay
-    const searchToggle = document.querySelector('.search-toggle');
-    const searchOverlay = document.getElementById('search-overlay');
-    const searchClose = document.querySelector('.search-close');
-    const searchInput = searchOverlay ? searchOverlay.querySelector('.search-field') : null;
+    // Expanding Search
+    const searchToggle = document.getElementById('search-toggle');
+    const searchWrapper = document.getElementById('header-search-wrapper');
+    const searchInput = searchWrapper ? searchWrapper.querySelector('input[type="search"]') : null;
 
-    if (searchToggle && searchOverlay && searchClose && searchInput) {
+    if (searchToggle && searchWrapper) {
         searchToggle.addEventListener('click', function(e) {
             e.preventDefault();
-            searchOverlay.classList.add('active');
-            setTimeout(() => searchInput.focus(), 300); // Focus after transition
-        });
-
-        searchClose.addEventListener('click', function(e) {
-            e.preventDefault();
-            searchOverlay.classList.remove('active');
+            searchWrapper.classList.toggle('active');
+            if (searchWrapper.classList.contains('active') && searchInput) {
+                setTimeout(() => searchInput.focus(), 100);
+            }
         });
     }
 
