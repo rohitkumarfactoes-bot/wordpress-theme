@@ -292,17 +292,6 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'panel'    => 'gizmo_homepage_panel',
 	]);
 
-	// Bento Grid Categories
-	$wp_customize->add_setting('gizmo_bento_categories', [
-		'default'           => '',
-		'sanitize_callback' => 'sanitize_text_field', // comma-separated string
-	]);
-	$wp_customize->add_control(new Gizmo_Customize_Category_Checklist_Control($wp_customize, 'gizmo_bento_categories', [
-		'label'       => __('Bento Grid Categories', GIZMO_TEXT),
-		'description' => __('Select categories to show in the main bento grid. Leave empty to show latest posts from all categories.', GIZMO_TEXT),
-		'section'     => 'gizmo_homepage_content',
-	]));
-
 	// Latest News Row
 	$wp_customize->add_setting('gizmo_news_post_type', ['default' => 'post', 'sanitize_callback' => 'sanitize_key']);
 	$wp_customize->add_control('gizmo_news_post_type', [
@@ -366,6 +355,13 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'type'    => 'checkbox',
 	]);
 
+	$wp_customize->add_setting('gizmo_slider_title', ['default' => 'Latest', 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control('gizmo_slider_title', [
+		'label'   => __('Slider Section Title (Left)', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_slider',
+		'type'    => 'text',
+	]);
+
 	$wp_customize->add_setting('gizmo_slider_post_type', [
 		'default'           => 'post',
 		'sanitize_callback' => 'sanitize_key',
@@ -378,6 +374,12 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'active_callback' => function() { return get_theme_mod('gizmo_slider_section_enabled', false); },
 	]);
 
+	$wp_customize->add_setting('gizmo_slider_categories', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control(new Gizmo_Customize_Category_Checklist_Control($wp_customize, 'gizmo_slider_categories', [
+		'label'       => __('Slider Categories', GIZMO_TEXT),
+		'section'     => 'gizmo_homepage_slider',
+	]));
+
 	$wp_customize->add_setting('gizmo_slider_posts_count', [
 		'default'           => 6,
 		'sanitize_callback' => 'absint',
@@ -389,6 +391,27 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'input_attrs' => ['min' => 3, 'max' => 15],
 		'active_callback' => function() { return get_theme_mod('gizmo_slider_section_enabled', false); },
 	]);
+
+	$wp_customize->add_setting('gizmo_reviews_title', ['default' => 'Reviews', 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control('gizmo_reviews_title', [
+		'label'   => __('Right Column Title', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_slider',
+		'type'    => 'text',
+	]);
+
+	$wp_customize->add_setting('gizmo_reviews_post_type', ['default' => 'reviews', 'sanitize_callback' => 'sanitize_key']);
+	$wp_customize->add_control('gizmo_reviews_post_type', [
+		'label'   => __('Right Column Post Type', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_slider',
+		'type'    => 'select',
+		'choices' => $post_type_choices,
+	]);
+
+	$wp_customize->add_setting('gizmo_reviews_categories', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control(new Gizmo_Customize_Category_Checklist_Control($wp_customize, 'gizmo_reviews_categories', [
+		'label'       => __('Right Column Categories', GIZMO_TEXT),
+		'section'     => 'gizmo_homepage_slider',
+	]));
 
 	$wp_customize->add_setting('gizmo_horizontal_posts_count', [
 		'default'           => 3,

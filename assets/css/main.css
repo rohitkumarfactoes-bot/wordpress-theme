@@ -197,9 +197,10 @@
   color: var(--color-primary, #2563EB);
 }
 
-.site-logo .custom-logo {
+.logo-wrap img {
   height: 40px;
-  width: auto;
+  object-fit: contain;
+  width: fit-content;
 }
 
 .site-logo .custom-logo-link {
@@ -1388,6 +1389,22 @@
   border-radius: 10px;
 }
 
+/* WordPress Block Table Support */
+.wp-block-table {
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+.wp-block-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.wp-block-table td, 
+.wp-block-table th {
+  padding: .6rem 1rem;
+  border: 1px solid var(--border-color);
+}
+
+/* Standard Table Styles */
 .single-body th {
   background: var(--color-primary);
   color: #fff;
@@ -1402,7 +1419,8 @@
   color: var(--text-secondary);
 }
 
-.single-body tr:nth-child(even) td {
+.single-body tr:nth-child(even) td,
+.wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
   background: var(--bg-surface-2, #F8FAFC);
 }
 
@@ -2490,6 +2508,18 @@ body.dark-mode,
 .dark-mode .post-tag,
 [data-theme="dark"] .post-tag {
   background: rgba(255, 255, 255, .05);
+}
+
+/* Dark Mode Tables */
+.dark-mode .single-body td,
+.dark-mode .wp-block-table td,
+.dark-mode .wp-block-table th {
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+.dark-mode .single-body tr:nth-child(even) td,
+.dark-mode .wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.03);
 }
 
 /* ────────────────────────────────────────────────────────────
