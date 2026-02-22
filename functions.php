@@ -917,12 +917,21 @@ function gizmo_shortcode_posts($atts) {
 		'cat'   => '',
 		'type'  => 'post',
 		'ids'   => '',
+		'pagination' => false,
 	], $atts);
+
+	$pagination = filter_var($atts['pagination'], FILTER_VALIDATE_BOOLEAN);
+	$paged      = 1;
+
+	if ($pagination) {
+		$paged = (get_query_var('paged')) ? get_query_var('paged') : ((get_query_var('page')) ? get_query_var('page') : 1);
+	}
 
 	$args = [
 		'post_type'      => $atts['type'],
 		'posts_per_page' => $atts['count'],
 		'post_status'    => 'publish',
+		'paged'          => $paged,
 	];
 
 	if (!empty($atts['cat'])) {
@@ -961,6 +970,20 @@ function gizmo_shortcode_posts($atts) {
 		<?php
 	}
 	echo '</div>';
+
+	if ($pagination && $q->max_num_pages > 1) {
+		echo '<nav class="posts-pagination">';
+		echo paginate_links([
+			'base'      => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
+			'format'    => '?paged=%#%',
+			'current'   => max(1, $paged),
+			'total'     => $q->max_num_pages,
+			'prev_text' => '&#8592; ' . __('Prev', GIZMO_TEXT),
+			'next_text' => __('Next', GIZMO_TEXT) . ' &#8594;',
+		]);
+		echo '</nav>';
+	}
+
 	wp_reset_postdata();
 	return ob_get_clean();
 }
@@ -1023,6 +1046,7 @@ function gizmo_register_dynamic_blocks() {
 			'count' => ['type' => 'string', 'default' => '3'],
 			'type'  => ['type' => 'string', 'default' => 'post'],
 			'cat'   => ['type' => 'string', 'default' => ''],
+			'pagination' => ['type' => 'boolean', 'default' => false],
 		]
 	]);
 

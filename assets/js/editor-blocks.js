@@ -6,6 +6,7 @@
     var el = element.createElement;
     var registerBlockType = blocks.registerBlockType;
     var TextControl = components.TextControl;
+    var ToggleControl = components.ToggleControl;
     var TextareaControl = components.TextareaControl;
     var SelectControl = components.SelectControl;
     var PanelBody = components.PanelBody;
@@ -21,7 +22,8 @@
         attributes: {
             count: { type: 'string', default: '3' },
             type:  { type: 'string', default: 'post' },
-            cat:   { type: 'string', default: '' }
+            cat:   { type: 'string', default: '' },
+            pagination: { type: 'boolean', default: false }
         },
         edit: function(props) {
             var attributes = props.attributes;
@@ -57,6 +59,11 @@
                             value: attributes.cat,
                             help: 'Enter a category ID to filter posts.',
                             onChange: function(val) { setAttributes({ cat: val }); }
+                        }),
+                        el(ToggleControl, {
+                            label: 'Show Pagination',
+                            checked: attributes.pagination,
+                            onChange: function(val) { setAttributes({ pagination: val }); }
                         })
                     )
                 ),
