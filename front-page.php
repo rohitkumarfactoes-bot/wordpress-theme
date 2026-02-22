@@ -14,6 +14,7 @@
 get_header();
 
 $exclude_ids = []; // Initialize exclusions
+?>
 
 <!-- ============================================================
      FEATURED SLIDER SECTION
