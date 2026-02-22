@@ -252,6 +252,30 @@ add_action('widgets_init', function() {
 add_action('customize_register', 'gizmo_customizer');
 function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 
+	/* ── Homepage Content Selection ── */
+	$wp_customize->add_section('gizmo_homepage_content', [
+		'title'    => __('Homepage Content', GIZMO_TEXT),
+		'priority' => 28, // Before Socials
+	]);
+
+	// Bento Grid Categories
+	$wp_customize->add_setting('gizmo_bento_categories', [
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_text_field', // comma-separated string
+	]);
+	$wp_customize->add_control(new Gizmo_Customize_Category_Checklist_Control($wp_customize, 'gizmo_bento_categories', [
+		'label'       => __('Bento Grid Categories', GIZMO_TEXT),
+		'description' => __('Select categories to show in the main bento grid. Leave empty to show latest posts from all categories.', GIZMO_TEXT),
+		'section'     => 'gizmo_homepage_content',
+	]));
+
+	// Latest News Categories
+	$wp_customize->add_setting('gizmo_news_categories', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control(new Gizmo_Customize_Category_Checklist_Control($wp_customize, 'gizmo_news_categories', [
+		'label'       => __('"Latest News" Row Categories', GIZMO_TEXT),
+		'description' => __('Select categories for the dark "Latest News" strip. Leave empty for latest posts.', GIZMO_TEXT),
+		'section'     => 'gizmo_homepage_content',
+	]));
 	/* ── Social URLs ── */
 	$wp_customize->add_section('gizmo_socials', [
 		'title'    => __('Social Media URLs', GIZMO_TEXT),
@@ -411,6 +435,56 @@ add_action('init', function() {
 		}
 	}
 });
+
+/**
+ * Customizer control for category checklist.
+ */
+if ( class_exists( 'WP_Customize_Control' ) ) {
+	class Gizmo_Customize_Category_Checklist_Control extends WP_Customize_Control {
+		public $type = 'category-checklist';
+
+		public function render_content() {
+			$categories = get_categories( [ 'hide_empty' => false ] );
+
+			if ( empty( $categories ) ) {
+				echo '<p>' . esc_html__( 'No categories found.', 'gizmodotech-pro' ) . '</p>';
+				return;
+			}
+
+			$saved_values = explode( ',', $this->value() );
+			?>
+			<label>
+				<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
+				<?php if ( ! empty( $this->description ) ) : ?>
+					<span class="description customize-control-description"><?php echo esc_html( $this->description ); ?></span>
+				<?php endif; ?>
+
+				<ul class="gizmo-category-checklist">
+					<?php foreach ( $categories as $category ) : ?>
+						<li>
+							<label>
+								<input type="checkbox" class="gizmo-cat-checklist-item" value="<?php echo esc_attr( $category->term_id ); ?>" <?php checked( in_array( $category->term_id, $saved_values, true ) ); ?> />
+								<?php echo esc_html( $category->name ); ?>
+							</label>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+				<input type="hidden" class="gizmo-cat-checklist-value" <?php $this->link(); ?> value="<?php echo esc_attr( $this->value() ); ?>" />
+			</label>
+			<?php
+		}
+	}
+}
+
+/**
+ * Enqueue JS and CSS for the customizer category checklist control.
+ */
+add_action( 'customize_controls_print_footer_scripts', function() { ?>
+	<style>.gizmo-category-checklist{background-color:#fff;border:1px solid #ddd;border-radius:3px;padding:5px;max-height:200px;overflow-y:auto;margin-top:5px}.gizmo-category-checklist li{margin:0}.gizmo-category-checklist label{display:block;padding:2px 4px}</style>
+	<script type="text/javascript">
+	jQuery(document).ready(function($){$('.customize-control-category-checklist').on('change','.gizmo-cat-checklist-item',function(){var e=$(this).closest('.customize-control-category-checklist'),t=e.find('.gizmo-cat-checklist-item:checked').map(function(){return this.value}).get().join(',');e.find('.gizmo-cat-checklist-value').val(t).trigger('change')})});
+	</script>
+<?php });
 
 /* ============================================================
    AJAX: Load More

@@ -47,7 +47,7 @@ Tags:              blog, technology, news, dark-mode, full-site-editing, block-t
   --bg-footer:            #0F172A;
   --text-primary:         #0F172A;
   --text-secondary:       #475569;
-  --text-muted:           #94A3B8;
+  --text-muted:           #5E7188; /* WCAG AA compliant (4.5:1) on white */
   --text-inverse:         #FFFFFF;
   --border-color:         #E2E8F0;
   --border-color-2:       #CBD5E1;

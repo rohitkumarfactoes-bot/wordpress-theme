@@ -49,7 +49,19 @@ while (have_posts()) : the_post();
 <article id="post-<?php the_ID(); ?>" <?php post_class('single-post'); ?>
          itemscope itemtype="https://schema.org/Article">
 
-	<!-- Full-width hero image -->
+	
+
+	<!-- ── Two-column layout: content + sidebar ── -->
+	<div class="single-layout">
+<div class = "single-wrap">
+	
+		
+		<!-- ── LEFT: Post Content ── -->
+		<div class="single-content">
+
+			<!-- Breadcrumbs -->
+			<?php gizmodotech_breadcrumbs(); ?>
+<!-- Full-width hero image -->
 	<?php if (has_post_thumbnail()) : ?>
 	<div class="single-hero">
 		<?php the_post_thumbnail('gizmo-hero', [
@@ -59,16 +71,6 @@ while (have_posts()) : the_post();
 		]); ?>
 	</div>
 	<?php endif; ?>
-
-	<!-- ── Two-column layout: content + sidebar ── -->
-	<div class="single-layout">
-
-		<!-- ── LEFT: Post Content ── -->
-		<div class="single-content">
-
-			<!-- Breadcrumbs -->
-			<?php gizmodotech_breadcrumbs(); ?>
-
 			<!-- Post Header -->
 			<header class="single-header">
 
@@ -184,34 +186,108 @@ while (have_posts()) : the_post();
 				</div>
 			</div>
 
-			<!-- Comments Toggle -->
-			<?php if (comments_open() || $comment_n) : ?>
-			<div class="comments-wrap" id="comments">
+		
 
-				<button class="comments-toggle" type="button"
-				        aria-expanded="false" aria-controls="comments-body"
-				        id="comments-toggle-btn">
-					<div class="comments-toggle__left">
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-						<?php printf(
-							_n('<span class="comments-toggle__count">%s</span> Comment', '<span class="comments-toggle__count">%s</span> Comments', $comment_n, 'gizmodotech-pro'),
-							number_format_i18n($comment_n)
-						); ?>
-					</div>
-					<svg class="comments-toggle__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-				</button>
+		</div><!-- /.single-content -->
+		<!-- Comments Toggle -->
+			<!-- ============================================================
+		     COMMENTS SECTION WITH TOGGLE
+		     ============================================================ -->
+		<?php if ( comments_open() || get_comments_number() ) : ?>
+		<div class="comments-section" id="comments-section">
 
-				<div class="comments-body" id="comments-body">
+			<!-- Toggle Button -->
+			<button class="comments-toggle"
+			        type="button"
+			        aria-expanded="false"
+			        aria-controls="comments-body"
+			        id="comments-toggle-btn">
+				<div class="comments-toggle__left">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 					<?php
-					comments_template();
+					printf(
+						/* translators: %s: comment count */
+						esc_html( _n( '%s Comment', '%s Comments', $comment_count, 'gizmodotech-pro' ) ),
+						'<span class="comments-toggle__count">' . esc_html( $comment_count ) . '</span>'
+					);
+					?>
+				</div>
+				<svg class="comments-toggle__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+			</button>
+
+			<!-- Comments Body (hidden until toggled) -->
+			<div class="comments-body" id="comments-body" aria-live="polite">
+				<div class="comment-form-area">
+					<?php
+					comment_form( [
+						'title_reply'          => __( 'Leave a Comment', 'gizmodotech-pro' ),
+						'title_reply_to'       => __( 'Reply to %s', 'gizmodotech-pro' ),
+						'cancel_reply_link'    => __( 'Cancel Reply', 'gizmodotech-pro' ),
+						'label_submit'         => __( 'Post Comment', 'gizmodotech-pro' ),
+						'comment_notes_before' => '',
+						'class_submit'         => 'submit',
+					] );
 					?>
 				</div>
 
-			</div>
-			<?php endif; ?>
+				<?php if ( have_comments() ) : ?>
+				<div class="comments-list" style="margin-top: var(--space-6);">
+					<h3 style="font-size:var(--font-size-lg);font-weight:700;margin-bottom:var(--space-5);">
+						<?php
+						comments_number(
+							__( 'No comments yet', 'gizmodotech-pro' ),
+							__( '1 Comment', 'gizmodotech-pro' ),
+							/* translators: %s: number of comments */
+							__( '% Comments', 'gizmodotech-pro' )
+						);
+						?>
+					</h3>
+					<ol class="comment-list" style="list-style:none;">
+						<?php
+						wp_list_comments( [
+							'style'       => 'ol',
+							'short_ping'  => true,
+							'avatar_size' => 80,
+							'callback'    => function( $comment, $args, $depth ) {
+								$tag     = ( 'div' === $args['style'] ) ? 'div' : 'li';
+								$classes = implode( ' ', get_comment_class( '', $comment ) );
+								?>
+								<<?php echo esc_attr( $tag ); ?> id="comment-<?php comment_ID(); ?>" class="comment <?php echo esc_attr( $classes ); ?>">
+									<div class="comment__header">
+										<?php echo get_avatar( $comment, 80, '', '', [ 'class' => 'comment__avatar' ] ); // phpcs:ignore ?>
+										<div>
+											<div class="comment__author-name">
+												<?php comment_author_link( $comment ); ?>
+											</div>
+											<time class="comment__date" datetime="<?php echo esc_attr( get_comment_date( 'c', $comment ) ); ?>">
+												<?php echo esc_html( get_comment_date( '', $comment ) ); ?>
+											</time>
+										</div>
+									</div>
+									<div class="comment__body">
+										<?php comment_text(); ?>
+										<?php
+										comment_reply_link( array_merge( $args, [
+											'depth'     => $depth,
+											'max_depth' => $args['max_depth'],
+										] ) );
+										?>
+									</div>
+								</<?php echo esc_attr( $tag ); ?>>
+								<?php
+							},
+						] );
+						?>
+					</ol>
+					<?php the_comments_pagination(); ?>
+				</div>
+				<?php endif; ?>
 
-		</div><!-- /.single-content -->
+			</div><!-- /.comments-body -->
 
+		</div><!-- /.comments-section -->
+		<?php endif; ?>
+</div>
 		<!-- ── RIGHT: Sidebar ── -->
 		<aside class="single-sidebar" aria-label="<?php esc_attr_e('Sidebar','gizmodotech-pro'); ?>">
 
@@ -228,6 +304,8 @@ while (have_posts()) : the_post();
 				</ul>
 			</div>
 			<?php endif; ?>
+			
+			
 
 			<!-- Related Posts with thumbnails -->
 			<?php if ($related && $related->have_posts()) : ?>

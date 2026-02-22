@@ -13,21 +13,25 @@
 
 get_header();
 
-// Main bento query — latest 6 posts
-$bento_q = new WP_Query([
+// Get category selections from Customizer
+$bento_cat_ids_str = get_theme_mod('gizmo_bento_categories', '');
+$bento_cat_ids     = !empty($bento_cat_ids_str) ? array_map('intval', explode(',', $bento_cat_ids_str)) : [];
+
+// --- Bento Query ---
+$bento_args = [
 	'post_type'           => 'post',
 	'post_status'         => 'publish',
 	'posts_per_page'      => 6,
 	'ignore_sticky_posts' => false,
-]);
+];
+if (!empty($bento_cat_ids)) {
+	$bento_args['category__in'] = $bento_cat_ids;
+}
+$bento_q = new WP_Query($bento_args);
 
-// Latest news query — next 6 posts
-$news_q = new WP_Query([
-	'post_type'      => 'post',
-	'post_status'    => 'publish',
-	'posts_per_page' => 6,
-	'offset'         => 6,
-]);
+// Array to store post IDs from the bento grid to exclude them from the next query
+$bento_post_ids = [];
+
 ?>
 
 <!-- ============================================================
@@ -47,6 +51,7 @@ $news_q = new WP_Query([
 			while ($bento_q->have_posts()) : $bento_q->the_post();
 				$type   = $types[$i] ?? 'third';
 				$cats   = get_the_category();
+				$bento_post_ids[] = get_the_ID(); // Collect the ID to exclude from the next query
 				$cat    = $cats ? $cats[0] : null;
 				$read   = gizmo_get_reading_time(get_the_ID());
 				$is_hero= ($i === 0);
@@ -56,10 +61,10 @@ $news_q = new WP_Query([
 
 				<?php if (has_post_thumbnail()) : ?>
 				<div class="bento-card__img">
-					<a href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
+					<a href="<?php the_permalink(); ?>" tabindex="-1">
 						<?php the_post_thumbnail($is_hero ? 'gizmo-hero' : 'gizmo-card',[
 							'loading' => $is_hero ? 'eager' : 'lazy',
-							'alt'     => '',
+							'alt'     => esc_attr( get_the_title() ),
 						]); ?>
 					</a>
 					<?php if ($is_hero) : ?>
@@ -113,7 +118,23 @@ $news_q = new WP_Query([
 <!-- ============================================================
      LATEST NEWS (dark strip)
      ============================================================ -->
-<?php if ($news_q->have_posts()) : ?>
+<?php
+// Now build and run the news query
+$news_cat_ids_str = get_theme_mod('gizmo_news_categories', '');
+$news_cat_ids     = !empty($news_cat_ids_str) ? array_map('intval', explode(',', $news_cat_ids_str)) : [];
+
+$news_args = [
+	'post_type'      => 'post',
+	'post_status'    => 'publish',
+	'posts_per_page' => 6,
+	'post__not_in'   => $bento_post_ids, // Exclude posts already shown in the bento grid
+];
+if (!empty($news_cat_ids)) {
+	$news_args['category__in'] = $news_cat_ids;
+}
+$news_q = new WP_Query($news_args);
+
+if ($news_q->have_posts()) : ?>
 <section class="hp-section hp-section--dark" aria-label="<?php esc_attr_e('Latest News','gizmodotech-pro'); ?>">
 	<div class="hp-container">
 
@@ -133,7 +154,7 @@ $news_q = new WP_Query([
 				$cats = get_the_category();
 				$cat  = $cats ? $cats[0] : null;
 			?>
-			<article class="news-card">
+			<article <?php post_class('news-card'); ?>>
 				<?php if (has_post_thumbnail()) : ?>
 				<a class="news-card__thumb" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
 					<?php the_post_thumbnail('gizmo-thumb',['loading'=>'lazy','alt'=>'']); ?>
@@ -162,4 +183,4 @@ $news_q = new WP_Query([
 </section>
 <?php endif; ?>
 
-<?php get_footer(); ?>
+<?php get_footer();

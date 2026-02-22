@@ -73,10 +73,10 @@ $is_search  = is_search();
 				<article id="post-<?php the_ID(); ?>" <?php post_class( $is_hero ? 'post-card post-card--hero' : 'post-card' ); ?>>
 
 					<?php if ( has_post_thumbnail() ) : ?>
-					<a class="post-card__thumb" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
+					<a class="post-card__thumb" href="<?php the_permalink(); ?>" tabindex="-1">
 						<?php the_post_thumbnail( $is_hero ? 'gizmo-hero' : 'gizmo-card', [
 							'loading' => $is_hero ? 'eager' : 'lazy',
-							'alt'     => '',
+							'alt'     => esc_attr( get_the_title() ),
 						] ); ?>
 						<?php if ( $is_hero ) : ?>
 						<span class="trending-badge">🔥 <?php esc_html_e( 'Trending', 'gizmodotech-pro' ); ?></span>

@@ -913,10 +913,10 @@
   transition:transform .15s, opacity .15s;
 }
 .share-btn:hover           { transform:translateY(-2px); opacity:.9; }
-.share-btn--twitter        { background:#000; color:#fff; }
-.share-btn--facebook       { background:#1877F2; color:#fff; }
-.share-btn--whatsapp       { background:#25D366; color:#fff; }
-.share-btn--linkedin       { background:#0A66C2; color:#fff; }
+.share-btn--twitter        { background:#000;      color:#fff; }
+.share-btn--facebook       { background:#166CD5;   color:#fff; } /* Darkened for WCAG AA */
+.share-btn--whatsapp       { background:#126E35;   color:#fff; } /* Darkened for WCAG AA */
+.share-btn--linkedin       { background:#0A66C2;   color:#fff; }
 .share-btn--copy           { background:var(--bg-surface-2); color:var(--text-primary); border:1px solid var(--border-color); }
 .share-btn--copy.is-copied { background:var(--color-success, #10B981); border-color:transparent; color:#fff; }
 
@@ -933,34 +933,154 @@
 .author-box__link   { font-size:.85rem; font-weight:600; color:var(--color-primary); text-decoration:none; }
 .author-box__link:hover { text-decoration:underline; }
 
-/* Comments Toggle */
-.comments-wrap { margin-top:2.5rem; }
+
+/* ============================================================
+   COMMENT SECTION (Toggle)
+   ============================================================ */
+
+.comments-section {
+  margin-top: var(--space-12);
+}
 
 .comments-toggle {
-  display:flex; align-items:center; justify-content:space-between;
-  width:100%; padding:1rem 1.25rem;
-  background:var(--bg-surface); border:1px solid var(--border-color);
-  border-radius:14px; cursor:pointer;
-  transition:background .15s, border-color .15s;
-  margin-bottom:.75rem;
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  width:           100%;
+  padding:         var(--space-5) var(--space-6);
+  background:      var(--bg-surface);
+  border:          1px solid var(--border-color);
+  border-radius:   var(--radius-lg);
+  cursor:          pointer;
+  transition:      all var(--transition-fast);
+  margin-bottom:   var(--space-4);
 }
-.comments-toggle:hover { background:var(--color-primary-light); border-color:var(--color-primary); }
+
+.comments-toggle:hover {
+  background:   var(--color-primary-light);
+  border-color: var(--color-primary);
+}
 
 .comments-toggle__left {
-  display:flex; align-items:center; gap:.6rem;
-  font-size:1rem; font-weight:700; color:var(--text-primary);
+  display:   flex;
+  align-items:center;
+  gap:       var(--space-3);
+  font-size: var(--font-size-md);
+  font-weight:var(--font-weight-bold);
+  color:     var(--text-primary);
 }
-.comments-toggle__count {
-  display:inline-flex; align-items:center; justify-content:center;
-  min-width:24px; height:24px; padding:.15rem .4rem;
-  background:var(--color-primary); color:#fff;
-  border-radius:9999px; font-size:.75rem; font-weight:800;
-}
-.comments-toggle__chevron  { color:var(--text-muted); transition:transform .25s; }
-.comments-toggle[aria-expanded="true"] .comments-toggle__chevron { transform:rotate(180deg); }
 
+.comments-toggle__count {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  width:           28px;
+  height:          28px;
+  background:      var(--color-primary);
+  color:           white;
+  border-radius:   50%;
+  font-size:       var(--font-size-xs);
+  font-weight:     var(--font-weight-bold);
+}
+
+.comments-toggle__icon {
+  width:      20px;
+  height:     20px;
+  color:      var(--text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.comments-toggle[aria-expanded="true"] .comments-toggle__icon { transform: rotate(180deg); }
+
+.comments-body {
+  display: none;
+  padding: var(--space-6);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.comments-body.is-open { display: block; }
+
+/* Individual comment */
+.comment {
+  padding-block: var(--space-5);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.comment:last-child { border-bottom: none; }
+
+.comment__header {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-3);
+  margin-bottom:var(--space-3);
+}
+
+.comment__avatar {
+  width:        40px;
+  height:       40px;
+  border-radius:50%;
+}
+
+.comment__author-name {
+  font-size:   var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color:       var(--text-primary);
+}
+
+.comment__date {
+  font-size: var(--font-size-xs);
+  color:     var(--text-muted);
+}
+
+.comment__body {
+  font-size:   var(--font-size-sm);
+  color:       var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+  padding-left:var(--space-12);
+}
+
+/* Comment Form */
+.comment-form-area { margin-top: var(--space-6); }
+
+.comment-form-area .comment-form input,
+.comment-form-area .comment-form textarea {
+  width:         100%;
+  padding:       var(--space-3) var(--space-4);
+  border:        1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background:    var(--bg-body);
+  color:         var(--text-primary);
+  font-size:     var(--font-size-sm);
+  transition:    border-color var(--transition-fast), box-shadow var(--transition-fast);
+  margin-bottom: var(--space-3);
+}
+
+.comment-form-area .comment-form input:focus,
+.comment-form-area .comment-form textarea:focus {
+  outline:      none;
+  border-color: var(--color-primary);
+  box-shadow:   0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.comment-form-area .comment-form .submit {
+  padding:       var(--space-3) var(--space-8);
+  background:    var(--color-primary);
+  color:         white;
+  border-radius: var(--radius-md);
+  font-weight:   var(--font-weight-semibold);
+  font-size:     var(--font-size-sm);
+  border:        none;
+  cursor:        pointer;
+  transition:    background var(--transition-fast);
+}
+
+.comment-form-area .comment-form .submit:hover { background: var(--color-primary-hover); }
 .comments-body          { display:none; }
 .comments-body.is-open  { display:block; }
+
+
 
 /* Yoast SEO breadcrumbs (override Yoast default) */
 .yoast-breadcrumb,
@@ -1161,6 +1281,23 @@
 }
 .scroll-top.is-visible { opacity:1; visibility:visible; transform:translateY(0); }
 .scroll-top:hover      { background:var(--color-primary-hover,#1D4ED8); transform:translateY(-3px); }
+
+/* ────────────────────────────────────────────────────────────
+   CATEGORY / TYPE SPECIFIC OVERRIDES
+   ──────────────────────────────────────────────────────────── */
+
+/* "Mobile" category or post type: Contain images instead of cover */
+.category-mobile .bento-card__img img,
+.type-mobile     .bento-card__img img,
+.category-mobile .post-card__thumb img,
+.type-mobile     .post-card__thumb img,
+.category-mobile .news-card__thumb img,
+.type-mobile     .news-card__thumb img,
+.category-mobile .single-hero img,
+.type-mobile     .single-hero img {
+  object-fit: contain !important;
+  background: var(--bg-surface-2, #F8FAFC); /* Adds a light bg if image doesn't fill space */
+}
 
 /* ────────────────────────────────────────────────────────────
    RESPONSIVE
