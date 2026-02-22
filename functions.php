@@ -652,7 +652,7 @@ add_filter('comment_form_defaults', function(array $defaults): array {
    ============================================================ */
 add_action('init', function() {
 	if (!function_exists('register_block_pattern_category')) return;
-	register_block_pattern_category('gizmodotech', ['label' => __('Gizmodotech Pro', GIZMO_TEXT)]);
+	register_block_pattern_category('gizmodotech', ['label' => __('Gizmodotech Blocks', GIZMO_TEXT)]);
 
 	foreach (['bento-grid','pros-cons','specs-table'] as $pattern) {
 		$file = GIZMO_DIR . '/patterns/' . $pattern . '.php';
@@ -690,6 +690,40 @@ add_action('init', function() {
 					<!-- /wp:query-pagination -->
 				</div>
 				<!-- /wp:query -->',
+		]
+	);
+
+	register_block_pattern(
+		'gizmodotech/featured-card',
+		[
+			'title'       => __('Featured Post Card', GIZMO_TEXT),
+			'categories'  => ['gizmodotech'],
+			'description' => __('A single card to feature a post or link.', GIZMO_TEXT),
+			'content'     => '
+				<!-- wp:group {"style":{"border":{"width":"1px","radius":"16px"}},"borderColor":"border-color","backgroundColor":"bg-surface","layout":{"type":"default"}} -->
+				<div class="wp-block-group has-border-color-border-color has-bg-surface-background-color has-text-color has-background" style="border-width:1px;border-radius:16px;overflow:hidden;">
+					<!-- wp:image {"aspectRatio":"16/9","scale":"cover","sizeSlug":"large","linkDestination":"none"} -->
+					<figure class="wp-block-image size-large"></figure>
+					<!-- /wp:image -->
+					<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","right":"1rem","bottom":"1.25rem","left":"1rem"}}},"layout":{"type":"default"}} -->
+					<div class="wp-block-group" style="padding-top:1rem;padding-right:1rem;padding-bottom:1.25rem;padding-left:1rem">
+						<!-- wp:heading {"level":3,"style":{"typography":{"fontStyle":"normal","fontWeight":"700"}},"fontSize":"medium"} -->
+						<h3 class="has-medium-font-size" style="font-style:normal;font-weight:700">Your Awesome Post Title</h3>
+						<!-- /wp:heading -->
+						<!-- wp:paragraph {"fontSize":"small"} -->
+						<p class="has-small-font-size">This is a short excerpt describing the featured content. Make it catchy and informative to draw the reader in.</p>
+						<!-- /wp:paragraph -->
+						<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"left"}} -->
+						<div class="wp-block-buttons">
+							<!-- wp:button {"backgroundColor":"primary","textColor":"white","style":{"border":{"radius":"8px"}}} -->
+							<div class="wp-block-button"><a class="wp-block-button__link has-white-color has-primary-background-color has-text-color has-background" href="#" style="border-radius:8px">Read More</a></div>
+							<!-- /wp:button -->
+						</div>
+						<!-- /wp-buttons -->
+					</div>
+					<!-- /wp:group -->
+				</div>
+				<!-- /wp:group -->',
 		]
 	);
 });
