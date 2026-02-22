@@ -106,12 +106,7 @@ while (have_posts()) : the_post();
 			<!-- Post Header -->
 			<header class="single-header">
 
-				<?php if ($cat) : ?>
-				<a class="post-cat-badge" href="<?php echo esc_url(get_category_link($cat->term_id)); ?>"
-				   itemprop="articleSection">
-					<?php echo esc_html($cat->name); ?>
-				</a>
-				<?php endif; ?>
+				<?php gizmo_the_post_categories( get_the_ID(), 'post-cat-badge' ); ?>
 
 				<h1 class="single-title" itemprop="headline"><?php the_title(); ?></h1>
 
@@ -150,6 +145,15 @@ while (have_posts()) : the_post();
 				</div>
 
 			</header><!-- /.single-header -->
+
+			<!-- Table of Contents -->
+			<div class="toc">
+				<h3 class="toc__title">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+					<span><?php esc_html_e('In this article', 'gizmodotech-pro'); ?></span>
+				</h3>
+				<ul class="toc__list"></ul>
+			</div>
 
 			<!-- Post Body -->
 			<div class="single-body" itemprop="articleBody">
@@ -328,6 +332,11 @@ while (have_posts()) : the_post();
 </div>
 		<!-- ── RIGHT: Sidebar ── -->
 		<aside class="single-sidebar" aria-label="<?php esc_attr_e('Sidebar','gizmodotech-pro'); ?>">
+
+			<!-- Manual Widgets (Appearance > Widgets > Sidebar) -->
+			<?php if ( is_active_sidebar('sidebar-1') ) : ?>
+				<?php dynamic_sidebar('sidebar-1'); ?>
+			<?php endif; ?>
 
 			<!-- You May Also Like -->
 			<?php if ($also_like && $also_like->have_posts()) : ?>

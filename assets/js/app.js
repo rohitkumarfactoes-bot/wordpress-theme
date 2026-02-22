@@ -335,11 +335,11 @@
 
   function initTOC() {
     const toc     = $( '.toc__list' );
-    const content = $( '.post-content' );
+    const content = $( '.single-body' );
     if ( ! toc || ! content ) { return; }
 
-    const headings = $$( 'h2, h3', content );
-    if ( headings.length < 3 ) {
+    const headings = $$( 'h2', content );
+    if ( headings.length < 2 ) {
       const tocEl = toc.closest( '.toc' );
       if ( tocEl ) { tocEl.style.display = 'none'; }
       return;
@@ -351,7 +351,6 @@
       const link = document.createElement( 'a' );
       link.href        = '#' + h.id;
       link.textContent = h.textContent;
-      li.style.paddingLeft = h.tagName === 'H3' ? '1rem' : '0';
       li.appendChild( link );
       toc.appendChild( li );
     } );

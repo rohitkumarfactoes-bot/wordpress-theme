@@ -86,11 +86,7 @@ $is_search  = is_search();
 
 					<div class="post-card__body">
 
-						<?php if ( $cat ) : ?>
-						<a class="post-cat-badge" href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>">
-							<?php echo esc_html( $cat->name ); ?>
-						</a>
-						<?php endif; ?>
+						<?php gizmo_the_post_categories( get_the_ID(), 'post-cat-badge' ); ?>
 
 						<h2 class="post-card__title">
 							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>

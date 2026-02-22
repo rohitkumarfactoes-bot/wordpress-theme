@@ -91,8 +91,13 @@ function gizmo_enqueue_google_fonts() {
 	$fonts = array_unique($fonts);
 	if (empty($fonts)) return;
 
-	$family = implode('|', array_map(function($f) { return urlencode($f) . ':400,500,600,700,800'; }, $fonts));
-	wp_enqueue_style('gizmo-google-fonts', 'https://fonts.googleapis.com/css2?family=' . $family . '&display=swap', [], null);
+	$font_families = [];
+	foreach ($fonts as $font) {
+		$font_families[] = 'family=' . str_replace( ' ', '+', $font ) . ':wght@400;500;600;700;800';
+	}
+
+	$query_args = implode('&', $font_families);
+	wp_enqueue_style('gizmo-google-fonts', 'https://fonts.googleapis.com/css2?' . $query_args . '&display=swap', [], null);
 }
 
 /* Editor styles */
@@ -736,4 +741,36 @@ function gizmo_get_gallery_images($post_id) {
 	}
 
 	return array_unique($images);
+}
+
+/* ============================================================
+   HELPER: Display Post Categories with Colors
+   ============================================================ */
+function gizmo_get_category_color_class_from_id($category_id) {
+	$colors = ['blue', 'green', 'amber', 'red', 'indigo'];
+	$index = $category_id % count($colors);
+	return 'post-cat-badge--' . $colors[$index];
+}
+
+function gizmo_the_post_categories($post_id = null, $class = 'post-cat-badge') {
+	if (null === $post_id) {
+		$post_id = get_the_ID();
+	}
+	$categories = get_the_category($post_id);
+	if (empty($categories)) {
+		return;
+	}
+
+	echo '<div class="post-cat-badges">';
+	foreach ($categories as $category) {
+		$color_class = gizmo_get_category_color_class_from_id($category->term_id);
+		printf(
+			'<a class="%s %s" href="%s">%s</a>',
+			esc_attr($class),
+			esc_attr($color_class),
+			esc_url(get_category_link($category->term_id)),
+			esc_html($category->name)
+		);
+	}
+	echo '</div>';
 }

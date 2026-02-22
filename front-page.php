@@ -81,7 +81,7 @@ if ($slider_enabled) :
 				<div class="post-slider-container">
 					<div class="post-slider-track">
 						<?php while ($slider_q->have_posts()) : $slider_q->the_post(); ?>
-						<div class="post-item-card">
+						<div <?php post_class('post-item-card'); ?>>
 							<a href="<?php the_permalink(); ?>" class="post-item-card__thumb" tabindex="-1" aria-hidden="true">
 								<?php if (has_post_thumbnail()) : ?>
 									<?php the_post_thumbnail('gizmo-card', ['loading' => 'lazy']); ?>
@@ -192,11 +192,7 @@ if ($news_q->have_posts()) : ?>
 				</a>
 				<?php endif; ?>
 				<div class="news-card__body">
-					<?php if ($cat) : ?>
-					<a class="post-cat-badge post-cat-badge--sm" href="<?php echo esc_url(get_category_link($cat->term_id)); ?>">
-						<?php echo esc_html($cat->name); ?>
-					</a>
-					<?php endif; ?>
+					<?php gizmo_the_post_categories( get_the_ID(), 'post-cat-badge post-cat-badge--sm' ); ?>
 					<h3 class="news-card__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
 					<div class="news-card__meta">
 						<span><?php the_author(); ?></span>
