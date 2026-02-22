@@ -95,11 +95,11 @@
 					'fallback_cb'    => function() {
 						// Default company links if no footer menu set
 						$links = [
-							__('About Us',      'gizmodotech-pro') => '#',
-							__('Contact',       'gizmodotech-pro') => '#',
-							__('Privacy Policy','gizmodotech-pro') => '#',
-							__('Advertise',     'gizmodotech-pro') => '#',
-							__('Sitemap',       'gizmodotech-pro') => '#',
+							__('About Us',      'gizmodotech-pro') => home_url('/about-us/'),
+							__('Contact',       'gizmodotech-pro') => home_url('/contact/'),
+							__('Privacy Policy','gizmodotech-pro') => home_url('/privacy-policy/'),
+							__('Terms of Use',  'gizmodotech-pro') => home_url('/terms/'),
+							__('Sitemap',       'gizmodotech-pro') => home_url('/sitemap/'),
 						];
 						echo '<ul class="footer-menu-list">';
 						foreach ($links as $label => $href) {

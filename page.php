@@ -23,7 +23,14 @@ $content_style = ($layout === 'narrow') ? 'max-width: 800px; margin: 0 auto;' : 
 		
 		<!-- Left Column: Content -->
 		<div class="single-content">
-			<?php while (have_posts()) : the_post(); get_template_part('template-parts/content', 'page'); endwhile; ?>
+			<?php while (have_posts()) : the_post(); ?>
+				<header class="single-header">
+					<h1 class="single-title"><?php the_title(); ?></h1>
+				</header>
+				<div class="single-body">
+					<?php the_content(); ?>
+				</div>
+			<?php endwhile; ?>
 		</div>
 
 		<!-- Right Column: Sidebar -->
