@@ -13,7 +13,10 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<div id="page" class="site-wrapper"> <div class="progress-bar" id="reading-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+<div id="page" class="site-wrapper">
+<?php if ( is_single() ) : ?>
+	<div class="progress-bar" id="reading-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="<?php esc_attr_e( 'Reading progress', 'gizmodotech-pro' ); ?>"></div>
+<?php endif; ?>
 <a class="skip-link screen-reader-text" href="#main"><?php esc_html_e( 'Skip to content', 'gizmodotech-pro' ); ?></a>
 
 <header class="site-header" id="masthead" role="banner">

@@ -15,6 +15,7 @@
 
 			<!-- ── Col 1: Brand + Subscribe + Socials ── -->
 			<div class="footer-brand-col">
+				<div class= "logo-wrap">
 
 				<a class="footer-logo" href="<?php echo esc_url(home_url('/')); ?>">
 					<?php if (has_custom_logo()) : the_custom_logo(); else : ?>
@@ -34,7 +35,7 @@
 					</span>
 					<?php endif; ?>
 				</a>
-
+</div>
 				<p class="footer-desc">
 					<?php echo esc_html(get_bloginfo('description') ?: __('Your trusted source for tech reviews, smartphone specs, and the latest gadget news.', 'gizmodotech-pro')); ?>
 				</p>

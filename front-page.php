@@ -81,7 +81,7 @@ if ($slider_enabled) :
 					<div class="post-slider-track">
 						<?php while ($slider_q->have_posts()) : $slider_q->the_post(); ?>
 						<div class="post-item-card">
-							<a href="<?php the_permalink(); ?>" class="post-item-card__thumb">
+							<a href="<?php the_permalink(); ?>" class="post-item-card__thumb" tabindex="-1" aria-hidden="true">
 								<?php if (has_post_thumbnail()) : ?>
 									<?php the_post_thumbnail('gizmo-card', ['loading' => 'lazy']); ?>
 								<?php endif; ?>
@@ -241,7 +241,7 @@ if ($howto_q->have_posts()) :
 			<?php while ($howto_q->have_posts()) : $howto_q->the_post(); ?>
 			<article <?php post_class('news-card'); ?> style="background:var(--bg-surface); border-color:var(--border-color);">
 				<?php if (has_post_thumbnail()) : ?>
-				<a class="news-card__thumb" href="<?php the_permalink(); ?>">
+				<a class="news-card__thumb" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
 					<?php the_post_thumbnail('gizmo-thumb',['loading'=>'lazy']); ?>
 				</a>
 				<?php endif; ?>
@@ -287,7 +287,7 @@ if ($techtips_q->have_posts()) :
 			<?php while ($techtips_q->have_posts()) : $techtips_q->the_post(); ?>
 			<article <?php post_class('news-card'); ?>>
 				<?php if (has_post_thumbnail()) : ?>
-				<a class="news-card__thumb" href="<?php the_permalink(); ?>">
+				<a class="news-card__thumb" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
 					<?php the_post_thumbnail('gizmo-thumb',['loading'=>'lazy']); ?>
 				</a>
 				<?php endif; ?>
