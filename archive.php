@@ -1,13 +1,13 @@
 <?php
 /**
  * Gizmodotech Pro — archive.php
- *
- * WordPress uses this file for:
- *  - Category / tag / author / date archives
- *  - Custom Post Type archives (e.g., Tech News, Reviews)
- *
- * This template ensures all archive pages have the same grid layout
- * as the main blog.
+ * 
+ * Handles:
+ * - Custom Post Type Archives (Tech News, Reviews)
+ * - Category / Tag / Author Archives
+ * - Search Results
+ * 
+ * Renders a consistent grid layout with pagination.
  *
  * @package gizmodotech-pro
  */
@@ -15,9 +15,7 @@
 get_header();
 
 // Determine context
-$is_home    = is_home();     // posts index (blog page)
 $is_archive = is_archive();
-$is_search  = is_search();
 ?>
 
 <div class="archive-wrap">
@@ -25,7 +23,7 @@ $is_search  = is_search();
 
 		<?php
 		/* ── Page title for archives ── */
-		if ( $is_archive || $is_search ) :
+		if ( $is_archive || is_search() ) :
 		?>
 		<header class="archive-header">
 			<h1 class="archive-title">
@@ -42,6 +40,8 @@ $is_search  = is_search();
 					echo '#' . single_tag_title( '', false ); // phpcs:ignore
 				} elseif ( is_author() ) {
 					the_author();
+				} elseif ( is_post_type_archive() ) {
+					post_type_archive_title();
 				} else {
 					the_archive_title();
 				}
@@ -66,7 +66,7 @@ $is_search  = is_search();
 				$read       = gizmo_get_reading_time( get_the_ID() );
 
 				// Hero card for first post on first page
-				$is_hero = ( $post_index === 0 && ! is_paged() );
+				$is_hero = ( $post_index === 0 && ! is_paged() && ! is_search() );
 				?>
 
 				<article id="post-<?php the_ID(); ?>" <?php post_class( $is_hero ? 'post-card post-card--hero' : 'post-card' ); ?>>

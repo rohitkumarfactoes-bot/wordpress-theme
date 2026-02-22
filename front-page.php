@@ -142,6 +142,7 @@ endif; // end if ($slider_enabled)
 // Now build and run the news query
 $news_cat_ids_str = get_theme_mod('gizmo_news_categories', '');
 $news_post_type   = get_theme_mod('gizmo_news_post_type', 'post');
+$news_count       = get_theme_mod('gizmo_news_count', 6);
 $news_cat_ids     = !empty($news_cat_ids_str) ? array_map('intval', explode(',', $news_cat_ids_str)) : [];
 
 // Determine the correct "View All" link based on selected post type
@@ -152,7 +153,7 @@ $view_all_link = ($news_post_type === 'post')
 $news_args = [
 	'post_type'      => $news_post_type,
 	'post_status'    => 'publish',
-	'posts_per_page' => 6,
+	'posts_per_page' => $news_count,
 	'post__not_in'   => $exclude_ids, // Exclude posts already shown in bento & slider
 ];
 if (!empty($news_cat_ids)) {
@@ -216,13 +217,18 @@ if ($news_q->have_posts()) : ?>
 <?php
 $howto_title = get_theme_mod('gizmo_howto_title', "How To's");
 $howto_type  = get_theme_mod('gizmo_howto_post_type', 'post');
+$howto_cats_str = get_theme_mod('gizmo_howto_categories', '');
+$howto_cats     = !empty($howto_cats_str) ? array_map('intval', explode(',', $howto_cats_str)) : [];
 
-$howto_q = new WP_Query([
+$howto_args = [
 	'post_type'      => $howto_type,
 	'post_status'    => 'publish',
 	'posts_per_page' => 4,
 	'post__not_in'   => $exclude_ids,
-]);
+];
+if (!empty($howto_cats)) { $howto_args['category__in'] = $howto_cats; }
+
+$howto_q = new WP_Query($howto_args);
 
 if ($howto_q->have_posts()) :
 	$exclude_ids = array_merge($exclude_ids, wp_list_pluck($howto_q->posts, 'ID'));
@@ -263,13 +269,18 @@ if ($howto_q->have_posts()) :
 <?php
 $techtips_title = get_theme_mod('gizmo_techtips_title', "Tech Tips");
 $techtips_type  = get_theme_mod('gizmo_techtips_post_type', 'post');
+$techtips_cats_str = get_theme_mod('gizmo_techtips_categories', '');
+$techtips_cats     = !empty($techtips_cats_str) ? array_map('intval', explode(',', $techtips_cats_str)) : [];
 
-$techtips_q = new WP_Query([
+$techtips_args = [
 	'post_type'      => $techtips_type,
 	'post_status'    => 'publish',
 	'posts_per_page' => 4,
 	'post__not_in'   => $exclude_ids,
-]);
+];
+if (!empty($techtips_cats)) { $techtips_args['category__in'] = $techtips_cats; }
+
+$techtips_q = new WP_Query($techtips_args);
 
 if ($techtips_q->have_posts()) :
 ?>

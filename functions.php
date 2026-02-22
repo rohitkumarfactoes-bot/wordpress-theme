@@ -93,7 +93,7 @@ function gizmo_enqueue_google_fonts() {
 
 	$font_families = [];
 	foreach ($fonts as $font) {
-		$font_families[] = 'family=' . str_replace( ' ', '+', $font ) . ':wght@400;500;600;700;800';
+		$font_families[] = 'family=' . urlencode( trim( str_replace( ["'", '"', ", sans-serif", ", serif"], "", $font ) ) ) . ':wght@300;400;500;600;700;800;900';
 	}
 
 	$query_args = implode('&', $font_families);
@@ -305,6 +305,13 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'type'    => 'select',
 		'choices' => $post_type_choices,
 	]);
+	
+	$wp_customize->add_setting('gizmo_news_count', ['default' => 6, 'sanitize_callback' => 'absint']);
+	$wp_customize->add_control('gizmo_news_count', [
+		'label'   => __('Number of News Posts', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_content',
+		'type'    => 'number',
+	]);
 
 	$wp_customize->add_setting('gizmo_news_categories', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
 	$wp_customize->add_control(new Gizmo_Customize_Category_Checklist_Control($wp_customize, 'gizmo_news_categories', [
@@ -327,6 +334,11 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'type'    => 'select',
 		'choices' => $post_type_choices,
 	]);
+	$wp_customize->add_setting('gizmo_howto_categories', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control(new Gizmo_Customize_Category_Checklist_Control($wp_customize, 'gizmo_howto_categories', [
+		'label'       => __('"How To" Categories', GIZMO_TEXT),
+		'section'     => 'gizmo_homepage_content',
+	]));
 
 	// Tech Tips Section
 	$wp_customize->add_setting('gizmo_techtips_title', ['default' => "Tech Tips", 'sanitize_callback' => 'sanitize_text_field']);
@@ -342,6 +354,11 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'type'    => 'select',
 		'choices' => $post_type_choices,
 	]);
+	$wp_customize->add_setting('gizmo_techtips_categories', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control(new Gizmo_Customize_Category_Checklist_Control($wp_customize, 'gizmo_techtips_categories', [
+		'label'       => __('"Tech Tips" Categories', GIZMO_TEXT),
+		'section'     => 'gizmo_homepage_content',
+	]));
 
 	/* ── Homepage Slider Section ── */
 	$wp_customize->add_section('gizmo_homepage_slider', [
@@ -467,6 +484,7 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 	$wp_customize->add_section('gizmo_body_typo', ['title' => __('Body Font', GIZMO_TEXT), 'panel' => 'gizmo_typo_panel']);
 	gizmo_add_font_control($wp_customize, 'body_font_family', 'gizmo_body_typo', __('Font Family', GIZMO_TEXT), "'Inter', sans-serif");
 	gizmo_add_px_control($wp_customize,   'body_font_size',   'gizmo_body_typo', __('Font Size (px)', GIZMO_TEXT), 16, 12, 22);
+	gizmo_add_weight_control($wp_customize,'body_font_weight', 'gizmo_body_typo', __('Font Weight', GIZMO_TEXT), '400');
 	gizmo_add_num_control($wp_customize,  'body_line_height', 'gizmo_body_typo', __('Line Height', GIZMO_TEXT), 1.75, 1.2, 2.2, 0.05);
 
 	// Heading font
@@ -553,7 +571,7 @@ function gizmo_add_num_control($wpc, $id, $section, $label, $default, $min, $max
 }
 
 /* Output Customizer CSS */
-add_action('wp_head', 'gizmo_customizer_css', 99);
+add_action('wp_head', 'gizmo_customizer_css', 1000); // High priority to override main.css
 function gizmo_customizer_css() {
 	$p  = get_theme_mod('primary_color',      '#2563EB');
 	$a  = get_theme_mod('accent_color',       '#F59E0B');
@@ -561,6 +579,7 @@ function gizmo_customizer_css() {
 	$fb = get_theme_mod('footer_bg',          '#0F172A');
 	$ff = get_theme_mod('body_font_family',   "'Inter', sans-serif");
 	$fs = get_theme_mod('body_font_size',     16);
+	$fw = get_theme_mod('body_font_weight',   '400');
 	$lh = get_theme_mod('body_line_height',   1.75);
 	$hf = get_theme_mod('heading_font_family',"'Inter', sans-serif");
 	$hw = get_theme_mod('heading_font_weight','800');
@@ -578,14 +597,14 @@ function gizmo_customizer_css() {
 	$h6 = get_theme_mod('h6_size', 16);
 
 	$css = sprintf(
-		':root{--color-primary:%s;--color-accent:%s;--bg-nav:%s;--bg-footer:%s;--font-sans:%s;--font-size-base:%spx;--line-height-normal:%s;--heading-font:%s;--heading-weight:%s;--heading-lh:%s;--width-content:%spx;--width-wide:%spx;--radius-lg:%spx;--h1:%spx;--h2:%spx;--h3:%spx;--h4:%spx;--h5:%spx;--h6:%spx;}',
+		':root{--color-primary:%s;--color-accent:%s;--bg-nav:%s;--bg-footer:%s;--font-sans:%s;--font-size-base:%spx;--font-weight-normal:%s;--line-height-normal:%s;--heading-font:%s;--heading-weight:%s;--heading-lh:%s;--width-content:%spx;--width-wide:%spx;--radius-lg:%spx;--h1:%spx;--h2:%spx;--h3:%spx;--h4:%spx;--h5:%spx;--h6:%spx;}',
 		esc_attr($p), esc_attr($a), esc_attr($nb), esc_attr($fb),
-		esc_attr($ff), absint($fs), esc_attr($lh),
+		esc_attr($ff), absint($fs), esc_attr($fw), esc_attr($lh),
 		esc_attr($hf), esc_attr($hw), esc_attr($hl),
 		absint($cw), absint($ww), absint($cr),
 		absint($h1), absint($h2), absint($h3), absint($h4), absint($h5), absint($h6)
 	);
-	$css .= sprintf('body{font-family:var(--font-sans);font-size:var(--font-size-base);line-height:var(--line-height-normal);}');
+	$css .= sprintf('body{font-family:var(--font-sans);font-size:var(--font-size-base);font-weight:var(--font-weight-normal);line-height:var(--line-height-normal);}');
 	$css .= sprintf('h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);font-weight:var(--heading-weight);line-height:var(--heading-lh);}');
 	
 	// Apply heading sizes
@@ -641,6 +660,38 @@ add_action('init', function() {
 			register_block_pattern('gizmodotech/' . $pattern, require $file);
 		}
 	}
+
+	// Register "Post Layout" Block Pattern (Query Loop)
+	register_block_pattern(
+		'gizmodotech/post-grid',
+		[
+			'title'       => __('Gizmo Post Grid', GIZMO_TEXT),
+			'categories'  => ['gizmodotech'],
+			'description' => __('A query loop that mimics the theme post card layout.', GIZMO_TEXT),
+			'content'     => '
+				<!-- wp:query {"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"displayLayout":{"type":"flex","columns":3}} -->
+				<div class="wp-block-query">
+					<!-- wp:post-template -->
+					<!-- wp:group {"style":{"border":{"width":"1px","radius":"16px"}},"borderColor":"border-color","backgroundColor":"bg-surface","layout":{"type":"default"}} -->
+					<div class="wp-block-group has-border-color-border-color has-bg-surface-background-color has-text-color has-background" style="border-width:1px;border-radius:16px;overflow:hidden;margin-bottom:1.5rem;">
+						<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/9","style":{"border":{"radius":"0px"}}} /-->
+						<!-- wp:group {"style":{"spacing":{"padding":{"top":"1rem","right":"1rem","bottom":"1.25rem","left":"1rem"}}},"layout":{"type":"default"}} -->
+						<div class="wp-block-group" style="padding-top:1rem;padding-right:1rem;padding-bottom:1.25rem;padding-left:1rem">
+							<!-- wp:post-title {"isLink":true,"style":{"typography":{"fontStyle":"normal","fontWeight":"700"}},"fontSize":"medium"} /-->
+							<!-- wp:post-excerpt {"moreText":"...","showMoreOnNewLine":false,"fontSize":"small"} /-->
+							<!-- wp:post-date {"fontSize":"small","style":{"color":{"text":"#64748b"}}} /-->
+						</div>
+						<!-- /wp:group -->
+					</div>
+					<!-- /wp:group -->
+					<!-- /wp:post-template -->
+					<!-- wp:query-pagination {"layout":{"type":"flex","justifyContent":"center"}} -->
+					<!-- wp:query-pagination-numbers /-->
+					<!-- /wp:query-pagination -->
+				</div>
+				<!-- /wp:query -->',
+		]
+	);
 });
 
 /**
