@@ -35,30 +35,12 @@
         {
           "name":       "Inter",
           "slug":       "inter",
-          "fontFamily": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-          "fontFace": [
-            {
-              "fontFamily":  "Inter",
-              "fontStyle":   "normal",
-              "fontWeight":  "100 900",
-              "fontDisplay": "swap",
-              "src":         ["https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2"]
-            }
-          ]
+          "fontFamily": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
         },
         {
           "name":       "JetBrains Mono",
           "slug":       "jetbrains-mono",
-          "fontFamily": "'JetBrains Mono', 'Fira Code', 'Courier New', monospace",
-          "fontFace": [
-            {
-              "fontFamily":  "JetBrains Mono",
-              "fontStyle":   "normal",
-              "fontWeight":  "400 700",
-              "fontDisplay": "swap",
-              "src":         ["https://fonts.gstatic.com/s/jetbrainsmono/v18/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPQ.woff2"]
-            }
-          ]
+          "fontFamily": "'JetBrains Mono', 'Fira Code', 'Courier New', monospace"
         },
         {
           "name":       "System (UI)",
@@ -181,7 +163,6 @@
       "text":       "#0F172A"
     },
     "typography": {
-      "fontFamily": "var:preset|font-family|inter",
       "fontSize":   "var:preset|font-size|base",
       "lineHeight": "1.75"
     },

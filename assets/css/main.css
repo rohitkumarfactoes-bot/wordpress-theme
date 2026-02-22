@@ -635,7 +635,7 @@
   align-items: center;
   padding: .2rem .75rem;
   background: var(--color-primary, #2563EB);
-  color: #fff !important;
+  color: var(--color-primary-hover, #1D4ED8) !important;
   font-size: .72rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -656,11 +656,11 @@
 }
 
 /* Multi-color badges */
-.post-cat-badge--blue { background-color: #3B82F6; }
-.post-cat-badge--green { background-color: #22C55E; }
-.post-cat-badge--amber { background-color: #F59E0B; }
-.post-cat-badge--red { background-color: #EF4444; }
-.post-cat-badge--indigo { background-color: #6366F1; }
+.post-cat-badge--blue { background-color: #DBEAFE; color: #1E40AF !important; }
+.post-cat-badge--green { background-color: #DCFCE7; color: #166534 !important; }
+.post-cat-badge--amber { background-color: #FEF3C7; color: #92400E !important; }
+.post-cat-badge--red { background-color: #FEE2E2; color: #991B1B !important; }
+.post-cat-badge--indigo { background-color: #E0E7FF; color: #3730A3 !important; }
 
 /* Trending Badge */
 .trending-badge {
@@ -1728,8 +1728,8 @@
 }
 
 .comment-form-cookies-consent input {
-  width: fit-content;
-  margin-bottom: 0px;
+  width: fit-content !important;
+  margin-bottom: 0px !important;
   margin-top: 0.5rem;
 }
 

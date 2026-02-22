@@ -667,6 +667,8 @@ add_action('init', function() {
 		[
 			'title'       => __('Gizmo Post Grid', GIZMO_TEXT),
 			'categories'  => ['gizmodotech'],
+			'blockTypes'  => ['core/query'],
+			'inserter'    => true,
 			'description' => __('A query loop that mimics the theme post card layout.', GIZMO_TEXT),
 			'content'     => '
 				<!-- wp:query {"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"displayLayout":{"type":"flex","columns":3}} -->
@@ -698,6 +700,8 @@ add_action('init', function() {
 		[
 			'title'       => __('Featured Post Card', GIZMO_TEXT),
 			'categories'  => ['gizmodotech'],
+			'blockTypes'  => ['core/group'],
+			'inserter'    => true,
 			'description' => __('A single card to feature a post or link.', GIZMO_TEXT),
 			'content'     => '
 				<!-- wp:group {"style":{"border":{"width":"1px","radius":"16px"}},"borderColor":"border-color","backgroundColor":"bg-surface","layout":{"type":"default"}} -->
