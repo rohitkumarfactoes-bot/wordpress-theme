@@ -173,7 +173,7 @@ function gizmo_output_schema() {
 function gizmo_get_reading_time(int $post_id = 0, int $wpm = 238): array {
 	if (!$post_id) $post_id = (int) get_the_ID();
 	$content = wp_strip_all_tags(get_post_field('post_content', $post_id));
-	$words   = count(preg_split('/\s+/u', $content, -1, PREG_SPLIT_NO_EMPTY));
+	$words   = str_word_count($content);
 	$mins    = max(1, (int) ceil($words / $wpm));
 	return [
 		'minutes' => $mins,

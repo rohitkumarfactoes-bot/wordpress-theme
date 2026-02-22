@@ -34,10 +34,13 @@
   box-shadow:   0 1px 4px rgba(0,0,0,.04);
   transition:   background .25s, border-color .25s;
 }
-.header-top {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+
+.single-content {
+      background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 1.5rem 1rem;
+    margin-bottom: 1.5rem;
 }
 
 /* ── Row 1: Brand Bar ── */
@@ -49,7 +52,7 @@
   display:         flex;
   align-items:     center;
   justify-content: space-between;
-  max-width:       1400px;
+  width:       100%;
   margin-inline:   auto;
   padding:         .6rem clamp(1rem,3vw,2rem);
   gap:             1rem;

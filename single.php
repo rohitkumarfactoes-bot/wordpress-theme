@@ -31,7 +31,7 @@ while (have_posts()) : the_post();
 			'posts_per_page' => 4,
 			'post__not_in'   => [get_the_ID()],
 			'cat'            => $cat->term_id,
-			'orderby'        => 'date',
+			'orderby'        => 'rand',
 		]);
 	}
 

@@ -322,12 +322,5 @@
     { "name": "sidebar",        "title": "Sidebar",         "area": "uncategorized" },
     { "name": "post-meta",      "title": "Post Meta",       "area": "uncategorized" },
     { "name": "related-posts",  "title": "Related Posts",   "area": "uncategorized" }
-  ],
-  "patterns": [
-    "bento-grid",
-    "hero-section",
-    "specs-table",
-    "pros-cons",
-    "latest-news"
   ]
 }
