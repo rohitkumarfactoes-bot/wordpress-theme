@@ -573,39 +573,38 @@ function gizmo_add_num_control($wpc, $id, $section, $label, $default, $min, $max
 /* Output Customizer CSS */
 add_action('wp_head', 'gizmo_customizer_css', 1000); // High priority to override main.css
 function gizmo_customizer_css() {
-	$p  = get_theme_mod('primary_color',      '#2563EB');
-	$a  = get_theme_mod('accent_color',       '#F59E0B');
-	$nb = get_theme_mod('nav_bg',             '#FFFFFF');
-	$fb = get_theme_mod('footer_bg',          '#0F172A');
-	$ff = get_theme_mod('body_font_family',   "'Inter', sans-serif");
-	$fs = get_theme_mod('body_font_size',     16);
-	$fw = get_theme_mod('body_font_weight',   '400');
-	$lh = get_theme_mod('body_line_height',   1.75);
-	$hf = get_theme_mod('heading_font_family',"'Inter', sans-serif");
-	$hw = get_theme_mod('heading_font_weight','800');
-	$hl = get_theme_mod('heading_line_height',1.2);
-	$cw = get_theme_mod('content_width',      800);
-	$ww = get_theme_mod('wide_width',         1320);
-	$cr = get_theme_mod('card_radius',        16);
-	
-	// Heading sizes
-	$h1 = get_theme_mod('h1_size', 40);
-	$h2 = get_theme_mod('h2_size', 32);
-	$h3 = get_theme_mod('h3_size', 26);
-	$h4 = get_theme_mod('h4_size', 22);
-	$h5 = get_theme_mod('h5_size', 18);
-	$h6 = get_theme_mod('h6_size', 16);
+	$vars = [
+		'--color-primary'      => get_theme_mod('primary_color', '#2563EB'),
+		'--color-accent'       => get_theme_mod('accent_color', '#F59E0B'),
+		'--bg-nav'             => get_theme_mod('nav_bg', '#FFFFFF'),
+		'--bg-footer'          => get_theme_mod('footer_bg', '#0F172A'),
+		'--font-sans'          => get_theme_mod('body_font_family', "'Inter', sans-serif"),
+		'--font-size-base'     => get_theme_mod('body_font_size', 16) . 'px',
+		'--font-weight-normal' => get_theme_mod('body_font_weight', '400'),
+		'--line-height-normal' => get_theme_mod('body_line_height', 1.75),
+		'--heading-font'       => get_theme_mod('heading_font_family', "'Inter', sans-serif"),
+		'--heading-weight'     => get_theme_mod('heading_font_weight', '800'),
+		'--heading-lh'         => get_theme_mod('heading_line_height', 1.2),
+		'--width-content'      => get_theme_mod('content_width', 800) . 'px',
+		'--width-wide'         => get_theme_mod('wide_width', 1320) . 'px',
+		'--radius-lg'          => get_theme_mod('card_radius', 16) . 'px',
+		'--h1'                 => get_theme_mod('h1_size', 40) . 'px',
+		'--h2'                 => get_theme_mod('h2_size', 32) . 'px',
+		'--h3'                 => get_theme_mod('h3_size', 26) . 'px',
+		'--h4'                 => get_theme_mod('h4_size', 22) . 'px',
+		'--h5'                 => get_theme_mod('h5_size', 18) . 'px',
+		'--h6'                 => get_theme_mod('h6_size', 16) . 'px',
+	];
 
-	$css = sprintf(
-		':root{--color-primary:%s;--color-accent:%s;--bg-nav:%s;--bg-footer:%s;--font-sans:%s;--font-size-base:%spx;--font-weight-normal:%s;--line-height-normal:%s;--heading-font:%s;--heading-weight:%s;--heading-lh:%s;--width-content:%spx;--width-wide:%spx;--radius-lg:%spx;--h1:%spx;--h2:%spx;--h3:%spx;--h4:%spx;--h5:%spx;--h6:%spx;}',
-		esc_attr($p), esc_attr($a), esc_attr($nb), esc_attr($fb),
-		esc_attr($ff), absint($fs), esc_attr($fw), esc_attr($lh),
-		esc_attr($hf), esc_attr($hw), esc_attr($hl),
-		absint($cw), absint($ww), absint($cr),
-		absint($h1), absint($h2), absint($h3), absint($h4), absint($h5), absint($h6)
-	);
-	$css .= sprintf('body{font-family:var(--font-sans);font-size:var(--font-size-base);font-weight:var(--font-weight-normal);line-height:var(--line-height-normal);}');
-	$css .= sprintf('h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);font-weight:var(--heading-weight);line-height:var(--heading-lh);}');
+	$css_rules = [];
+	foreach ($vars as $key => $val) {
+		// Do NOT use esc_attr() on values here, as it breaks font strings containing quotes (e.g. 'Inter')
+		$css_rules[] = $key . ':' . $val;
+	}
+
+	$css  = ':root{' . implode(';', $css_rules) . '}';
+	$css .= 'body{font-family:var(--font-sans);font-size:var(--font-size-base);font-weight:var(--font-weight-normal);line-height:var(--line-height-normal);}';
+	$css .= 'h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);font-weight:var(--heading-weight);line-height:var(--heading-lh);}';
 	
 	// Apply heading sizes
 	$css .= 'h1{font-size:var(--h1);}h2{font-size:var(--h2);}h3{font-size:var(--h3);}h4{font-size:var(--h4);}h5{font-size:var(--h5);}h6{font-size:var(--h6);}';
@@ -901,4 +900,134 @@ function gizmo_save_layout_meta($post_id) {
 	if (isset($_POST['gizmo_page_layout'])) {
 		update_post_meta($post_id, '_gizmo_page_layout', sanitize_key($_POST['gizmo_page_layout']));
 	}
+}
+
+/* ============================================================
+   SHORTCODES (Fallback for Blocks)
+   ============================================================ */
+
+/**
+ * 1. Post Grid Shortcode
+ * Usage: [gizmo_posts count="3" cat="5" type="post"]
+ */
+add_shortcode('gizmo_posts', 'gizmo_shortcode_posts');
+function gizmo_shortcode_posts($atts) {
+	$atts = shortcode_atts([
+		'count' => 3,
+		'cat'   => '',
+		'type'  => 'post',
+		'ids'   => '',
+	], $atts);
+
+	$args = [
+		'post_type'      => $atts['type'],
+		'posts_per_page' => $atts['count'],
+		'post_status'    => 'publish',
+	];
+
+	if (!empty($atts['cat'])) {
+		$args['cat'] = $atts['cat'];
+	}
+	if (!empty($atts['ids'])) {
+		$args['post__in'] = array_map('trim', explode(',', $atts['ids']));
+		$args['orderby']  = 'post__in';
+	}
+
+	$q = new WP_Query($args);
+	if (!$q->have_posts()) return '';
+
+	ob_start();
+	echo '<div class="posts-grid">';
+	while ($q->have_posts()) {
+		$q->the_post();
+		$read = function_exists('gizmo_get_reading_time') ? gizmo_get_reading_time(get_the_ID()) : ['label'=>''];
+		?>
+		<article <?php post_class('post-card'); ?>>
+			<?php if (has_post_thumbnail()) : ?>
+			<a class="post-card__thumb" href="<?php the_permalink(); ?>">
+				<?php the_post_thumbnail('gizmo-card', ['loading'=>'lazy']); ?>
+			</a>
+			<?php endif; ?>
+			<div class="post-card__body">
+				<?php if (function_exists('gizmo_the_post_categories')) gizmo_the_post_categories(get_the_ID()); ?>
+				<h3 class="post-card__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+				<div class="post-card__meta">
+					<span class="post-card__date"><?php echo get_the_date(); ?></span>
+					<span class="post-card__sep">·</span>
+					<span class="post-card__read"><?php echo esc_html($read['label']); ?></span>
+				</div>
+			</div>
+		</article>
+		<?php
+	}
+	echo '</div>';
+	wp_reset_postdata();
+	return ob_get_clean();
+}
+
+/**
+ * 2. Pros & Cons Shortcode
+ * Usage: [gizmo_pros_cons pros="Good|Great" cons="Bad|Expensive"]
+ */
+add_shortcode('gizmo_pros_cons', 'gizmo_shortcode_review_box');
+function gizmo_shortcode_review_box($atts) {
+	$atts = shortcode_atts([
+		'pros' => '',
+		'cons' => '',
+	], $atts);
+
+	$pros = !empty($atts['pros']) ? explode('|', $atts['pros']) : [];
+	$cons = !empty($atts['cons']) ? explode('|', $atts['cons']) : [];
+
+	ob_start();
+	?>
+	<div class="pros-cons-main">
+		<div class="pros">
+			<h3><?php esc_html_e('Pros', GIZMO_TEXT); ?></h3>
+			<ul>
+				<?php foreach ($pros as $item) echo '<li>' . esc_html(trim($item)) . '</li>'; ?>
+			</ul>
+		</div>
+		<div class="cons">
+			<h3><?php esc_html_e('Cons', GIZMO_TEXT); ?></h3>
+			<ul>
+				<?php foreach ($cons as $item) echo '<li>' . esc_html(trim($item)) . '</li>'; ?>
+			</ul>
+		</div>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+/* ============================================================
+   REGISTER CUSTOM BLOCKS (JS + PHP)
+   ============================================================ */
+
+add_action('enqueue_block_editor_assets', 'gizmo_enqueue_editor_blocks');
+function gizmo_enqueue_editor_blocks() {
+	wp_enqueue_script(
+		'gizmo-editor-blocks',
+		GIZMO_ASSETS . '/js/editor-blocks.js',
+		['wp-blocks', 'wp-element', 'wp-components', 'wp-block-editor', 'wp-server-side-render'],
+		GIZMO_VERSION,
+		true
+	);
+}
+
+add_action('init', 'gizmo_register_dynamic_blocks');
+function gizmo_register_dynamic_blocks() {
+	// 1. Post Grid Block
+	register_block_type('gizmodotech/post-grid-block', [
+		'render_callback' => 'gizmo_shortcode_posts', // Reuses the shortcode logic
+		'attributes' => [
+			'count' => ['type' => 'string', 'default' => '3'],
+			'type'  => ['type' => 'string', 'default' => 'post'],
+			'cat'   => ['type' => 'string', 'default' => ''],
+		]
+	]);
+
+	// 2. Pros & Cons Block
+	register_block_type('gizmodotech/pros-cons-block', [
+		'render_callback' => 'gizmo_shortcode_review_box', // Reuses the shortcode logic
+	]);
 }
