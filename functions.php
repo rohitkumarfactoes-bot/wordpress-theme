@@ -72,6 +72,27 @@ function gizmo_enqueue() {
 	if (is_singular() && comments_open()) {
 		wp_enqueue_script('comment-reply');
 	}
+
+	gizmo_enqueue_google_fonts();
+}
+
+/* Enqueue Google Fonts based on Customizer selection */
+function gizmo_enqueue_google_fonts() {
+	$body_font = get_theme_mod('body_font_family', "'Inter', sans-serif");
+	$head_font = get_theme_mod('heading_font_family', "'Inter', sans-serif");
+
+	$fonts = [];
+	foreach ([$body_font, $head_font] as $font) {
+		if (strpos($font, 'System') !== false) continue;
+		if (preg_match("/'([^']+)'/", $font, $m)) {
+			$fonts[] = $m[1];
+		}
+	}
+	$fonts = array_unique($fonts);
+	if (empty($fonts)) return;
+
+	$family = implode('|', array_map(function($f) { return urlencode($f) . ':400,500,600,700,800'; }, $fonts));
+	wp_enqueue_style('gizmo-google-fonts', 'https://fonts.googleapis.com/css2?family=' . $family . '&display=swap', [], null);
 }
 
 /* Editor styles */
@@ -388,6 +409,15 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 	gizmo_add_weight_control($wp_customize,'heading_font_weight',  'gizmo_heading_typo', __('Font Weight', GIZMO_TEXT), '800');
 	gizmo_add_num_control($wp_customize,  'heading_line_height',   'gizmo_heading_typo', __('Line Height', GIZMO_TEXT), 1.2, 1.0, 1.8, 0.05);
 
+	// Heading Sizes (H1-H6)
+	$wp_customize->add_section('gizmo_heading_sizes', ['title' => __('Heading Sizes', GIZMO_TEXT), 'panel' => 'gizmo_typo_panel']);
+	gizmo_add_px_control($wp_customize, 'h1_size', 'gizmo_heading_sizes', 'H1 Size (px)', 40, 20, 80);
+	gizmo_add_px_control($wp_customize, 'h2_size', 'gizmo_heading_sizes', 'H2 Size (px)', 32, 18, 60);
+	gizmo_add_px_control($wp_customize, 'h3_size', 'gizmo_heading_sizes', 'H3 Size (px)', 26, 16, 50);
+	gizmo_add_px_control($wp_customize, 'h4_size', 'gizmo_heading_sizes', 'H4 Size (px)', 22, 14, 40);
+	gizmo_add_px_control($wp_customize, 'h5_size', 'gizmo_heading_sizes', 'H5 Size (px)', 18, 12, 30);
+	gizmo_add_px_control($wp_customize, 'h6_size', 'gizmo_heading_sizes', 'H6 Size (px)', 16, 10, 24);
+
 	// Layout widths
 	$wp_customize->add_section('gizmo_layout', ['title' => __('Layout Widths', GIZMO_TEXT), 'priority' => 25]);
 	gizmo_add_px_control($wp_customize, 'content_width', 'gizmo_layout', __('Content Width (px)', GIZMO_TEXT), 800, 600, 1200);
@@ -398,18 +428,50 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 /* Customizer helpers */
 function gizmo_add_font_control($wpc, $id, $section, $label, $default) {
 	$wpc->add_setting($id, ['default' => $default, 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'postMessage']);
-	$wpc->add_control($id, ['label' => $label, 'section' => $section, 'type' => 'select', 'choices' => [
-		"'Inter', sans-serif"         => 'Inter (Default)',
+	
+	// Expanded Google Fonts List
+	$fonts = [
+		"'Inter', sans-serif"         => 'Inter',
 		"'Roboto', sans-serif"        => 'Roboto',
 		"'Open Sans', sans-serif"     => 'Open Sans',
-		"'Poppins', sans-serif"       => 'Poppins',
 		"'Lato', sans-serif"          => 'Lato',
+		"'Montserrat', sans-serif"    => 'Montserrat',
+		"'Poppins', sans-serif"       => 'Poppins',
+		"'Oswald', sans-serif"        => 'Oswald',
+		"'Raleway', sans-serif"       => 'Raleway',
 		"'Nunito', sans-serif"        => 'Nunito',
-		"'Merriweather', serif"       => 'Merriweather (Serif)',
-		"Georgia, serif"              => 'Georgia (Serif)',
-		"'JetBrains Mono', monospace" => 'JetBrains Mono',
-		"-apple-system, sans-serif"   => 'System UI',
-	]]);
+		"'Merriweather', serif"       => 'Merriweather',
+		"'Playfair Display', serif"   => 'Playfair Display',
+		"'Rubik', sans-serif"         => 'Rubik',
+		"'Ubuntu', sans-serif"        => 'Ubuntu',
+		"'Kanit', sans-serif"         => 'Kanit',
+		"'PT Sans', sans-serif"       => 'PT Sans',
+		"'Lora', serif"               => 'Lora',
+		"'Work Sans', sans-serif"     => 'Work Sans',
+		"'Mukta', sans-serif"         => 'Mukta',
+		"'Quicksand', sans-serif"     => 'Quicksand',
+		"'Barlow', sans-serif"        => 'Barlow',
+		"'Mulish', sans-serif"        => 'Mulish',
+		"'Titillium Web', sans-serif" => 'Titillium Web',
+		"'Inconsolata', monospace"    => 'Inconsolata',
+		"'IBM Plex Sans', sans-serif" => 'IBM Plex Sans',
+		"'DM Sans', sans-serif"       => 'DM Sans',
+		"'Crimson Text', serif"       => 'Crimson Text',
+		"'Libre Baskerville', serif"  => 'Libre Baskerville',
+		"'Anton', sans-serif"         => 'Anton',
+		"'Josefin Sans', sans-serif"  => 'Josefin Sans',
+		"'Bebas Neue', sans-serif"    => 'Bebas Neue',
+		"'Fjalla One', sans-serif"    => 'Fjalla One',
+		"'Cabin', sans-serif"         => 'Cabin',
+		"'Bitter', serif"             => 'Bitter',
+		"'Hind', sans-serif"          => 'Hind',
+		"'Arvo', serif"               => 'Arvo',
+		"'Noto Sans', sans-serif"     => 'Noto Sans',
+		"'Noto Serif', serif"         => 'Noto Serif',
+		"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" => 'System UI',
+	];
+	
+	$wpc->add_control($id, ['label' => $label, 'section' => $section, 'type' => 'select', 'choices' => $fonts]);
 }
 function gizmo_add_weight_control($wpc, $id, $section, $label, $default) {
 	$wpc->add_setting($id, ['default' => $default, 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'postMessage']);
@@ -440,16 +502,28 @@ function gizmo_customizer_css() {
 	$cw = get_theme_mod('content_width',      800);
 	$ww = get_theme_mod('wide_width',         1320);
 	$cr = get_theme_mod('card_radius',        16);
+	
+	// Heading sizes
+	$h1 = get_theme_mod('h1_size', 40);
+	$h2 = get_theme_mod('h2_size', 32);
+	$h3 = get_theme_mod('h3_size', 26);
+	$h4 = get_theme_mod('h4_size', 22);
+	$h5 = get_theme_mod('h5_size', 18);
+	$h6 = get_theme_mod('h6_size', 16);
 
 	$css = sprintf(
-		':root{--color-primary:%s;--color-accent:%s;--bg-nav:%s;--bg-footer:%s;--font-sans:%s;--font-size-base:%spx;--line-height-normal:%s;--heading-font:%s;--heading-weight:%s;--heading-lh:%s;--width-content:%spx;--width-wide:%spx;--radius-lg:%spx;}',
+		':root{--color-primary:%s;--color-accent:%s;--bg-nav:%s;--bg-footer:%s;--font-sans:%s;--font-size-base:%spx;--line-height-normal:%s;--heading-font:%s;--heading-weight:%s;--heading-lh:%s;--width-content:%spx;--width-wide:%spx;--radius-lg:%spx;--h1:%spx;--h2:%spx;--h3:%spx;--h4:%spx;--h5:%spx;--h6:%spx;}',
 		esc_attr($p), esc_attr($a), esc_attr($nb), esc_attr($fb),
 		esc_attr($ff), absint($fs), esc_attr($lh),
 		esc_attr($hf), esc_attr($hw), esc_attr($hl),
-		absint($cw), absint($ww), absint($cr)
+		absint($cw), absint($ww), absint($cr),
+		absint($h1), absint($h2), absint($h3), absint($h4), absint($h5), absint($h6)
 	);
 	$css .= sprintf('body{font-family:var(--font-sans);font-size:var(--font-size-base);line-height:var(--line-height-normal);}');
 	$css .= sprintf('h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);font-weight:var(--heading-weight);line-height:var(--heading-lh);}');
+	
+	// Apply heading sizes
+	$css .= 'h1{font-size:var(--h1);}h2{font-size:var(--h2);}h3{font-size:var(--h3);}h4{font-size:var(--h4);}h5{font-size:var(--h5);}h6{font-size:var(--h6);}';
 
 	printf('<style id="gizmo-customizer">%s</style>', $css); // phpcs:ignore
 }
@@ -579,4 +653,26 @@ function gizmo_ajax_load_more() {
 		'html'     => ob_get_clean(),
 		'has_more' => $q->max_num_pages > $page,
 	]);
+}
+
+/* ============================================================
+   HELPER: Get Gallery Images (Featured + Content)
+   ============================================================ */
+function gizmo_get_gallery_images($post_id) {
+	$images = [];
+
+	// 1. Get Featured Image
+	if (has_post_thumbnail($post_id)) {
+		$images[] = get_the_post_thumbnail_url($post_id, 'full');
+	}
+
+	// 2. Extract images from content
+	$content = get_post_field('post_content', $post_id);
+	if (preg_match_all('/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $content, $matches)) {
+		foreach ($matches[1] as $src) {
+			$images[] = $src;
+		}
+	}
+
+	return array_unique($images);
 }

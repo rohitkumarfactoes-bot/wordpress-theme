@@ -470,6 +470,27 @@
     initializeSlider();
     window.addEventListener( 'resize', initializeSlider );
   }
+
+  /* ============================================================
+     15. MOBILE GALLERY INTERACTION
+     ============================================================ */
+  function initMobileGallery() {
+    const gallery = $( '.mobile-wrap' );
+    if ( ! gallery ) return;
+
+    const thumbnails = $$( '.thumbnail img', gallery );
+    const display    = $( '#image-display', gallery );
+
+    if ( ! display ) return;
+
+    thumbnails.forEach( thumb => {
+      thumb.addEventListener( 'click', () => {
+        const fullSrc = thumb.getAttribute( 'data-full-image' );
+        display.innerHTML = `<img src="${fullSrc}" alt="Full Image">`;
+      } );
+    } );
+  }
+
   /* ============================================================
      INIT ALL
      ============================================================ */
@@ -488,6 +509,7 @@
     initTOC();
     initLoadMore();
     initHomepageSlider();
+    initMobileGallery();
   }
 
   // DOM-ready

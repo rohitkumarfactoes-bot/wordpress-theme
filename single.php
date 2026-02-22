@@ -44,6 +44,10 @@ while (have_posts()) : the_post();
 		'cat'            => $cat ? $cat->term_id : 0,
 		'orderby'        => 'comment_count',
 	]);
+
+	// Check if this is a "Mobile" post (Category 'mobile' OR Post Type 'mobile')
+	$is_mobile_gallery = ( has_category('mobile') || get_post_type() === 'mobile' );
+	$gallery_images    = $is_mobile_gallery ? gizmo_get_gallery_images(get_the_ID()) : [];
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class('single-post'); ?>
@@ -61,8 +65,23 @@ while (have_posts()) : the_post();
 
 			<!-- Breadcrumbs -->
 			<?php gizmodotech_breadcrumbs(); ?>
-<!-- Full-width hero image -->
-	<?php if (has_post_thumbnail()) : ?>
+
+	<!-- Mobile Gallery OR Full-width hero image -->
+	<?php if ( $is_mobile_gallery && ! empty( $gallery_images ) ) : ?>
+		<div class="mobile-wrap">
+			<div class="extracted-images">
+				<?php foreach ( $gallery_images as $img_src ) : ?>
+				<div class="thumbnail">
+					<img src="<?php echo esc_url( $img_src ); ?>" alt="Thumbnail" data-full-image="<?php echo esc_url( $img_src ); ?>">
+				</div>
+				<?php endforeach; ?>
+			</div>
+			<div class="image-display" id="image-display">
+				<img src="<?php echo esc_url( $gallery_images[0] ); ?>" alt="<?php the_title_attribute(); ?>">
+			</div>
+		</div>
+
+	<?php elseif (has_post_thumbnail()) : ?>
 	<div class="single-hero">
 		<?php the_post_thumbnail('gizmo-hero', [
 			'loading' => 'eager',
