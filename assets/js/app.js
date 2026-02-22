@@ -339,7 +339,7 @@
     if ( ! toc || ! content ) { return; }
 
     const headings = $$( 'h2', content );
-    if ( headings.length < 2 ) {
+    if ( headings.length < 1 ) {
       const tocEl = toc.closest( '.toc' );
       if ( tocEl ) { tocEl.style.display = 'none'; }
       return;

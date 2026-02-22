@@ -1028,11 +1028,14 @@ function gizmo_shortcode_review_box($atts) {
 
 add_action('enqueue_block_editor_assets', 'gizmo_enqueue_editor_blocks');
 function gizmo_enqueue_editor_blocks() {
+	$file_path = GIZMO_DIR . '/assets/js/editor-blocks.js';
+	$version   = file_exists($file_path) ? filemtime($file_path) : GIZMO_VERSION;
+
 	wp_enqueue_script(
 		'gizmo-editor-blocks',
 		GIZMO_ASSETS . '/js/editor-blocks.js',
 		['wp-blocks', 'wp-element', 'wp-components', 'wp-block-editor', 'wp-server-side-render'],
-		GIZMO_VERSION,
+		$version,
 		true
 	);
 }

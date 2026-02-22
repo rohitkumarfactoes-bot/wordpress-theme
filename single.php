@@ -70,7 +70,7 @@ while (have_posts()) : the_post();
 
 	<!-- ── Two-column layout: content + sidebar ── -->
 	<div class="single-layout">
-<div class = "single-wrap">
+		<div class="single-wrap">
 	
 		
 		<!-- ── LEFT: Post Content ── -->
