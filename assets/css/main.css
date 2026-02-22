@@ -18,6 +18,123 @@
   transition: width .1s linear;
 }
 
+
+.pros-cons-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 15px 0;
+}
+
+@media (max-width: 767px) {
+  .pros-cons-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pros {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  background-color: #4ed25d17;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.pros p,
+.cons p {
+  margin-bottom: 10px;
+}
+
+.cons {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  background-color: #f0232312;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease-in-out;
+
+}
+
+.cons:hover {
+
+  box-shadow: 0px 0px 10px #f0232370;
+}
+
+.pros:hover {
+
+  box-shadow: 0px 0px 10px #4ed25d70;
+}
+
+.cons ul,
+.pros ul {
+  list-style: none !important;
+  padding-left: 0 !important;
+}
+
+.cons ul li,
+.pros ul li {
+  margin-bottom: 5px;
+  display: flex;
+  font-size: 14px !important;
+  align-items: flex-start;
+}
+
+.cons ul li:before {
+  content: url('https://gizmodotech.com/wp-content/uploads/2025/02/cons.svg');
+  width: 16px;
+  height: 16px;
+  display: flex;
+  margin-right: 5px;
+  margin-top: 3px;
+}
+
+.pros ul li:before {
+  content: url('https://gizmodotech.com/wp-content/uploads/2025/02/pros.svg');
+  width: 16px;
+  height: 16px;
+  display: flex;
+  margin-right: 5px;
+  margin-top: 3px;
+}
+
+.post-tags {
+  display: flex;
+}
+
+.wp-block-separator {
+  display: none;
+}
+
+.mobile-wrap {
+  display: flex;
+  flex-direction: column-reverse !important;
+}
+
+.thumbnail {
+  width: 170px;
+  height: 128px;
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: .375rem;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain ! important;
+}
+
+.image-display {
+  display: flex;
+  justify-content: center;
+}
+
+.image-display img {
+  object-fit: contain;
+  height: 350px;
+}
+
 /* ────────────────────────────────────────────────────────────
    SITE HEADER — TWO ROWS
    Row 1 (.header-top):       Logo LEFT | Search+DarkMode RIGHT
@@ -1562,6 +1679,19 @@
   margin-bottom: var(--space-3);
 }
 
+.comment-form-cookies-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.comment-form input {
+  width: fit-content;
+  margin-bottom: 0px;
+  margin-top: 0.5rem;
+}
+
 .comment-form-area .comment-form input:focus,
 .comment-form-area .comment-form textarea:focus {
   outline: none;
@@ -1784,10 +1914,10 @@
 }
 
 .post-item-card {
-  flex: 0 0 32%;
-  /* Show roughly 3 cards */
-  max-width: 32%;
-  margin-right: 2%;
+  flex: 0 0 100%;
+  /* Show 1 card */
+  max-width: 100%;
+  margin-right: 0;
   min-width: 250px;
   display: flex;
   flex-direction: column;
@@ -2010,6 +2140,7 @@
 
 .footer-subscribe__input {
   flex: 1;
+  max-width: 200px;
   padding: .65rem 1rem;
   border: 1px solid rgba(255, 255, 255, .12);
   border-radius: 10px;
@@ -2028,12 +2159,12 @@
 }
 
 .footer-subscribe__btn {
-  padding: .65rem 1.25rem;
+  padding: .5rem 1rem;
   background: var(--color-primary, #2563EB);
   color: #fff;
   border-radius: 10px;
-  font-size: .875rem;
-  font-weight: 700;
+  font-size: .75rem;
+  font-weight: 500;
   cursor: pointer;
   border: none;
   transition: background .15s;
@@ -2203,9 +2334,7 @@
     grid-template-columns: 1fr;
   }
 
-  .single-sidebar {
-    order: -1;
-  }
+
 
   .sidebar-widget {
     padding: .75rem;
@@ -2324,6 +2453,10 @@ body.dark-mode,
   background: var(--bg-nav, #111827);
 }
 
+.dark-mode .comment-form label {
+  color: var(--text-primary);
+}
+
 .dark-mode .bento-card,
 [data-theme="dark"] .bento-card,
 .dark-mode .post-card,
@@ -2395,11 +2528,13 @@ body.dark-mode,
   display: flex;
   align-items: center;
   gap: 15px;
-  flex-wrap: wrap; /* Ensure they wrap on smaller screens */
+  flex-wrap: wrap;
+  /* Ensure they wrap on smaller screens */
 }
 
 .thumbnail {
-  width: 100px; /* Reduced slightly for better fit */
+  width: 100px;
+  /* Reduced slightly for better fit */
   height: 80px;
   padding: 4px;
   border: 1px solid var(--border-color);
@@ -2407,8 +2542,28 @@ body.dark-mode,
   cursor: pointer;
   transition: border-color .2s;
 }
-.thumbnail:hover { border-color: var(--color-primary); }
-.thumbnail img { width: 100%; height: 100%; object-fit: contain !important; }
 
-.image-display { display: flex; justify-content: center; background: var(--bg-surface-2); border-radius: var(--radius-lg); padding: 1rem; }
-.image-display img { object-fit: contain; max-height: 450px; width: auto; max-width: 100%; }
+.thumbnail:hover {
+  border-color: var(--color-primary);
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+}
+
+.image-display {
+  display: flex;
+  justify-content: center;
+  background: var(--bg-surface-2);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+}
+
+.image-display img {
+  object-fit: contain;
+  max-height: 450px;
+  width: auto;
+  max-width: 100%;
+}

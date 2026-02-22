@@ -25,6 +25,7 @@
 	<!-- ── Brand Bar: Logo + Actions ── -->
 	<div class="header-top">
 		<div class="header-top__inner">
+			<div>
 
 			<a class="site-logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
 				<?php if ( has_custom_logo() ) : the_custom_logo(); else : ?>
@@ -66,7 +67,7 @@
 					<span></span><span></span><span></span>
 				</button>
 			</div>
-
+</div>
 		</div>
 	</div><!-- /.header-top -->
 

@@ -21,29 +21,42 @@ while (have_posts()) : the_post();
 	$cat       = $cats ? $cats[0] : null;
 	$tags      = get_the_tags();
 	$comment_n = get_comments_number();
+	$post_type = get_post_type();
 
 	// Related posts by category
 	$related = null;
 	if ($cat) {
 		$related = new WP_Query([
-			'post_type'      => 'post',
+			'post_type'      => $post_type,
 			'post_status'    => 'publish',
 			'posts_per_page' => 4,
 			'post__not_in'   => [get_the_ID()],
 			'cat'            => $cat->term_id,
 			'orderby'        => 'rand',
 		]);
+	} else {
+		// Fallback: Random posts from same post type
+		$related = new WP_Query([
+			'post_type'      => $post_type,
+			'post_status'    => 'publish',
+			'posts_per_page' => 4,
+			'post__not_in'   => [get_the_ID()],
+			'orderby'        => 'rand',
+		]);
 	}
 
 	// "You may also like" — from same category, different set
-	$also_like = new WP_Query([
-		'post_type'      => 'post',
+	$also_like_args = [
+		'post_type'      => $post_type,
 		'post_status'    => 'publish',
 		'posts_per_page' => 5,
 		'post__not_in'   => [get_the_ID()],
-		'cat'            => $cat ? $cat->term_id : 0,
 		'orderby'        => 'comment_count',
-	]);
+	];
+	if ($cat) {
+		$also_like_args['cat'] = $cat->term_id;
+	}
+	$also_like = new WP_Query($also_like_args);
 
 	// Check if this is a "Mobile" post (Category 'mobile' OR Post Type 'mobile')
 	$is_mobile_gallery = ( has_category('mobile') || get_post_type() === 'mobile' );
@@ -338,6 +351,64 @@ while (have_posts()) : the_post();
 				<h3 class="sidebar-widget__title"><?php esc_html_e('Related Post','gizmodotech-pro'); ?></h3>
 				<div class="sidebar-related">
 					<?php while ($related->have_posts()) : $related->the_post(); ?>
+					<a class="sidebar-related__item" href="<?php the_permalink(); ?>">
+						<?php if (has_post_thumbnail()) : ?>
+						<div class="sidebar-related__thumb">
+							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=>'']); ?>
+						</div>
+						<?php endif; ?>
+						<span class="sidebar-related__title"><?php the_title(); ?></span>
+					</a>
+					<?php endwhile; wp_reset_postdata(); ?>
+				</div>
+			</div>
+			<?php endif; ?>
+
+			<!-- Latest Tech News -->
+			<?php
+			$technews_q = new WP_Query([
+				'post_type'      => 'technews',
+				'post_status'    => 'publish',
+				'posts_per_page' => 4,
+				'post__not_in'   => [get_the_ID()],
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+			]);
+			if ($technews_q->have_posts()) :
+			?>
+			<div class="sidebar-widget">
+				<h3 class="sidebar-widget__title"><?php esc_html_e('Latest Tech News','gizmodotech-pro'); ?></h3>
+				<div class="sidebar-related">
+					<?php while ($technews_q->have_posts()) : $technews_q->the_post(); ?>
+					<a class="sidebar-related__item" href="<?php the_permalink(); ?>">
+						<?php if (has_post_thumbnail()) : ?>
+						<div class="sidebar-related__thumb">
+							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=>'']); ?>
+						</div>
+						<?php endif; ?>
+						<span class="sidebar-related__title"><?php the_title(); ?></span>
+					</a>
+					<?php endwhile; wp_reset_postdata(); ?>
+				</div>
+			</div>
+			<?php endif; ?>
+
+			<!-- Latest Reviews -->
+			<?php
+			$reviews_q = new WP_Query([
+				'post_type'      => 'reviews',
+				'post_status'    => 'publish',
+				'posts_per_page' => 4,
+				'post__not_in'   => [get_the_ID()],
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+			]);
+			if ($reviews_q->have_posts()) :
+			?>
+			<div class="sidebar-widget">
+				<h3 class="sidebar-widget__title"><?php esc_html_e('Latest Reviews','gizmodotech-pro'); ?></h3>
+				<div class="sidebar-related">
+					<?php while ($reviews_q->have_posts()) : $reviews_q->the_post(); ?>
 					<a class="sidebar-related__item" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>
 						<div class="sidebar-related__thumb">

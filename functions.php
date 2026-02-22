@@ -279,9 +279,16 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'priority' => 28,
 	]);
 
+	// Get public post types for selects (Moved up to be available for all sections)
+	$post_types = get_post_types(['public' => true], 'objects');
+	$post_type_choices = [];
+	foreach ($post_types as $post_type) {
+		$post_type_choices[$post_type->name] = $post_type->labels->singular_name;
+	}
+
 	/* ── Homepage Content Selection ── */
 	$wp_customize->add_section('gizmo_homepage_content', [
-		'title'    => __('Bento & News Rows', GIZMO_TEXT),
+		'title'    => __('Homepage Rows (News, How-To, Tips)', GIZMO_TEXT),
 		'panel'    => 'gizmo_homepage_panel',
 	]);
 
@@ -296,13 +303,51 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'section'     => 'gizmo_homepage_content',
 	]));
 
-	// Latest News Categories
+	// Latest News Row
+	$wp_customize->add_setting('gizmo_news_post_type', ['default' => 'post', 'sanitize_callback' => 'sanitize_key']);
+	$wp_customize->add_control('gizmo_news_post_type', [
+		'label'   => __('"Latest News" Post Type', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_content',
+		'type'    => 'select',
+		'choices' => $post_type_choices,
+	]);
+
 	$wp_customize->add_setting('gizmo_news_categories', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
 	$wp_customize->add_control(new Gizmo_Customize_Category_Checklist_Control($wp_customize, 'gizmo_news_categories', [
-		'label'       => __('"Latest News" Row Categories', GIZMO_TEXT),
-		'description' => __('Select categories for the dark "Latest News" strip. Leave empty for latest posts.', GIZMO_TEXT),
+		'label'       => __('"Latest News" Categories (if Post Type is Post)', GIZMO_TEXT),
+		'description' => __('Select categories for the dark "Latest News" strip.', GIZMO_TEXT),
 		'section'     => 'gizmo_homepage_content',
 	]));
+
+	// How-To Section
+	$wp_customize->add_setting('gizmo_howto_title', ['default' => "How To's", 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control('gizmo_howto_title', [
+		'label'   => __('"How To" Section Title', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_content',
+		'type'    => 'text',
+	]);
+	$wp_customize->add_setting('gizmo_howto_post_type', ['default' => 'post', 'sanitize_callback' => 'sanitize_key']);
+	$wp_customize->add_control('gizmo_howto_post_type', [
+		'label'   => __('"How To" Post Type', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_content',
+		'type'    => 'select',
+		'choices' => $post_type_choices,
+	]);
+
+	// Tech Tips Section
+	$wp_customize->add_setting('gizmo_techtips_title', ['default' => "Tech Tips", 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control('gizmo_techtips_title', [
+		'label'   => __('"Tech Tips" Section Title', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_content',
+		'type'    => 'text',
+	]);
+	$wp_customize->add_setting('gizmo_techtips_post_type', ['default' => 'post', 'sanitize_callback' => 'sanitize_key']);
+	$wp_customize->add_control('gizmo_techtips_post_type', [
+		'label'   => __('"Tech Tips" Post Type', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_content',
+		'type'    => 'select',
+		'choices' => $post_type_choices,
+	]);
 
 	/* ── Homepage Slider Section ── */
 	$wp_customize->add_section('gizmo_homepage_slider', [
@@ -320,13 +365,6 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'section' => 'gizmo_homepage_slider',
 		'type'    => 'checkbox',
 	]);
-
-	// Get public post types for selects
-	$post_types = get_post_types(['public' => true], 'objects');
-	$post_type_choices = [];
-	foreach ($post_types as $post_type) {
-		$post_type_choices[$post_type->name] = $post_type->labels->singular_name;
-	}
 
 	$wp_customize->add_setting('gizmo_slider_post_type', [
 		'default'           => 'post',
