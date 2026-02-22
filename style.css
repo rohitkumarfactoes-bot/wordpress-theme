@@ -1,0 +1,258 @@
+/*
+Theme Name:        Gizmodotech Pro
+Theme URI:         https://gizmodotech.com
+Author:            Gizmodotech Team
+Author URI:        https://gizmodotech.com
+Description:       A premium, ultra-fast Hybrid Block Theme for tech blogs. Inspired by Beebom's bold design and GSMArena's data-rich performance. Features Bento Grid layout, dark mode, reading progress bar, and full Site Editor support.
+Version:           1.0.0
+Requires at least: 6.4
+Tested up to:      6.7
+Requires PHP:      8.0
+License:           GNU General Public License v2 or later
+License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain:       gizmodotech-pro
+Tags:              blog, technology, news, dark-mode, full-site-editing, block-theme, grid-layout, fast-loading
+
+*/
+
+/* ============================================================
+   CSS CUSTOM PROPERTIES (DESIGN TOKENS)
+   ============================================================ */
+
+:root {
+  /* --- Brand Colors --- */
+  --color-primary:        #2563EB;   /* Primary Blue */
+  --color-primary-hover:  #1D4ED8;
+  --color-primary-light:  #EFF6FF;
+  --color-accent:         #F59E0B;   /* Amber accent */
+  --color-danger:         #EF4444;
+  --color-success:        #10B981;
+
+  /* --- Neutral Palette --- */
+  --color-dark:           #0F172A;   /* Dark Slate */
+  --color-dark-2:         #1E293B;
+  --color-dark-3:         #334155;
+  --color-mid:            #64748B;
+  --color-light-3:        #94A3B8;
+  --color-light-2:        #CBD5E1;
+  --color-light-1:        #E2E8F0;
+  --color-surface:        #F8FAFC;
+  --color-white:          #FFFFFF;
+
+  /* --- Semantic Color Assignments (Light Mode) --- */
+  --bg-body:              #F1F5F9;
+  --bg-surface:           #FFFFFF;
+  --bg-surface-2:         #F8FAFC;
+  --bg-nav:               #FFFFFF;
+  --bg-footer:            #0F172A;
+  --text-primary:         #0F172A;
+  --text-secondary:       #475569;
+  --text-muted:           #94A3B8;
+  --text-inverse:         #FFFFFF;
+  --border-color:         #E2E8F0;
+  --border-color-2:       #CBD5E1;
+  --shadow-sm:            0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:            0 4px 16px rgba(0,0,0,.10);
+  --shadow-lg:            0 10px 40px rgba(0,0,0,.14);
+  --shadow-card:          0 2px 12px rgba(0,0,0,.07);
+
+  /* --- Typography --- */
+  --font-sans:            'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif:           Georgia, 'Times New Roman', serif;
+  --font-mono:            'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  --font-size-xs:         0.75rem;    /* 12px */
+  --font-size-sm:         0.875rem;   /* 14px */
+  --font-size-base:       1rem;       /* 16px */
+  --font-size-md:         1.125rem;   /* 18px */
+  --font-size-lg:         1.25rem;    /* 20px */
+  --font-size-xl:         1.5rem;     /* 24px */
+  --font-size-2xl:        1.875rem;   /* 30px */
+  --font-size-3xl:        2.25rem;    /* 36px */
+  --font-size-4xl:        3rem;       /* 48px */
+
+  --font-weight-normal:   400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+  --font-weight-extrabold:800;
+
+  --line-height-tight:    1.2;
+  --line-height-snug:     1.4;
+  --line-height-normal:   1.6;
+  --line-height-relaxed:  1.75;
+  --line-height-loose:    2;
+
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide:  0.025em;
+
+  /* --- Layout --- */
+  --width-content:        800px;
+  --width-wide:           1320px;
+  --width-full:           100%;
+  --width-nav:            1400px;
+
+  /* --- Spacing --- */
+  --space-1:   0.25rem;
+  --space-2:   0.5rem;
+  --space-3:   0.75rem;
+  --space-4:   1rem;
+  --space-5:   1.25rem;
+  --space-6:   1.5rem;
+  --space-8:   2rem;
+  --space-10:  2.5rem;
+  --space-12:  3rem;
+  --space-16:  4rem;
+  --space-20:  5rem;
+  --space-24:  6rem;
+
+  /* --- Border Radius (Beebom-inspired, 16px base) --- */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* --- Transitions --- */
+  --transition-fast:   150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base:   250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow:   400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* --- Z-Index Stack --- */
+  --z-base:     0;
+  --z-dropdown: 100;
+  --z-sticky:   200;
+  --z-nav:      300;
+  --z-modal:    400;
+  --z-toast:    500;
+  --z-progress: 9999;
+}
+
+/* ============================================================
+   DARK MODE TOKENS
+   ============================================================ */
+
+[data-theme="dark"],
+.dark-mode {
+  --bg-body:        #0B0F1A;
+  --bg-surface:     #111827;
+  --bg-surface-2:   #1a2235;
+  --bg-nav:         #111827;
+  --text-primary:   #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted:     #64748B;
+  --border-color:   #1E293B;
+  --border-color-2: #334155;
+  --shadow-sm:      0 1px 3px rgba(0,0,0,.4);
+  --shadow-md:      0 4px 16px rgba(0,0,0,.5);
+  --shadow-lg:      0 10px 40px rgba(0,0,0,.6);
+  --shadow-card:    0 2px 12px rgba(0,0,0,.4);
+  --color-primary-light: #1e3a5f;
+}
+
+/* ============================================================
+   GLOBAL RESETS & BASE
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  font-size: 16px;
+}
+
+body {
+  font-family:      var(--font-sans);
+  font-size:        var(--font-size-base);
+  line-height:      var(--line-height-normal);
+  color:            var(--text-primary);
+  background-color: var(--bg-body);
+  transition:       background-color var(--transition-base), color var(--transition-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover { color: var(--color-primary-hover); }
+
+ul, ol { list-style: none; }
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button { cursor: pointer; border: none; background: none; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--text-primary);
+}
+
+/* ============================================================
+   SCREEN READER ONLY
+   ============================================================ */
+
+.screen-reader-text {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   CONTAINER UTILITIES
+   ============================================================ */
+
+.container {
+  width: 100%;
+  max-width: var(--width-wide);
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+.container--content {
+  max-width: var(--width-content);
+}
+
+/* ============================================================
+   SKIP LINK
+   ============================================================ */
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  z-index: var(--z-toast);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus { top: var(--space-4); }
