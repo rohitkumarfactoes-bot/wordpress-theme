@@ -774,3 +774,42 @@ function gizmo_the_post_categories($post_id = null, $class = 'post-cat-badge') {
 	}
 	echo '</div>';
 }
+
+/* ============================================================
+   PAGE LAYOUT META BOX
+   ============================================================ */
+add_action('add_meta_boxes', 'gizmo_add_layout_meta_box');
+function gizmo_add_layout_meta_box() {
+	add_meta_box(
+		'gizmo_page_layout',
+		__('Page Layout', GIZMO_TEXT),
+		'gizmo_render_layout_meta_box',
+		'page',
+		'side',
+		'default'
+	);
+}
+
+function gizmo_render_layout_meta_box($post) {
+	$value = get_post_meta($post->ID, '_gizmo_page_layout', true) ?: 'sidebar';
+	?>
+	<label for="gizmo_page_layout" class="screen-reader-text"><?php esc_html_e('Select Layout', GIZMO_TEXT); ?></label>
+	<select name="gizmo_page_layout" id="gizmo_page_layout" style="width:100%">
+		<option value="sidebar" <?php selected($value, 'sidebar'); ?>><?php esc_html_e('Sidebar (Default)', GIZMO_TEXT); ?></option>
+		<option value="no-sidebar" <?php selected($value, 'no-sidebar'); ?>><?php esc_html_e('No Sidebar (Original Width)', GIZMO_TEXT); ?></option>
+		<option value="narrow" <?php selected($value, 'narrow'); ?>><?php esc_html_e('Narrow Width', GIZMO_TEXT); ?></option>
+	</select>
+	<?php
+	wp_nonce_field('gizmo_save_layout', 'gizmo_layout_nonce');
+}
+
+add_action('save_post', 'gizmo_save_layout_meta');
+function gizmo_save_layout_meta($post_id) {
+	if (!isset($_POST['gizmo_layout_nonce']) || !wp_verify_nonce($_POST['gizmo_layout_nonce'], 'gizmo_save_layout')) return;
+	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+	if (!current_user_can('edit_post', $post_id)) return;
+
+	if (isset($_POST['gizmo_page_layout'])) {
+		update_post_meta($post_id, '_gizmo_page_layout', sanitize_key($_POST['gizmo_page_layout']));
+	}
+}
