@@ -183,4 +183,97 @@ if ($news_q->have_posts()) : ?>
 </section>
 <?php endif; ?>
 
+<!-- ============================================================
+     FEATURED SLIDER SECTION
+     ============================================================ -->
+<?php
+$slider_enabled = get_theme_mod('gizmo_slider_section_enabled', false);
+
+if ($slider_enabled) :
+	$slider_post_type = get_theme_mod('gizmo_slider_post_type', 'post');
+	$slider_count     = get_theme_mod('gizmo_slider_posts_count', 6);
+	$horizontal_count = get_theme_mod('gizmo_horizontal_posts_count', 3);
+
+	// Exclude all posts already shown on the page
+	$exclude_ids = array_merge($bento_post_ids, wp_list_pluck($news_q->posts, 'ID'));
+
+	// Query for slider posts
+	$slider_q = new WP_Query([
+		'post_type'      => $slider_post_type,
+		'posts_per_page' => $slider_count,
+		'post__not_in'   => $exclude_ids,
+	]);
+
+	// Add slider posts to exclusion list for next query
+	$exclude_ids = array_merge($exclude_ids, wp_list_pluck($slider_q->posts, 'ID'));
+
+	// Query for horizontal card posts
+	$horizontal_q = new WP_Query([
+		'post_type'      => $slider_post_type, // Using same post type for simplicity, can be changed
+		'posts_per_page' => $horizontal_count,
+		'post__not_in'   => $exclude_ids,
+	]);
+
+	if ($slider_q->have_posts()) :
+?>
+<section class="hp-section hp-slider-section" aria-label="<?php esc_attr_e('Featured Content','gizmodotech-pro'); ?>">
+	<div class="hp-container">
+		<div class="hp-slider-grid">
+
+			<!-- Left Column: Slider -->
+			<div class="hp-slider-col">
+				<div class="post-slider-container">
+					<div class="post-slider-track">
+						<?php while ($slider_q->have_posts()) : $slider_q->the_post(); ?>
+						<div class="post-item-card">
+							<a href="<?php the_permalink(); ?>" class="post-item-card__thumb">
+								<?php if (has_post_thumbnail()) : ?>
+									<?php the_post_thumbnail('gizmo-card', ['loading' => 'lazy']); ?>
+								<?php endif; ?>
+							</a>
+							<div class="post-item-card__content">
+								<h3 class="post-item-card__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+								<div class="post-item-card__meta">
+									<time datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date()); ?></time>
+								</div>
+							</div>
+						</div>
+						<?php endwhile; wp_reset_postdata(); ?>
+					</div>
+					<button class="slider-button slider-button-prev" aria-label="<?php esc_attr_e('Previous slide','gizmodotech-pro'); ?>">&#x276E;</button>
+					<button class="slider-button slider-button-next" aria-label="<?php esc_attr_e('Next slide','gizmodotech-pro'); ?>">&#x276F;</button>
+				</div>
+			</div>
+
+			<!-- Right Column: Horizontal Cards -->
+			<?php if ($horizontal_q->have_posts()) : ?>
+			<div class="hp-horizontal-cards-col">
+				<?php while ($horizontal_q->have_posts()) : $horizontal_q->the_post(); ?>
+				<a href="<?php the_permalink(); ?>" class="horizontal-card">
+					<?php if (has_post_thumbnail()) : ?>
+					<div class="horizontal-card__thumb">
+						<?php the_post_thumbnail('thumbnail', ['loading' => 'lazy']); ?>
+					</div>
+					<?php endif; ?>
+					<div class="horizontal-card__content">
+						<h4 class="horizontal-card__title"><?php the_title(); ?></h4>
+						<div class="horizontal-card__meta">
+							<time datetime="<?php echo esc_attr(get_the_date('c')); ?>">
+								<?php echo esc_html(human_time_diff(get_the_time('U'), current_time('timestamp'))); ?> <?php esc_html_e('ago','gizmodotech-pro'); ?>
+							</time>
+						</div>
+					</div>
+				</a>
+				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+			<?php endif; ?>
+
+		</div>
+	</div>
+</section>
+<?php
+	endif; // end if ($slider_q->have_posts())
+endif; // end if ($slider_enabled)
+?>
+
 <?php get_footer();

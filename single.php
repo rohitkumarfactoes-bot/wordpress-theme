@@ -207,8 +207,8 @@ while (have_posts()) : the_post();
 					<?php
 					printf(
 						/* translators: %s: comment count */
-						esc_html( _n( '%s Comment', '%s Comments', $comment_count, 'gizmodotech-pro' ) ),
-						'<span class="comments-toggle__count">' . esc_html( $comment_count ) . '</span>'
+						_n( '%s Comment', '%s Comments', $comment_n, 'gizmodotech-pro' ),
+						'<span class="comments-toggle__count">' . number_format_i18n( $comment_n ) . '</span>'
 					);
 					?>
 				</div>
@@ -281,6 +281,12 @@ while (have_posts()) : the_post();
 					</ol>
 					<?php the_comments_pagination(); ?>
 				</div>
+				<?php endif; ?>
+
+				<?php if ( ! have_comments() && comments_open() ) : ?>
+					<p style="text-align:center; color:var(--text-muted); margin-top:1.5rem;">
+						<?php esc_html_e('No comments yet. Be the first to share your thoughts!', 'gizmodotech-pro'); ?>
+					</p>
 				<?php endif; ?>
 
 			</div><!-- /.comments-body -->

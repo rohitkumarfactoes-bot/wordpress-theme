@@ -399,6 +399,78 @@
   }
 
   /* ============================================================
+     14. HOMEPAGE POST SLIDER
+     ============================================================ */
+  function initHomepageSlider() {
+    const sliderContainer = $( '.post-slider-container' );
+    if ( !sliderContainer ) { return; }
+
+    const sliderTrack = $( '.post-slider-track', sliderContainer );
+    const cards       = $$( '.post-item-card', sliderTrack );
+    const prevButton  = $( '.slider-button-prev', sliderContainer );
+    const nextButton  = $( '.slider-button-next', sliderContainer );
+
+    if ( !sliderTrack || !prevButton || !nextButton ) return;
+
+    let currentIndex = 0;
+    let cardWidth = 0;
+    let cardMarginRight = 0;
+    let maxScrollPosition = 0;
+
+    function updateMeasurements() {
+      if ( cards.length === 0 ) {
+        prevButton.disabled = true;
+        nextButton.disabled = true;
+        return;
+      }
+      const firstCardStyle = window.getComputedStyle( cards[0] );
+      cardWidth = cards[0].offsetWidth;
+      cardMarginRight = parseFloat( firstCardStyle.marginRight );
+
+      const totalWidth = cards.reduce( ( acc, card ) => acc + card.offsetWidth + parseFloat( window.getComputedStyle( card ).marginRight ), 0 );
+      maxScrollPosition = Math.max( 0, totalWidth - sliderContainer.offsetWidth );
+    }
+
+    function updateSliderButtons() {
+      prevButton.disabled = ( currentIndex === 0 );
+      const currentTranslateX = Math.abs( parseFloat( sliderTrack.style.transform.replace( 'translateX(', '' ).replace( 'px)', '' ) ) || 0 );
+      nextButton.disabled = ( currentTranslateX >= maxScrollPosition - 1 ); // -1 for rounding errors
+    }
+
+    function slideTo( index ) {
+      if ( cards.length === 0 ) return;
+      currentIndex = Math.max( 0, Math.min( index, cards.length - 1 ) );
+
+      let targetTranslateX = -currentIndex * ( cardWidth + cardMarginRight );
+      targetTranslateX = Math.max( -maxScrollPosition, targetTranslateX );
+      targetTranslateX = Math.min( 0, targetTranslateX );
+
+      sliderTrack.style.transform = `translateX(${targetTranslateX}px)`;
+      updateSliderButtons();
+    }
+
+    function slideLeft() {
+      const cardsToScroll = Math.floor(sliderContainer.offsetWidth / (cardWidth + cardMarginRight));
+      slideTo( currentIndex - cardsToScroll );
+    }
+
+    function slideRight() {
+      const cardsToScroll = Math.floor(sliderContainer.offsetWidth / (cardWidth + cardMarginRight));
+      slideTo( currentIndex + cardsToScroll );
+    }
+
+    prevButton.addEventListener( 'click', slideLeft );
+    nextButton.addEventListener( 'click', slideRight );
+
+    function initializeSlider() {
+      updateMeasurements();
+      slideTo( currentIndex );
+    }
+
+    initializeSlider();
+    window.addEventListener( 'resize', initializeSlider );
+  }
+  /* ============================================================
      INIT ALL
      ============================================================ */
 
@@ -415,6 +487,7 @@
     initSmoothAnchors();
     initTOC();
     initLoadMore();
+    initHomepageSlider();
   }
 
   // DOM-ready

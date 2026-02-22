@@ -252,10 +252,16 @@ add_action('widgets_init', function() {
 add_action('customize_register', 'gizmo_customizer');
 function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 
+	/* ── Homepage Panel ── */
+	$wp_customize->add_panel('gizmo_homepage_panel', [
+		'title'    => __('Homepage Content', GIZMO_TEXT),
+		'priority' => 28,
+	]);
+
 	/* ── Homepage Content Selection ── */
 	$wp_customize->add_section('gizmo_homepage_content', [
-		'title'    => __('Homepage Content', GIZMO_TEXT),
-		'priority' => 28, // Before Socials
+		'title'    => __('Bento & News Rows', GIZMO_TEXT),
+		'panel'    => 'gizmo_homepage_panel',
 	]);
 
 	// Bento Grid Categories
@@ -276,6 +282,67 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'description' => __('Select categories for the dark "Latest News" strip. Leave empty for latest posts.', GIZMO_TEXT),
 		'section'     => 'gizmo_homepage_content',
 	]));
+
+	/* ── Homepage Slider Section ── */
+	$wp_customize->add_section('gizmo_homepage_slider', [
+		'title'    => __('Featured Slider Section', GIZMO_TEXT),
+		'panel'    => 'gizmo_homepage_panel',
+		'priority' => 20,
+	]);
+
+	$wp_customize->add_setting('gizmo_slider_section_enabled', [
+		'default'           => false,
+		'sanitize_callback' => 'wp_validate_boolean',
+	]);
+	$wp_customize->add_control('gizmo_slider_section_enabled', [
+		'label'   => __('Enable Featured Slider Section', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_slider',
+		'type'    => 'checkbox',
+	]);
+
+	// Get public post types for selects
+	$post_types = get_post_types(['public' => true], 'objects');
+	$post_type_choices = [];
+	foreach ($post_types as $post_type) {
+		$post_type_choices[$post_type->name] = $post_type->labels->singular_name;
+	}
+
+	$wp_customize->add_setting('gizmo_slider_post_type', [
+		'default'           => 'post',
+		'sanitize_callback' => 'sanitize_key',
+	]);
+	$wp_customize->add_control('gizmo_slider_post_type', [
+		'label'   => __('Slider Post Type (Left)', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_slider',
+		'type'    => 'select',
+		'choices' => $post_type_choices,
+		'active_callback' => function() { return get_theme_mod('gizmo_slider_section_enabled', false); },
+	]);
+
+	$wp_customize->add_setting('gizmo_slider_posts_count', [
+		'default'           => 6,
+		'sanitize_callback' => 'absint',
+	]);
+	$wp_customize->add_control('gizmo_slider_posts_count', [
+		'label'       => __('Number of Posts in Slider', GIZMO_TEXT),
+		'section'     => 'gizmo_homepage_slider',
+		'type'        => 'number',
+		'input_attrs' => ['min' => 3, 'max' => 15],
+		'active_callback' => function() { return get_theme_mod('gizmo_slider_section_enabled', false); },
+	]);
+
+	$wp_customize->add_setting('gizmo_horizontal_posts_count', [
+		'default'           => 3,
+		'sanitize_callback' => 'absint',
+	]);
+	$wp_customize->add_control('gizmo_horizontal_posts_count', [
+		'label'       => __('Number of Horizontal Cards (Right)', GIZMO_TEXT),
+		'section'     => 'gizmo_homepage_slider',
+		'type'        => 'number',
+		'input_attrs' => ['min' => 1, 'max' => 5],
+		'active_callback' => function() { return get_theme_mod('gizmo_slider_section_enabled', false); },
+	]);
+
 	/* ── Social URLs ── */
 	$wp_customize->add_section('gizmo_socials', [
 		'title'    => __('Social Media URLs', GIZMO_TEXT),
