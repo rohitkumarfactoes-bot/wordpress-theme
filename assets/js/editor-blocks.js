@@ -11,7 +11,7 @@
     var SelectControl = components.SelectControl;
     var PanelBody = components.PanelBody;
     var InspectorControls = blockEditor.InspectorControls;
-    var ServerSideRender = serverSideRender;
+    var ServerSideRender = serverSideRender.default || serverSideRender;
 
     // 1. POST GRID BLOCK
     registerBlockType('gizmodotech/post-grid-block', {
@@ -50,7 +50,8 @@
                             options: [
                                 { label: 'Standard Posts', value: 'post' },
                                 { label: 'Tech News', value: 'technews' },
-                                { label: 'Reviews', value: 'reviews' }
+                                { label: 'Reviews', value: 'reviews' },
+                                { label: 'Review (Singular)', value: 'review' }
                             ],
                             onChange: function(val) { setAttributes({ type: val }); }
                         }),

@@ -943,7 +943,13 @@ function gizmo_shortcode_posts($atts) {
 	}
 
 	$q = new WP_Query($args);
-	if (!$q->have_posts()) return '';
+	if (!$q->have_posts()) {
+		// Show a placeholder in the editor if no posts are found
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return '<div style="padding:2rem; text-align:center; background:var(--bg-surface-2); color:var(--text-muted); border:1px dashed var(--border-color); border-radius:8px;">' . sprintf( __( 'No posts found for type: <strong>%s</strong>.<br>Check if posts exist and are published.', GIZMO_TEXT ), esc_html( $atts['type'] ) ) . '</div>';
+		}
+		return '';
+	}
 
 	ob_start();
 	echo '<div class="posts-grid">';
