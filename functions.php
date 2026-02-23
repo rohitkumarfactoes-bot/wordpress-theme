@@ -473,7 +473,7 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'footer_bg'       => ['Footer Background',   '#0F172A'],
 	];
 	foreach ($colors as $id => [$label, $default]) {
-		$wp_customize->add_setting($id, ['default' => $default, 'sanitize_callback' => 'sanitize_hex_color', 'transport' => 'postMessage']);
+		$wp_customize->add_setting($id, ['default' => $default, 'sanitize_callback' => 'sanitize_hex_color', 'transport' => 'refresh']);
 		$wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, $id, ['label' => __($label, GIZMO_TEXT), 'section' => 'gizmo_colors']));
 	}
 
@@ -511,7 +511,7 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 
 /* Customizer helpers */
 function gizmo_add_font_control($wpc, $id, $section, $label, $default) {
-	$wpc->add_setting($id, ['default' => $default, 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'postMessage']);
+	$wpc->add_setting($id, ['default' => $default, 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh']);
 	
 	// Expanded Google Fonts List
 	$fonts = [
@@ -558,15 +558,15 @@ function gizmo_add_font_control($wpc, $id, $section, $label, $default) {
 	$wpc->add_control($id, ['label' => $label, 'section' => $section, 'type' => 'select', 'choices' => $fonts]);
 }
 function gizmo_add_weight_control($wpc, $id, $section, $label, $default) {
-	$wpc->add_setting($id, ['default' => $default, 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'postMessage']);
+	$wpc->add_setting($id, ['default' => $default, 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh']);
 	$wpc->add_control($id, ['label' => $label, 'section' => $section, 'type' => 'select', 'choices' => ['400'=>'400 Regular','500'=>'500 Medium','600'=>'600 SemiBold','700'=>'700 Bold','800'=>'800 ExtraBold','900'=>'900 Black']]);
 }
 function gizmo_add_px_control($wpc, $id, $section, $label, $default, $min = 0, $max = 2000) {
-	$wpc->add_setting($id, ['default' => $default, 'sanitize_callback' => 'absint', 'transport' => 'postMessage']);
+	$wpc->add_setting($id, ['default' => $default, 'sanitize_callback' => 'absint', 'transport' => 'refresh']);
 	$wpc->add_control($id, ['label' => $label, 'section' => $section, 'type' => 'number', 'input_attrs' => ['min' => $min, 'max' => $max, 'step' => 1]]);
 }
 function gizmo_add_num_control($wpc, $id, $section, $label, $default, $min, $max, $step) {
-	$wpc->add_setting($id, ['default' => $default, 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'postMessage']);
+	$wpc->add_setting($id, ['default' => $default, 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh']);
 	$wpc->add_control($id, ['label' => $label, 'section' => $section, 'type' => 'number', 'input_attrs' => ['min' => $min, 'max' => $max, 'step' => $step]]);
 }
 
@@ -603,8 +603,10 @@ function gizmo_customizer_css() {
 	}
 
 	$css  = ':root{' . implode(';', $css_rules) . '}';
-	$css .= 'body{font-family:var(--font-sans);font-size:var(--font-size-base);font-weight:var(--font-weight-normal);line-height:var(--line-height-normal);}';
-	$css .= 'h1,h2,h3,h4,h5,h6{font-family:var(--heading-font);font-weight:var(--heading-weight);line-height:var(--heading-lh);}';
+	// Apply body font with !important to ensure it overrides theme stylesheet defaults.
+	$css .= 'body{font-family:var(--font-sans) !important;font-size:var(--font-size-base);font-weight:var(--font-weight-normal);line-height:var(--line-height-normal);}';
+	// Apply heading font to all heading elements and common heading classes with !important to ensure it overrides more specific selectors.
+	$css .= 'h1,h2,h3,h4,h5,h6,.single-title,.post-card__title,.archive-title,.widget-title,.widget__title,.section-title{font-family:var(--heading-font) !important;font-weight:var(--heading-weight);line-height:var(--heading-lh);}';
 	
 	// Apply heading sizes
 	$css .= 'h1{font-size:var(--h1);}h2{font-size:var(--h2);}h3{font-size:var(--h3);}h4{font-size:var(--h4);}h5{font-size:var(--h5);}h6{font-size:var(--h6);}';
@@ -924,7 +926,11 @@ function gizmo_shortcode_posts($atts) {
 	$paged      = 1;
 
 	if ($pagination) {
-		$paged = (get_query_var('paged')) ? get_query_var('paged') : ((get_query_var('page')) ? get_query_var('page') : 1);
+ 		if ( isset( $_GET['g_paged'] ) ) {
+			$paged = absint( $_GET['g_paged'] );
+		} else {
+			$paged = (get_query_var('paged')) ? get_query_var('paged') : ((get_query_var('page')) ? get_query_var('page') : 1);
+		}
 	}
 
 	$args = [
@@ -977,11 +983,14 @@ function gizmo_shortcode_posts($atts) {
 	}
 	echo '</div>';
 
+	// Reset post data so get_permalink() returns the current page URL, not the last post's URL
+	wp_reset_postdata();
+
 	if ($pagination && $q->max_num_pages > 1) {
 		echo '<nav class="posts-pagination">';
 		echo paginate_links([
-			'base'      => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
-			'format'    => '?paged=%#%',
+			'base'      => add_query_arg( 'g_paged', '%#%', get_permalink() ),
+			'format'    => '',
 			'current'   => max(1, $paged),
 			'total'     => $q->max_num_pages,
 			'prev_text' => '&#8592; ' . __('Prev', GIZMO_TEXT),
@@ -990,7 +999,6 @@ function gizmo_shortcode_posts($atts) {
 		echo '</nav>';
 	}
 
-	wp_reset_postdata();
 	return ob_get_clean();
 }
 

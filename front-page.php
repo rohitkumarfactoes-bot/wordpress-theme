@@ -27,13 +27,13 @@ if ($slider_enabled) :
 	$slider_post_type = get_theme_mod('gizmo_slider_post_type', 'post');
 	$slider_cats_str  = get_theme_mod('gizmo_slider_categories', '');
 	$slider_cats      = !empty($slider_cats_str) ? array_map('intval', explode(',', $slider_cats_str)) : [];
-	$slider_count     = 6; // User requested max 6
+	$slider_count     = get_theme_mod('gizmo_slider_posts_count', 6);
 
 	$reviews_title    = get_theme_mod('gizmo_reviews_title', 'Reviews');
 	$reviews_post_type= get_theme_mod('gizmo_reviews_post_type', 'reviews');
 	$reviews_cats_str = get_theme_mod('gizmo_reviews_categories', '');
 	$reviews_cats     = !empty($reviews_cats_str) ? array_map('intval', explode(',', $reviews_cats_str)) : [];
-	$horizontal_count = 3; // User requested 3 reviews
+	$horizontal_count = get_theme_mod('gizmo_horizontal_posts_count', 3);
 
 	// Query for slider posts
 	$slider_args = [
