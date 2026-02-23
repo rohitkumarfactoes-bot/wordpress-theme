@@ -1167,6 +1167,12 @@ function gizmo_register_dynamic_blocks() {
 	// 4. Grid Container Block
 	// Static block, registered on server.
 	register_block_type('gizmodotech/grid-container');
+
+	// 5. Product Review Block
+	register_block_type('gizmodotech/product-review');
+
+	// 6. Specs Card Block
+	register_block_type('gizmodotech/specs-card-block');
 }
 
 /* ============================================================

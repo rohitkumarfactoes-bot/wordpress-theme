@@ -354,4 +354,107 @@
         }
     });
 
+    // 5. PRODUCT REVIEW BLOCK (Template)
+    registerBlockType('gizmodotech/product-review', {
+        title: 'Gizmo Product Review',
+        icon: 'cart',
+        category: 'gizmodotech',
+        description: 'Full product review layout with Pros/Cons.',
+        edit: function(props) {
+            var blockProps = blockEditor.useBlockProps();
+            var innerBlocksProps = blockEditor.useInnerBlocksProps(blockProps, {
+                template: [
+                    ['core/group', { className: 'pros-cons-block', layout: { type: 'flex', flexWrap: 'nowrap' } }, [
+                        ['core/group', { className: 'pcb-left', layout: { type: 'flex', orientation: 'vertical' } }, [
+                            ['core/group', { className: 'pcb-image-wrap' }, [
+                                ['core/image', { sizeSlug: 'full', url: 'https://placehold.co/600x800', alt: 'Product' }]
+                            ]],
+                            ['core/paragraph', { className: 'pcb-price', placeholder: '₹99,999', content: '₹99,999' }],
+                            ['core/paragraph', { className: 'pcb-rating', placeholder: 'Rating: 9/10', content: 'Rating: 9/10' }]
+                        ]],
+                        ['core/group', { className: 'pcb-right' }, [
+                            ['core/group', { className: 'pcb-pros-cons-row', layout: { type: 'flex', flexWrap: 'nowrap' } }, [
+                                ['core/group', { className: 'pcb-pros' }, [
+                                    ['core/paragraph', { className: 'pcb-pros-title', content: 'Pros' }],
+                                    ['core/list', { className: 'pcb-list pros-list' }, [
+                                        ['core/list-item', { content: 'Excellent camera' }],
+                                        ['core/list-item', { content: 'Great battery' }]
+                                    ]]
+                                ]],
+                                ['core/group', { className: 'pcb-cons' }, [
+                                    ['core/paragraph', { className: 'pcb-cons-title', content: 'Cons' }],
+                                    ['core/list', { className: 'pcb-list cons-list' }, [
+                                        ['core/list-item', { content: 'Expensive' }]
+                                    ]]
+                                ]]
+                            ]],
+                            ['core/group', { className: 'pcb-buy-row', layout: { type: 'flex', justifyContent: 'space-between' } }, [
+                                ['core/paragraph', { className: 'pcb-buy-label', content: 'Buy Now' }],
+                                ['core/group', { className: 'pcb-buy-buttons', layout: { type: 'flex' } }, [
+                                    ['core/image', { width: 120, url: 'https://gizmodotech.com/wp-content/uploads/2024/12/buy-amazon.png' }],
+                                    ['core/image', { width: 120, url: 'https://gizmodotech.com/wp-content/uploads/2024/12/buy-flipkart.png' }]
+                                ]]
+                            ]]
+                        ]]
+                    ]]
+                ]
+            });
+            return el('div', innerBlocksProps);
+        },
+        save: function(props) {
+            return el(blockEditor.InnerBlocks.Content);
+        }
+    });
+
+    // 6. SPECS CARD BLOCK
+    registerBlockType('gizmodotech/specs-card-block', {
+        title: 'Gizmo Specs Card',
+        icon: 'smartphone',
+        category: 'gizmodotech',
+        description: 'Specs summary card.',
+        edit: function(props) {
+            var blockProps = blockEditor.useBlockProps();
+            var innerBlocksProps = blockEditor.useInnerBlocksProps(blockProps, {
+                template: [
+                    ['core/group', { className: 'main-cont-specs', layout: { type: 'flex', flexWrap: 'nowrap' } }, [
+                        // Image Col
+                        ['core/group', { className: 'specs-img-wrap', layout: { type: 'flex', orientation: 'vertical' } }, [
+                            ['core/image', { sizeSlug: 'large', url: 'https://placehold.co/600x800' }]
+                        ]],
+                        // Text Col
+                        ['core/group', { className: 'specs-text-wrap', layout: { type: 'flex', orientation: 'vertical' } }, [
+                            // Price Row
+                            ['core/group', { layout: { type: 'flex', justifyContent: 'space-between' } }, [
+                                ['core/paragraph', { content: '₹14,999' }],
+                                ['core/paragraph', { className: 'text-sm', content: '4 + 128GB' }]
+                            ]],
+                            // Specs Row
+                            ['core/group', { layout: { type: 'flex' } }, [
+                                ['core/group', { layout: { type: 'flex', flexWrap: 'nowrap' } }, [
+                                    ['core/image', { className: 'min-img', sizeSlug: 'full', url: 'https://gizmodotech.com/wp-content/uploads/2024/12/processor-gradient-icon-1.png' }],
+                                    ['core/group', { layout: { type: 'flex', orientation: 'vertical' } }, [
+                                        ['core/paragraph', { className: 'text-sm', content: 'Display' }],
+                                        ['core/paragraph', { className: 'text-sm', content: '6.7" FHD+' }]
+                                    ]]
+                                ]]
+                            ]],
+                            // Buy Row
+                            ['core/group', { layout: { type: 'flex', justifyContent: 'space-between' } }, [
+                                ['core/paragraph', { content: 'Buy Now' }],
+                                ['core/group', { layout: { type: 'flex' } }, [
+                                    ['core/image', { width: 100, url: 'https://gizmodotech.com/wp-content/uploads/2024/12/buy-amazon.png' }],
+                                    ['core/image', { width: 100, url: 'https://gizmodotech.com/wp-content/uploads/2024/12/buy-flipkart.png' }]
+                                ]]
+                            ]],
+                            // Link
+                            ['core/paragraph', { className: 'text-cm', fontSize: 'xs', content: '<a href="#">See full specifications</a>' }]
+                        ]]
+                    ]]
+                ]
+            });
+            return el('div', innerBlocksProps);
+        },
+        save: function() { return el(blockEditor.InnerBlocks.Content); }
+    });
+
 })(window.wp.blocks, window.wp.element, window.wp.components, window.wp.blockEditor, window.wp.serverSideRender);

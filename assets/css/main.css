@@ -2978,12 +2978,17 @@ body.dark-mode,
 .dark-mode .single-body td,
 .dark-mode .wp-block-table td,
 .dark-mode .wp-block-table th {
-  border-color: var(--border-color);
+  border-color: var(--border-color-2);
   color: var(--text-primary);
+  background: var(--bg-surface);
 }
 .dark-mode .single-body tr:nth-child(even) td,
 .dark-mode .wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-surface-2);
+}
+.dark-mode .wp-block-table th {
+  background: var(--color-dark-2);
+  color: #fff;
 }
 
 /* Dark Mode for Best Phones/Specs section */
