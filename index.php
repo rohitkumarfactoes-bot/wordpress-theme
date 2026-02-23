@@ -67,8 +67,8 @@ $is_search  = is_search();
 				set_query_var( 'is_hero', ( $post_index === 0 && ! is_paged() ) );
 				get_template_part( 'template-parts/content', 'archive' );
 
-				<?php $post_index++; ?>
-			<?php endwhile; ?>
+				$post_index++;
+			endwhile; ?>
 		</div><!-- /.posts-grid -->
 
 		<!-- Pagination -->

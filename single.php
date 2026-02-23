@@ -206,6 +206,15 @@ while (have_posts()) : the_post();
 					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
 					<span><?php esc_html_e('Copy Link','gizmodotech-pro'); ?></span>
 				</button>
+
+				<?php if ( $is_mobile_gallery ) : 
+					$device_slug = get_post_field( 'post_name', get_the_ID() );
+				?>
+				<a href="<?php echo esc_url( home_url( '/compare/?device1=' . $device_slug ) ); ?>" class="share-btn share-btn--compare" aria-label="<?php esc_attr_e('Compare Device','gizmodotech-pro'); ?>">
+					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>
+					<span><?php esc_html_e('Compare','gizmodotech-pro'); ?></span>
+				</a>
+				<?php endif; ?>
 			</div><!-- /.share-bar -->
 
 			<!-- Author Box -->

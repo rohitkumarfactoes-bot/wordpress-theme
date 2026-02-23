@@ -1533,6 +1533,11 @@
   color: #fff;
 }
 
+.share-btn--compare {
+  background: var(--color-accent, #F59E0B);
+  color: #0F172A;
+}
+
 .share-btn--copy {
   background: var(--bg-surface-2);
   color: var(--text-primary);
