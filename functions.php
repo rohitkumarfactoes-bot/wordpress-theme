@@ -1143,9 +1143,9 @@ function gizmo_enqueue_editor_blocks() {
 
 add_action('init', 'gizmo_register_dynamic_blocks');
 function gizmo_register_dynamic_blocks() {
-	// 1. Post Grid Block
+
 	register_block_type('gizmodotech/post-grid-block', [
-		'render_callback' => 'gizmo_shortcode_posts', // Reuses the shortcode logic
+		'render_callback' => 'gizmo_shortcode_posts', 
 		'attributes' => [
 			'count' => ['type' => 'string', 'default' => '3'],
 			'type'  => ['type' => 'string', 'default' => 'post'],
@@ -1154,30 +1154,23 @@ function gizmo_register_dynamic_blocks() {
 		]
 	]);
 
-	// 2. Pros & Cons Block
-	register_block_type('gizmodotech/pros-cons-block', [
-		'render_callback' => 'gizmo_shortcode_review_box', // Reuses the shortcode logic
-	]);
 
-	// 3. Flex Container Block
-	// This is a static block (rendered via JS save function), but we register it
-	// on the server so WordPress is aware of it and its properties.
+	register_block_type('gizmodotech/review-card');
+
 	register_block_type('gizmodotech/flex-container');
 
-	// 4. Grid Container Block
-	// Static block, registered on server.
 	register_block_type('gizmodotech/grid-container');
 
-	// 5. Product Review Block
+
 	register_block_type('gizmodotech/product-review');
 
-	// 6. Specs Card Block
+
 	register_block_type('gizmodotech/specs-card-block');
+
+	register_block_type('gizmodotech/featured-card');
 }
 
-/* ============================================================
-   COMMENT CALLBACK
-   ============================================================ */
+/* COMMENT CALLBACK*/
 function gizmo_comment_callback($comment, $args, $depth) {
 	$tag     = ( 'div' === $args['style'] ) ? 'div' : 'li';
 	$classes = implode( ' ', get_comment_class( '', $comment ) );
