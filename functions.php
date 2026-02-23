@@ -31,6 +31,10 @@ function gizmo_setup() {
 	add_theme_support('responsive-embeds');
 	add_theme_support('wp-block-styles');
 	add_theme_support('editor-styles');
+	// Load frontend stylesheets into the editor for a true WYSIWYG experience.
+	// Loads style.css (for variables), main.css (for components), and editor.css (for overrides).
+	add_editor_style( ['style.css', 'assets/css/main.css', 'assets/css/editor.css'] );
+
 	add_theme_support('appearance-tools');
 
 	// Thumbnail sizes
@@ -115,7 +119,9 @@ function gizmo_enqueue_google_fonts() {
 
 /* Editor styles */
 add_action('enqueue_block_editor_assets', function() {
-	wp_enqueue_style('gizmo-editor-styles', GIZMO_ASSETS . '/css/editor.css', [], GIZMO_VERSION);
+	// Enqueue Google Fonts in the editor to match the frontend.
+	// The stylesheets are loaded via add_editor_style() in the setup function.
+	gizmo_enqueue_google_fonts();
 });
 
 /* ============================================================
@@ -661,7 +667,7 @@ add_action('init', function() {
 	if (!function_exists('register_block_pattern_category')) return;
 	register_block_pattern_category('gizmodotech', ['label' => __('Gizmodotech Blocks', GIZMO_TEXT)]);
 
-	foreach (['bento-grid','pros-cons','specs-table'] as $pattern) {
+	foreach (['bento-grid','pros-cons','specs-table','specs-card','pros-cons-product'] as $pattern) {
 		$file = GIZMO_DIR . '/patterns/' . $pattern . '.php';
 		if (file_exists($file)) {
 			register_block_pattern('gizmodotech/' . $pattern, require $file);
@@ -835,20 +841,43 @@ function gizmo_ajax_filter_mobiles() {
 		'posts_per_page' => $count,
 	];
 
+    // Get 'mobile' category for intersection
+    $mobile_term    = get_term_by('slug', 'mobile', 'category');
+    $mobile_term_id = $mobile_term ? $mobile_term->term_id : 0;
+    $tax_query      = [];
+
+    // 1. Always require 'mobile' category if it exists
+    if ($mobile_term_id) {
+        $tax_query[] = ['taxonomy' => 'category', 'field' => 'term_id', 'terms' => $mobile_term_id];
+    }
+
     if ($cat_id > 0) {
-        $args['tax_query'] = [
-            [
-                'taxonomy' => 'category',
-                'field'    => 'term_id',
-                'terms'    => $cat_id,
-            ],
-        ];
+        // 2a. Specific brand selected
+        $tax_query[] = ['taxonomy' => 'category', 'field' => 'term_id', 'terms' => $cat_id];
     } else {
+        // 2b. "All" selected -> limit to defined filter categories (brands)
         $all_cats_str = get_theme_mod('gizmo_mobiles_filter_categories', '');
+        $brand_ids    = [];
+
         if (!empty($all_cats_str)) {
-            $all_cats_ids = array_map('intval', explode(',', $all_cats_str));
-            $args['category__in'] = $all_cats_ids;
+            $brand_ids = array_map('intval', explode(',', $all_cats_str));
+        } else {
+            // Fallback brands (same as front-page.php)
+            $brand_slugs = ['samsung', 'vivo', 'oppo', 'nothing', 'xiaomi', 'apple', 'asus', 'google', "asus", "oneplus", "realme", "motorola", "oppo", "iqoo"];
+            $brand_terms = get_terms(['taxonomy' => 'category', 'slug' => $brand_slugs, 'hide_empty' => true]);
+            if (!is_wp_error($brand_terms) && !empty($brand_terms)) {
+                $brand_ids = wp_list_pluck($brand_terms, 'term_id');
+            }
         }
+
+        if (!empty($brand_ids)) {
+            $tax_query[] = ['taxonomy' => 'category', 'field' => 'term_id', 'terms' => $brand_ids, 'operator' => 'IN'];
+        }
+    }
+
+    if (!empty($tax_query)) {
+        $tax_query['relation'] = 'AND';
+        $args['tax_query'] = $tax_query;
     }
 
 	$q = new WP_Query($args);

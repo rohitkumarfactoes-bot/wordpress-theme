@@ -335,14 +335,28 @@ if (empty($mobiles_filter_cat_ids)) {
 	}
 }
 
+// Get 'mobile' category for intersection (to ensure we only show phones)
+$mobile_term    = get_term_by('slug', 'mobile', 'category');
+$mobile_term_id = $mobile_term ? $mobile_term->term_id : 0;
+
 $initial_mobiles_args = [
 	'post_type'      => $mobiles_type,
 	'post_status'    => 'publish',
 	'posts_per_page' => $mobiles_count,
 	'post__not_in'   => $exclude_ids,
 ];
+
+$tax_query = [];
+if ($mobile_term_id) {
+	$tax_query[] = ['taxonomy' => 'category', 'field' => 'term_id', 'terms' => $mobile_term_id];
+}
 if (!empty($mobiles_filter_cat_ids)) {
-    $initial_mobiles_args['category__in'] = $mobiles_filter_cat_ids;
+	$tax_query[] = ['taxonomy' => 'category', 'field' => 'term_id', 'terms' => $mobiles_filter_cat_ids, 'operator' => 'IN'];
+}
+
+if (!empty($tax_query)) {
+	$tax_query['relation'] = 'AND';
+	$initial_mobiles_args['tax_query'] = $tax_query;
 }
 
 $mobiles_q = new WP_Query($initial_mobiles_args);

@@ -5,7 +5,129 @@
  * to ensure the editor layout functions correctly.
  */
 
+/*
+ * 1. FONT & BACKGROUND
+ * Apply base font and background color to the editor wrapper.
+ * This ensures the editor canvas matches the frontend body.
+ */
 .editor-styles-wrapper {
-    /* This is the main fix: It tells the editor's content area to be flexible and take up available space. */
-    flex: 1;
+	background-color: var(--bg-body);
+	font-family: var(--font-sans);
+	color: var(--text-primary);
+	padding: 2rem; /* Add some breathing room around the content */
+}
+
+/*
+ * 2. CONTENT WIDTH
+ * Constrain the width of blocks to match the frontend content area.
+ */
+.editor-styles-wrapper .wp-block {
+	max-width: var(--width-content);
+}
+
+.editor-styles-wrapper .wp-block[data-align="wide"] {
+	max-width: var(--width-wide);
+}
+
+.editor-styles-wrapper .wp-block[data-align="full"] {
+	max-width: none;
+}
+
+/*
+ * 3. DARK MODE SUPPORT
+ * The editor uses the `.is-dark-mode` class on the body.
+ * We find the root variables defined in style.css for dark mode
+ * and re-declare them here under the editor's dark mode selector.
+ */
+.is-dark-mode.editor-styles-wrapper {
+	--bg-body:        #0B0F1A;
+	--bg-surface:     #111827;
+	--bg-surface-2:   #1a2235;
+	--bg-nav:         #111827;
+	--text-primary:   #F1F5F9;
+	--text-secondary: #94A3B8;
+	--text-muted:     #64748B;
+	--border-color:   #1E293B;
+	--border-color-2: #334155;
+	--shadow-sm:      0 1px 3px rgba(0,0,0,.4);
+	--shadow-md:      0 4px 16px rgba(0,0,0,.5);
+	--shadow-lg:      0 10px 40px rgba(0,0,0,.6);
+	--shadow-card:    0 2px 12px rgba(0,0,0,.4);
+	--color-primary-light: #1e3a5f;
+}
+
+/*
+ * 4. Ensure body color is applied correctly in dark mode
+ */
+.is-dark-mode.editor-styles-wrapper {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+}
+
+
+/* ────────────────────────────────────────────────────────────
+   REVIEW CARD PATTERN
+   ──────────────────────────────────────────────────────────── */
+.review-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-block: 2rem;
+}
+
+.review-card__product {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.review-card__img {
+  width: 200px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.review-card__meta {
+  flex: 1;
+}
+
+.review-card__price {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.review-card__buy-btns {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-buy {
+  padding: .6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #fff !important;
+  transition: opacity .2s;
+}
+.btn-buy:hover { opacity: .9; }
+.btn-amazon { background: #FF9900; }
+.btn-flipkart { background: #2874F0; }
+
+@media (max-width: 768px) {
+  .review-card__product {
+      flex-direction: column;
+      text-align: center;
+  }
+  .review-card__buy-btns {
+      justify-content: center;
+  }
 }

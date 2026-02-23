@@ -15,28 +15,33 @@ return [
 <!-- wp:html -->
 <div class="review-card">
   <div class="review-card__product">
-    <img src="" alt="Product Name" loading="lazy" />
-    <div class="review-card__price">₹99,999</div>
-    <div class="review-card__buy-btns">
-      <a href="#" class="btn-amazon" target="_blank" rel="noopener sponsored">🛒 Buy on Amazon</a>
-      <a href="#" class="btn-flipkart" target="_blank" rel="noopener sponsored">🛍️ Buy on Flipkart</a>
+    <figure class="review-card__img">
+        <img src="https://placehold.co/600x400" alt="Product Name" />
+    </figure>
+    <div class="review-card__meta">
+        <div class="review-card__price">₹99,999</div>
+        <div class="review-card__buy-btns">
+          <a href="#" class="btn-buy btn-amazon" target="_blank" rel="noopener sponsored">Buy on Amazon</a>
+          <a href="#" class="btn-buy btn-flipkart" target="_blank" rel="noopener sponsored">Buy on Flipkart</a>
+        </div>
     </div>
   </div>
-  <div class="review-card__pros">
-    <h3>Pros</h3>
-    <ul class="review-card__pros-list">
-      <li class="pros-item">Excellent main and telephoto cameras</li>
-      <li class="pros-item">Strong battery life with fast wired charging</li>
-      <li class="pros-item">Smooth day-to-day performance</li>
-      <li class="pros-item">Optional extender adds extra reach for enthusiasts</li>
-    </ul>
-  </div>
-  <div class="review-card__cons">
-    <h3>Cons</h3>
-    <ul class="review-card__cons-list">
-      <li class="cons-item">Speakers are average for the price</li>
-      <li class="cons-item">Gets warm during extended gaming</li>
-    </ul>
+  <div class="pros-cons-main">
+    <div class="pros">
+      <h3>Pros</h3>
+      <ul>
+        <li>Excellent main and telephoto cameras</li>
+        <li>Strong battery life with fast wired charging</li>
+        <li>Smooth day-to-day performance</li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h3>Cons</h3>
+      <ul>
+        <li>Speakers are average for the price</li>
+        <li>Gets warm during extended gaming</li>
+      </ul>
+    </div>
   </div>
 </div>
 <!-- /wp:html -->
