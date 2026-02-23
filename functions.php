@@ -102,9 +102,7 @@ function gizmo_enqueue_google_fonts() {
 
 /* Editor styles */
 add_action('enqueue_block_editor_assets', function() {
-	if (file_exists(GIZMO_DIR . '/assets/css/editor.css')) {
-		wp_enqueue_style('gizmo-editor', GIZMO_ASSETS . '/css/editor.css', [], GIZMO_VERSION);
-	}
+	wp_enqueue_style('gizmo-editor-styles', GIZMO_ASSETS . '/css/editor.css', [], GIZMO_VERSION);
 });
 
 /* ============================================================
@@ -1074,6 +1072,15 @@ function gizmo_register_dynamic_blocks() {
 	register_block_type('gizmodotech/pros-cons-block', [
 		'render_callback' => 'gizmo_shortcode_review_box', // Reuses the shortcode logic
 	]);
+
+	// 3. Flex Container Block
+	// This is a static block (rendered via JS save function), but we register it
+	// on the server so WordPress is aware of it and its properties.
+	register_block_type('gizmodotech/flex-container');
+
+	// 4. Grid Container Block
+	// Static block, registered on server.
+	register_block_type('gizmodotech/grid-container');
 }
 
 /* ============================================================

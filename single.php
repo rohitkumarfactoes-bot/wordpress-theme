@@ -264,7 +264,7 @@ while (have_posts()) : the_post();
 					<a class="sidebar-related__item" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>
 						<div class="sidebar-related__thumb">
-							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=>'']); ?>
+							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=> esc_attr(get_the_title())]); ?>
 						</div>
 						<?php endif; ?>
 						<span class="sidebar-related__title"><?php the_title(); ?></span>
@@ -293,7 +293,7 @@ while (have_posts()) : the_post();
 					<a class="sidebar-related__item" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>
 						<div class="sidebar-related__thumb">
-							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=>'']); ?>
+							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=> esc_attr(get_the_title())]); ?>
 						</div>
 						<?php endif; ?>
 						<span class="sidebar-related__title"><?php the_title(); ?></span>
@@ -322,7 +322,7 @@ while (have_posts()) : the_post();
 					<a class="sidebar-related__item" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>
 						<div class="sidebar-related__thumb">
-							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=>'']); ?>
+							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=> esc_attr(get_the_title())]); ?>
 						</div>
 						<?php endif; ?>
 						<span class="sidebar-related__title"><?php the_title(); ?></span>

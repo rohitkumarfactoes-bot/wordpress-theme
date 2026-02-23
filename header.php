@@ -85,6 +85,14 @@
 
 <div class="mobile-overlay" id="mobile-overlay" aria-hidden="true"></div>
 <nav class="mobile-nav" id="mobile-nav" aria-hidden="true">
-    </nav>
+	<?php
+	wp_nav_menu([
+		'theme_location' => 'mobile',
+		'container'      => false,
+		'menu_class'     => 'mobile-nav-list',
+		'fallback_cb'    => false,
+	]);
+	?>
+</nav>
 
 <main id="main" class="site-main" role="main">
