@@ -33,7 +33,7 @@ get_header();
 				while ( have_posts() ) :
 					the_post();
 					// Use a dedicated template part for search results to allow for different markup (e.g., h3 instead of h2).
-					get_template_part( 'template-parts/content', 'search' );
+					get_template_part( 'content', 'search' );
 				endwhile;
 				?>
 			</div>

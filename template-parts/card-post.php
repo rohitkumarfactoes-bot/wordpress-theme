@@ -27,9 +27,9 @@ $read       = function_exists('gizmo_get_reading_time') ? gizmo_get_reading_time
 		</a>
 		<?php endif; ?>
 
-		<h2 class="post-card__title">
+		<h3 class="post-card__title">
 			<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-		</h2>
+		</h3>
 
 		<div class="post-card__meta">
 			<?php echo get_avatar( get_the_author_meta('email'), 28, '', '', ['class'=>'post-card__avatar'] ); ?>

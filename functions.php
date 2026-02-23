@@ -77,23 +77,36 @@ function gizmo_enqueue() {
 }
 
 /* Enqueue Google Fonts based on Customizer selection */
+/* Enqueue Google Fonts based on Customizer selection */
 function gizmo_enqueue_google_fonts() {
 	$body_font = get_theme_mod('body_font_family', "'Inter', sans-serif");
 	$head_font = get_theme_mod('heading_font_family', "'Inter', sans-serif");
 
-	$fonts = [];
+	$fonts                = [];
+	$system_font_keywords = ['System', 'system-ui', '-apple-system', 'BlinkMacSystemFont'];
+
 	foreach ([$body_font, $head_font] as $font) {
-		if (strpos($font, 'System') !== false) continue;
+		$is_system = false;
+		foreach ($system_font_keywords as $keyword) {
+			if (strpos($font, $keyword) !== false) {
+				$is_system = true;
+				break;
+			}
+		}
+		if ($is_system) continue;
+
+		// Extract font name from string like "'Inter', sans-serif"
 		if (preg_match("/'([^']+)'/", $font, $m)) {
 			$fonts[] = $m[1];
 		}
 	}
+
 	$fonts = array_unique($fonts);
 	if (empty($fonts)) return;
 
 	$font_families = [];
 	foreach ($fonts as $font) {
-		$font_families[] = 'family=' . urlencode( trim( str_replace( ["'", '"', ", sans-serif", ", serif"], "", $font ) ) ) . ':wght@300;400;500;600;700;800;900';
+		$font_families[] = 'family=' . urlencode(trim($font)) . ':wght@300;400;500;600;700;800;900';
 	}
 
 	$query_args = implode('&', $font_families);
@@ -196,14 +209,24 @@ function gizmo_output_schema() {
    ============================================================ */
 function gizmo_get_reading_time(int $post_id = 0, int $wpm = 238): array {
 	if (!$post_id) $post_id = (int) get_the_ID();
+
+	// Static cache so repeated calls in the same request don't re-query DB
+	static $cache = [];
+	if (isset($cache[$post_id])) {
+		return $cache[$post_id];
+	}
+
 	$content = wp_strip_all_tags(get_post_field('post_content', $post_id));
 	$words   = str_word_count($content);
 	$mins    = max(1, (int) ceil($words / $wpm));
-	return [
+
+	$cache[$post_id] = [
 		'minutes' => $mins,
 		'words'   => $words,
 		'label'   => sprintf(_n('%d min read', '%d min read', $mins, GIZMO_TEXT), $mins),
 	];
+
+	return $cache[$post_id];
 }
 
 /* ============================================================
@@ -567,53 +590,8 @@ function gizmo_add_num_control($wpc, $id, $section, $label, $default, $min, $max
 	$wpc->add_control($id, ['label' => $label, 'section' => $section, 'type' => 'number', 'input_attrs' => ['min' => $min, 'max' => $max, 'step' => $step]]);
 }
 
-/* Output Customizer CSS */
-add_action('wp_head', 'gizmo_customizer_css', 1000); // High priority to override main.css
-function gizmo_customizer_css() {
-	$vars = [
-		'--color-primary'      => get_theme_mod('primary_color', '#2563EB'),
-		'--color-accent'       => get_theme_mod('accent_color', '#F59E0B'),
-		'--bg-nav'             => get_theme_mod('nav_bg', '#FFFFFF'),
-		'--bg-footer'          => get_theme_mod('footer_bg', '#0F172A'),
-		'--font-sans'          => get_theme_mod('body_font_family', "'Inter', sans-serif"),
-		'--font-size-base'     => get_theme_mod('body_font_size', 16) . 'px',
-		'--font-weight-normal' => get_theme_mod('body_font_weight', '400'),
-		'--line-height-normal' => get_theme_mod('body_line_height', 1.75),
-		'--heading-font'       => get_theme_mod('heading_font_family', "'Inter', sans-serif"),
-		'--heading-weight'     => get_theme_mod('heading_font_weight', '800'),
-		'--heading-lh'         => get_theme_mod('heading_line_height', 1.2),
-		'--width-content'      => get_theme_mod('content_width', 800) . 'px',
-		'--width-wide'         => get_theme_mod('wide_width', 1320) . 'px',
-		'--radius-lg'          => get_theme_mod('card_radius', 16) . 'px',
-		'--h1'                 => get_theme_mod('h1_size', 40) . 'px',
-		'--h2'                 => get_theme_mod('h2_size', 32) . 'px',
-		'--h3'                 => get_theme_mod('h3_size', 26) . 'px',
-		'--h4'                 => get_theme_mod('h4_size', 22) . 'px',
-		'--h5'                 => get_theme_mod('h5_size', 18) . 'px',
-		'--h6'                 => get_theme_mod('h6_size', 16) . 'px',
-	];
+ 
 
-	$css_rules = [];
-	foreach ($vars as $key => $val) {
-		// Do NOT use esc_attr() on values here, as it breaks font strings containing quotes (e.g. 'Inter')
-		$css_rules[] = $key . ':' . $val;
-	}
-
-	$css  = ':root{' . implode(';', $css_rules) . '}';
-	$css .= 'body{font-family:var(--font-sans) !important;font-size:var(--font-size-base);font-weight:var(--font-weight-normal);line-height:var(--line-height-normal);}';
-	// Apply heading font family and weight to all heading elements and common heading classes with !important to ensure it overrides more specific selectors.
-	$css .= 'h1,h2,h3,h4,h5,h6,.single-title,.post-card__title,.archive-title,.widget-title,.widget__title,.section-title,.news-card__title,.horizontal-card__title,.post-item-card__title{font-family:var(--heading-font) !important;font-weight:var(--heading-weight) !important;line-height:var(--heading-lh);}';
-	
-	// Apply heading sizes with !important to override more specific selectors.
-	$css .= 'h1,.single-title,.archive-title{font-size:var(--h1) !important;}';
-	$css .= 'h2,.post-card__title{font-size:var(--h2) !important;}';
-	$css .= 'h3,.widget-title,.widget__title,.section-title,.author-box__name,.news-card__title,.horizontal-card__title,.post-item-card__title,.toc__title{font-size:var(--h3) !important;}';
-	$css .= 'h4{font-size:var(--h4) !important;}';
-	$css .= 'h5{font-size:var(--h5) !important;}';
-	$css .= 'h6{font-size:var(--h6) !important;}';
-
-	printf('<style id="gizmo-customizer">%s</style>', $css); // phpcs:ignore
-}
 
 /* ============================================================
    EXCERPT
@@ -791,7 +769,7 @@ add_action('wp_ajax_gizmo_load_more',        'gizmo_ajax_load_more');
 add_action('wp_ajax_nopriv_gizmo_load_more', 'gizmo_ajax_load_more');
 function gizmo_ajax_load_more() {
 	check_ajax_referer('gizmo_nonce', 'nonce');
-	$page = absint($_POST['page'] ?? 1);
+	$page = isset($_POST['page']) && is_numeric($_POST['page']) ? max(1, absint($_POST['page'])) : 1;
 	$cat  = absint($_POST['cat']  ?? 0);
 
 	$q = new WP_Query([

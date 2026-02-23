@@ -28,9 +28,9 @@ $read    = gizmo_get_reading_time( get_the_ID() );
 
 		<?php gizmo_the_post_categories( get_the_ID(), 'post-cat-badge' ); ?>
 
-		<h2 class="post-card__title">
+		<h3 class="post-card__title">
 			<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-		</h2>
+		</h3>
 
 		<?php if ( $is_hero ) : ?>
 		<p class="post-card__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 22 ) ); ?></p>
