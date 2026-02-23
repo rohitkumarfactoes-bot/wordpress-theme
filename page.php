@@ -13,9 +13,15 @@ $layout = get_post_meta(get_the_ID(), '_gizmo_page_layout', true) ?: 'sidebar';
 
 // Define styles for narrow layout
 $content_style = ($layout === 'narrow') ? 'max-width: 800px; margin: 0 auto;' : '';
+
+// Add a special class if this is the 'technews' or 'reviews' page.
+$container_classes = ['hp-container'];
+if ( is_page('technews') || is_page('reviews') ) {
+	$container_classes[] = 'reviews-technews';
+}
 ?>
 
-<div class="hp-container" style="padding-top: 3rem; padding-bottom: 3rem;">
+<div class="<?php echo esc_attr( implode( ' ', $container_classes ) ); ?>" style="padding-top: 3rem; padding-bottom: 3rem;">
 	
 	<?php if ( $layout === 'sidebar' ) : ?>
 	<!-- ── Layout: Sidebar (Grid) ── -->
@@ -50,7 +56,7 @@ $content_style = ($layout === 'narrow') ? 'max-width: 800px; margin: 0 auto;' : 
 			<header class="single-header">
 				<h1 class="single-title"><?php the_title(); ?></h1>
 			</header>
-			<div class="single-body">
+			<div class="single-body-wrap">
 				<?php the_content(); ?>
 			</div>
 

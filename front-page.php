@@ -139,77 +139,75 @@ endif; // end if ($slider_enabled)
      LATEST NEWS (dark strip)
      ============================================================ -->
 <?php
-// Now build and run the news query
-$news_cat_ids_str = get_theme_mod('gizmo_news_categories', '');
-$news_post_type   = get_theme_mod('gizmo_news_post_type', 'post');
-$news_count       = get_theme_mod('gizmo_news_count', 6);
-$news_cat_ids     = !empty($news_cat_ids_str) ? array_map('intval', explode(',', $news_cat_ids_str)) : [];
+// 1. Setup variables - Adjust 'technews' if your ACF slug is different
+$news_post_type = get_theme_mod('gizmo_news_post_type', 'technews'); 
+$news_count     = 6; // Force 6 cards to fix the layout
 
-// Determine the correct "View All" link based on selected post type
-$view_all_link = ($news_post_type === 'post')
-	? (get_permalink(get_option('page_for_posts')) ?: home_url('/blog/'))
-	: get_post_type_archive_link($news_post_type);
-
+// 2. The Query
 $news_args = [
-	'post_type'      => $news_post_type,
-	'post_status'    => 'publish',
-	'posts_per_page' => $news_count,
-	'post__not_in'   => $exclude_ids, // Exclude posts already shown in bento & slider
+    'post_type'           => $news_post_type,
+    'post_status'         => 'publish',
+    'posts_per_page'      => $news_count,
+    'orderby'             => 'date',
+    'order'               => 'DESC',
+    'ignore_sticky_posts' => 1,
+    // We REMOVE 'post__not_in' here so it definitely shows the 6 latest news 
+    // even if they appeared in the slider above.
 ];
-if (!empty($news_cat_ids)) {
-	$news_args['category__in'] = $news_cat_ids;
-}
+
 $news_q = new WP_Query($news_args);
 
-// Update exclusions
-if ($news_q->have_posts()) {
-	$exclude_ids = array_merge($exclude_ids, wp_list_pluck($news_q->posts, 'ID'));
-}
-
 if ($news_q->have_posts()) : ?>
-<section class="hp-section hp-section--dark" aria-label="<?php esc_attr_e('Latest News','gizmodotech-pro'); ?>">
-	<div class="hp-container">
+<section class="hp-section hp-section--dark" aria-label="Latest News">
+    <div class="hp-container">
 
-		<div class="section-title-row">
-			<h2 class="section-title">
-				<?php esc_html_e('Latest','gizmodotech-pro'); ?>
-				<span><?php esc_html_e('News','gizmodotech-pro'); ?></span>
-			</h2>
-			<a href="<?php echo esc_url($view_all_link); ?>"
-			   class="section-view-all">
-				<?php esc_html_e('View all','gizmodotech-pro'); ?> →
-			</a>
-		</div>
+        <div class="section-title-row">
+            <h2 class="section-title">
+                <?php esc_html_e('Latest','gizmodotech-pro'); ?>
+                <span><?php esc_html_e('News','gizmodotech-pro'); ?></span>
+            </h2>
+            <a href="<?php echo esc_url(get_post_type_archive_link($news_post_type)); ?>" class="section-view-all">
+                <?php esc_html_e('View all','gizmodotech-pro'); ?> →
+            </a>
+        </div>
 
-		<div class="news-row">
-			<?php while ($news_q->have_posts()) : $news_q->the_post();
-				$cats = get_the_category();
-				$cat  = $cats ? $cats[0] : null;
-			?>
-			<article <?php post_class('news-card'); ?>>
-				<?php if (has_post_thumbnail()) : ?>
-				<a class="news-card__thumb" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
-					<?php the_post_thumbnail('gizmo-thumb',['loading'=>'lazy','alt'=> esc_attr(get_the_title())]); ?>
-				</a>
-				<?php endif; ?>
-				<div class="news-card__body">
-					<?php gizmo_the_post_categories( get_the_ID(), 'post-cat-badge post-cat-badge--sm' ); ?>
-					<h3 class="news-card__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-					<div class="news-card__meta">
-						<span><?php the_author(); ?></span>
-						<span>·</span>
-						<time datetime="<?php echo esc_attr(get_the_date('c')); ?>">
-							<?php echo esc_html(human_time_diff(get_the_time('U'), current_time('timestamp'))); ?> <?php esc_html_e('ago','gizmodotech-pro'); ?>
-						</time>
-					</div>
-				</div>
-			</article>
-			<?php endwhile; wp_reset_postdata(); ?>
-		</div>
+        <div class="news-row">
+            <?php while ($news_q->have_posts()) : $news_q->the_post(); ?>
+            <article <?php post_class('news-card'); ?>>
+                <?php if (has_post_thumbnail()) : ?>
+                <a class="news-card__thumb" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
+                    <?php the_post_thumbnail('gizmo-thumb', ['loading' => 'lazy', 'alt' => esc_attr(get_the_title())]); ?>
+                </a>
+                <?php endif; ?>
+                
+                <div class="news-card__body">
+                    <?php 
+                    // Restoration of your exact theme category function
+                    if (function_exists('gizmo_the_post_categories')) {
+                        gizmo_the_post_categories(get_the_ID(), 'post-cat-badge post-cat-badge--sm');
+                    } 
+                    ?>
+                    
+                    <h3 class="news-card__title">
+                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                    </h3>
+                    
+                    <div class="news-card__meta">
+                        <span><?php the_author(); ?></span>
+                        <span>·</span>
+                        <time datetime="<?php echo esc_attr(get_the_date('c')); ?>">
+                            <?php echo esc_html(human_time_diff(get_the_time('U'), current_time('timestamp'))); ?> <?php esc_html_e('ago','gizmodotech-pro'); ?>
+                        </time>
+                    </div>
+                </div>
+            </article>
+            <?php endwhile; wp_reset_postdata(); ?>
+        </div>
 
-	</div>
+    </div>
 </section>
 <?php endif; ?>
+
 
 <!-- ============================================================
      HOW TO'S SECTION
@@ -223,7 +221,7 @@ $howto_cats     = !empty($howto_cats_str) ? array_map('intval', explode(',', $ho
 $howto_args = [
 	'post_type'      => $howto_type,
 	'post_status'    => 'publish',
-	'posts_per_page' => 4,
+	'posts_per_page' => 6,
 	'post__not_in'   => $exclude_ids,
 ];
 if (!empty($howto_cats)) { $howto_args['category__in'] = $howto_cats; }
@@ -275,7 +273,7 @@ $techtips_cats     = !empty($techtips_cats_str) ? array_map('intval', explode(',
 $techtips_args = [
 	'post_type'      => $techtips_type,
 	'post_status'    => 'publish',
-	'posts_per_page' => 4,
+	'posts_per_page' => 6,
 	'post__not_in'   => $exclude_ids,
 ];
 if (!empty($techtips_cats)) { $techtips_args['category__in'] = $techtips_cats; }
@@ -314,4 +312,73 @@ if ($techtips_q->have_posts()) :
 </section>
 <?php endif; ?>
 
-<?php get_footer();
+<!-- ============================================================
+     MOBILES SECTION
+     ============================================================ -->
+<?php
+$mobiles_title = get_theme_mod('gizmo_mobiles_title', "Mobiles");
+$mobiles_type  = get_theme_mod('gizmo_mobiles_post_type', 'post');
+$mobiles_count = get_theme_mod('gizmo_mobiles_count', 8);
+$mobiles_filter_cats_str = get_theme_mod('gizmo_mobiles_filter_categories', '');
+$mobiles_filter_cat_ids  = !empty($mobiles_filter_cats_str) ? array_map('intval', explode(',', $mobiles_filter_cats_str)) : [];
+
+// Fallback: If no categories selected, look for specific mobile brands
+if (empty($mobiles_filter_cat_ids)) {
+	$brand_slugs = ['samsung', 'vivo', 'oppo', 'nothing', 'xiaomi', 'apple', 'asus', 'google', "asus", "oneplus", "realme", "motorola", "oppo", "iqoo"];
+	$brand_terms = get_terms([
+		'taxonomy'   => 'category',
+		'slug'       => $brand_slugs,
+		'hide_empty' => true,
+	]);
+	if (!is_wp_error($brand_terms) && !empty($brand_terms)) {
+		$mobiles_filter_cat_ids = wp_list_pluck($brand_terms, 'term_id');
+	}
+}
+
+$initial_mobiles_args = [
+	'post_type'      => $mobiles_type,
+	'post_status'    => 'publish',
+	'posts_per_page' => $mobiles_count,
+	'post__not_in'   => $exclude_ids,
+];
+if (!empty($mobiles_filter_cat_ids)) {
+    $initial_mobiles_args['category__in'] = $mobiles_filter_cat_ids;
+}
+
+$mobiles_q = new WP_Query($initial_mobiles_args);
+
+if ($mobiles_q->have_posts()) :
+?>
+<section class="hp-section" aria-label="<?php echo esc_attr($mobiles_title); ?>">
+	<div class="hp-container">
+		<div class="section-title-row">
+			<h2 class="section-title" style="color:var(--text-primary);">
+				<?php echo esc_html($mobiles_title); ?>
+			</h2>
+		</div>
+
+        <?php if (!empty($mobiles_filter_cat_ids)) :
+            $filter_categories = get_categories(['include' => $mobiles_filter_cat_ids, 'hide_empty' => false]);
+        ?>
+        <nav class="mobile-filter-nav" aria-label="<?php esc_attr_e('Filter Mobiles', 'gizmodotech-pro'); ?>">
+            <button type="button" class="mobile-filter-btn is-active" data-category="0"><?php esc_html_e('All', 'gizmodotech-pro'); ?></button>
+            <?php foreach ($filter_categories as $category) : ?>
+                <button type="button" class="mobile-filter-btn" data-category="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html($category->name); ?></button>
+            <?php endforeach; ?>
+        </nav>
+        <?php endif; ?>
+
+		<div class="mobiles-grid" id="mobiles-grid-container">
+			<?php
+            while ($mobiles_q->have_posts()) :
+                $mobiles_q->the_post();
+				get_template_part('template-parts/card', 'mobile');
+			endwhile;
+            wp_reset_postdata();
+            ?>
+		</div>
+	</div>
+</section>
+<?php endif; ?>
+
+<?php get_footer(); ?>

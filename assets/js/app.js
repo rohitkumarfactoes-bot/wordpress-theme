@@ -491,6 +491,54 @@
   }
 
   /* ============================================================
+     16. MOBILE FILTERING
+     ============================================================ */
+  function initMobileFilter() {
+    const filterNav = $( '.mobile-filter-nav' );
+    if ( !filterNav || typeof GizmoData === 'undefined' ) return;
+
+    const container = $( '#mobiles-grid-container' );
+    const buttons = $$( '.mobile-filter-btn', filterNav );
+
+    filterNav.addEventListener('click', async (e) => {
+      if (!e.target.matches('.mobile-filter-btn')) return;
+
+      const btn = e.target;
+      if (btn.classList.contains('is-active')) return;
+
+      const categoryId = btn.dataset.category;
+
+      // Update active button state
+      buttons.forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+
+      // Show loading state
+      container.style.opacity = '0.5';
+      container.style.minHeight = '200px'; // prevent layout jump
+
+      try {
+        const fd = new FormData();
+        fd.append( 'action', 'gizmo_filter_mobiles' );
+        fd.append( 'nonce',  GizmoData.nonce );
+        fd.append( 'category', categoryId );
+
+        const res  = await fetch( GizmoData.ajaxUrl, { method: 'POST', body: fd } );
+        const data = await res.json();
+
+        if ( data.success ) {
+          container.innerHTML = data.data.html;
+        } else {
+          container.innerHTML = '<p>Error loading posts.</p>';
+        }
+      } catch ( err ) {
+        console.error( 'Mobile filter failed:', err );
+        container.innerHTML = '<p>Error loading posts.</p>';
+      } finally {
+        container.style.opacity = '1';
+      }
+    });
+  }
+  /* ============================================================
      INIT ALL
      ============================================================ */
 
@@ -509,6 +557,7 @@
     initLoadMore();
     initHomepageSlider();
     initMobileGallery();
+    initMobileFilter();
   }
 
   // DOM-ready

@@ -381,6 +381,33 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'section'     => 'gizmo_homepage_content',
 	]));
 
+	// Mobiles Section
+	$wp_customize->add_setting('gizmo_mobiles_title', ['default' => "Mobiles", 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control('gizmo_mobiles_title', [
+		'label'   => __('"Mobiles" Section Title', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_content',
+		'type'    => 'text',
+	]);
+	$wp_customize->add_setting('gizmo_mobiles_post_type', ['default' => 'post', 'sanitize_callback' => 'sanitize_key']);
+	$wp_customize->add_control('gizmo_mobiles_post_type', [
+		'label'   => __('"Mobiles" Post Type', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_content',
+		'type'    => 'select',
+		'choices' => $post_type_choices,
+	]);
+	$wp_customize->add_setting('gizmo_mobiles_filter_categories', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control(new Gizmo_Customize_Category_Checklist_Control($wp_customize, 'gizmo_mobiles_filter_categories', [
+		'label'       => __('"Mobiles" Filter Categories', GIZMO_TEXT),
+		'description' => __('Select categories to show as filters in the Mobiles section.', GIZMO_TEXT),
+		'section'     => 'gizmo_homepage_content',
+	]));
+    $wp_customize->add_setting('gizmo_mobiles_count', ['default' => 8, 'sanitize_callback' => 'absint']);
+	$wp_customize->add_control('gizmo_mobiles_count', [
+		'label'   => __('Number of Mobiles to Show', GIZMO_TEXT),
+		'section' => 'gizmo_homepage_content',
+		'type'    => 'number',
+	]);
+
 	/* ── Homepage Slider Section ── */
 	$wp_customize->add_section('gizmo_homepage_slider', [
 		'title'    => __('Featured Slider Section', GIZMO_TEXT),
@@ -787,6 +814,58 @@ function gizmo_ajax_load_more() {
 	wp_send_json_success([
 		'html'     => ob_get_clean(),
 		'has_more' => $q->max_num_pages > $page,
+	]);
+}
+
+/* ============================================================
+   AJAX: Filter Mobiles
+   ============================================================ */
+add_action('wp_ajax_gizmo_filter_mobiles',        'gizmo_ajax_filter_mobiles');
+add_action('wp_ajax_nopriv_gizmo_filter_mobiles', 'gizmo_ajax_filter_mobiles');
+function gizmo_ajax_filter_mobiles() {
+	check_ajax_referer('gizmo_nonce', 'nonce');
+
+	$cat_id    = isset($_POST['category']) ? absint($_POST['category']) : 0;
+    $post_type = get_theme_mod('gizmo_mobiles_post_type', 'post');
+    $count     = get_theme_mod('gizmo_mobiles_count', 8);
+
+	$args = [
+		'post_type'      => $post_type,
+		'post_status'    => 'publish',
+		'posts_per_page' => $count,
+	];
+
+    if ($cat_id > 0) {
+        $args['tax_query'] = [
+            [
+                'taxonomy' => 'category',
+                'field'    => 'term_id',
+                'terms'    => $cat_id,
+            ],
+        ];
+    } else {
+        $all_cats_str = get_theme_mod('gizmo_mobiles_filter_categories', '');
+        if (!empty($all_cats_str)) {
+            $all_cats_ids = array_map('intval', explode(',', $all_cats_str));
+            $args['category__in'] = $all_cats_ids;
+        }
+    }
+
+	$q = new WP_Query($args);
+
+	ob_start();
+	if ($q->have_posts()) {
+        while ($q->have_posts()) {
+            $q->the_post();
+            get_template_part('template-parts/card', 'mobile');
+        }
+    } else {
+        echo '<p class="no-mobiles-found">' . esc_html__('No mobiles found in this category.', 'gizmodotech-pro') . '</p>';
+    }
+	wp_reset_postdata();
+
+	wp_send_json_success([
+		'html' => ob_get_clean(),
 	]);
 }
 

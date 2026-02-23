@@ -15,9 +15,17 @@
 	// Determine context
 	$is_archive = is_archive();
 	$is_search  = is_search();
+
+	// Add custom class based on post type (e.g., archive-reviews, archive-technews)
+	$wrap_class = 'archive-wrap';
+	if ( is_post_type_archive() ) {
+		$pt = get_query_var( 'post_type' );
+		if ( is_array( $pt ) ) $pt = $pt[0]; // Handle edge case if multiple types
+		$wrap_class .= ' cpt-archive archive-' . $pt;
+	}
 	?>
 
-	<div class="archive-wrap">
+	<div class="<?php echo esc_attr( $wrap_class ); ?>">
 		<div class="archive-container">
 
 			<?php

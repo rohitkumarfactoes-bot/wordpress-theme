@@ -104,12 +104,21 @@
 <div class="mobile-overlay" id="mobile-overlay" aria-hidden="true"></div>
 <nav class="mobile-nav" id="mobile-nav" aria-hidden="true">
     <?php
-    wp_nav_menu( array(
+    // Set up arguments for the mobile menu.
+    $mobile_menu_args = array(
         'theme_location' => 'mobile',
         'container'      => false,
         'menu_class'     => 'mobile-nav-list',
         'fallback_cb'    => false,
-    ) );
+    );
+
+    // If no menu is assigned to the 'mobile' location, fall back to 'primary'.
+    // This makes the theme more user-friendly.
+    if ( ! has_nav_menu( 'mobile' ) ) {
+        $mobile_menu_args['theme_location'] = 'primary';
+    }
+
+    wp_nav_menu( $mobile_menu_args );
     ?>
 </nav>
 
