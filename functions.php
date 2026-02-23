@@ -488,19 +488,18 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 	gizmo_add_num_control($wp_customize,  'body_line_height', 'gizmo_body_typo', __('Line Height', GIZMO_TEXT), 1.75, 1.2, 2.2, 0.05);
 
 	// Heading font
-	$wp_customize->add_section('gizmo_heading_typo', ['title' => __('Heading Font', GIZMO_TEXT), 'panel' => 'gizmo_typo_panel']);
+	$wp_customize->add_section('gizmo_heading_typo', ['title' => __('Headings (H1-H6)', GIZMO_TEXT), 'panel' => 'gizmo_typo_panel']);
 	gizmo_add_font_control($wp_customize, 'heading_font_family',   'gizmo_heading_typo', __('Font Family', GIZMO_TEXT), "'Inter', sans-serif");
 	gizmo_add_weight_control($wp_customize,'heading_font_weight',  'gizmo_heading_typo', __('Font Weight', GIZMO_TEXT), '800');
 	gizmo_add_num_control($wp_customize,  'heading_line_height',   'gizmo_heading_typo', __('Line Height', GIZMO_TEXT), 1.2, 1.0, 1.8, 0.05);
 
 	// Heading Sizes (H1-H6)
-	$wp_customize->add_section('gizmo_heading_sizes', ['title' => __('Heading Sizes', GIZMO_TEXT), 'panel' => 'gizmo_typo_panel']);
-	gizmo_add_px_control($wp_customize, 'h1_size', 'gizmo_heading_sizes', 'H1 Size (px)', 40, 20, 80);
-	gizmo_add_px_control($wp_customize, 'h2_size', 'gizmo_heading_sizes', 'H2 Size (px)', 32, 18, 60);
-	gizmo_add_px_control($wp_customize, 'h3_size', 'gizmo_heading_sizes', 'H3 Size (px)', 26, 16, 50);
-	gizmo_add_px_control($wp_customize, 'h4_size', 'gizmo_heading_sizes', 'H4 Size (px)', 22, 14, 40);
-	gizmo_add_px_control($wp_customize, 'h5_size', 'gizmo_heading_sizes', 'H5 Size (px)', 18, 12, 30);
-	gizmo_add_px_control($wp_customize, 'h6_size', 'gizmo_heading_sizes', 'H6 Size (px)', 16, 10, 24);
+	gizmo_add_px_control($wp_customize, 'h1_size', 'gizmo_heading_typo', 'H1 Size (px)', 40, 20, 80);
+	gizmo_add_px_control($wp_customize, 'h2_size', 'gizmo_heading_typo', 'H2 Size (px)', 32, 18, 60);
+	gizmo_add_px_control($wp_customize, 'h3_size', 'gizmo_heading_typo', 'H3 Size (px)', 26, 16, 50);
+	gizmo_add_px_control($wp_customize, 'h4_size', 'gizmo_heading_typo', 'H4 Size (px)', 22, 14, 40);
+	gizmo_add_px_control($wp_customize, 'h5_size', 'gizmo_heading_typo', 'H5 Size (px)', 18, 12, 30);
+	gizmo_add_px_control($wp_customize, 'h6_size', 'gizmo_heading_typo', 'H6 Size (px)', 16, 10, 24);
 
 	// Layout widths
 	$wp_customize->add_section('gizmo_layout', ['title' => __('Layout Widths', GIZMO_TEXT), 'priority' => 25]);
@@ -603,13 +602,17 @@ function gizmo_customizer_css() {
 	}
 
 	$css  = ':root{' . implode(';', $css_rules) . '}';
-	// Apply body font with !important to ensure it overrides theme stylesheet defaults.
 	$css .= 'body{font-family:var(--font-sans) !important;font-size:var(--font-size-base);font-weight:var(--font-weight-normal);line-height:var(--line-height-normal);}';
-	// Apply heading font to all heading elements and common heading classes with !important to ensure it overrides more specific selectors.
-	$css .= 'h1,h2,h3,h4,h5,h6,.single-title,.post-card__title,.archive-title,.widget-title,.widget__title,.section-title{font-family:var(--heading-font) !important;font-weight:var(--heading-weight);line-height:var(--heading-lh);}';
+	// Apply heading font family and weight to all heading elements and common heading classes with !important to ensure it overrides more specific selectors.
+	$css .= 'h1,h2,h3,h4,h5,h6,.single-title,.post-card__title,.archive-title,.widget-title,.widget__title,.section-title,.news-card__title,.horizontal-card__title,.post-item-card__title{font-family:var(--heading-font) !important;font-weight:var(--heading-weight) !important;line-height:var(--heading-lh);}';
 	
-	// Apply heading sizes
-	$css .= 'h1{font-size:var(--h1);}h2{font-size:var(--h2);}h3{font-size:var(--h3);}h4{font-size:var(--h4);}h5{font-size:var(--h5);}h6{font-size:var(--h6);}';
+	// Apply heading sizes with !important to override more specific selectors.
+	$css .= 'h1,.single-title,.archive-title{font-size:var(--h1) !important;}';
+	$css .= 'h2,.post-card__title{font-size:var(--h2) !important;}';
+	$css .= 'h3,.widget-title,.widget__title,.section-title,.author-box__name,.news-card__title,.horizontal-card__title,.post-item-card__title,.toc__title{font-size:var(--h3) !important;}';
+	$css .= 'h4{font-size:var(--h4) !important;}';
+	$css .= 'h5{font-size:var(--h5) !important;}';
+	$css .= 'h6{font-size:var(--h6) !important;}';
 
 	printf('<style id="gizmo-customizer">%s</style>', $css); // phpcs:ignore
 }
@@ -966,7 +969,7 @@ function gizmo_shortcode_posts($atts) {
 		<article <?php post_class('post-card'); ?>>
 			<?php if (has_post_thumbnail()) : ?>
 			<a class="post-card__thumb" href="<?php the_permalink(); ?>">
-				<?php the_post_thumbnail('gizmo-card', ['loading'=>'lazy']); ?>
+				<?php the_post_thumbnail('gizmo-card', ['loading'=>'lazy', 'alt' => esc_attr(get_the_title())]); ?>
 			</a>
 			<?php endif; ?>
 			<div class="post-card__body">
@@ -1071,4 +1074,36 @@ function gizmo_register_dynamic_blocks() {
 	register_block_type('gizmodotech/pros-cons-block', [
 		'render_callback' => 'gizmo_shortcode_review_box', // Reuses the shortcode logic
 	]);
+}
+
+/* ============================================================
+   COMMENT CALLBACK
+   ============================================================ */
+function gizmo_comment_callback($comment, $args, $depth) {
+	$tag     = ( 'div' === $args['style'] ) ? 'div' : 'li';
+	$classes = implode( ' ', get_comment_class( '', $comment ) );
+	?>
+	<<?php echo esc_attr( $tag ); ?> id="comment-<?php comment_ID(); ?>" class="comment <?php echo esc_attr( $classes ); ?>">
+		<div class="comment__header">
+			<?php echo get_avatar( $comment, 80, '', '', [ 'class' => 'comment__avatar' ] ); ?>
+			<div>
+				<div class="comment__author-name">
+					<?php comment_author_link( $comment ); ?>
+				</div>
+				<time class="comment__date" datetime="<?php echo esc_attr( get_comment_date( 'c', $comment ) ); ?>">
+					<?php echo esc_html( get_comment_date( '', $comment ) ); ?>
+				</time>
+			</div>
+		</div>
+		<div class="comment__body">
+			<?php comment_text(); ?>
+			<?php
+			comment_reply_link( array_merge( $args, [
+				'depth'     => $depth,
+				'max_depth' => $args['max_depth'],
+			] ) );
+			?>
+		</div>
+	</<?php echo esc_attr( $tag ); ?>>
+	<?php
 }

@@ -83,9 +83,9 @@ if ($slider_enabled) :
 						<?php while ($slider_q->have_posts()) : $slider_q->the_post(); ?>
 						<div <?php post_class('post-item-card'); ?>>
 							<a href="<?php the_permalink(); ?>" class="post-item-card__thumb" tabindex="-1" aria-hidden="true">
-								<?php if (has_post_thumbnail()) : ?>
-									<?php the_post_thumbnail('gizmo-card', ['loading' => 'lazy']); ?>
-								<?php endif; ?>
+								<?php if (has_post_thumbnail()) {
+									the_post_thumbnail('gizmo-card', ['loading' => 'lazy', 'alt' => esc_attr(get_the_title())]);
+								} ?>
 							</a>
 							<div class="post-item-card__content">
 								<h3 class="post-item-card__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
@@ -111,7 +111,7 @@ if ($slider_enabled) :
 				<a href="<?php the_permalink(); ?>" class="horizontal-card">
 					<?php if (has_post_thumbnail()) : ?>
 					<div class="horizontal-card__thumb">
-						<?php the_post_thumbnail('thumbnail', ['loading' => 'lazy']); ?>
+						<?php the_post_thumbnail('thumbnail', ['loading' => 'lazy', 'alt' => esc_attr(get_the_title())]); ?>
 					</div>
 					<?php endif; ?>
 					<div class="horizontal-card__content">
@@ -189,7 +189,7 @@ if ($news_q->have_posts()) : ?>
 			<article <?php post_class('news-card'); ?>>
 				<?php if (has_post_thumbnail()) : ?>
 				<a class="news-card__thumb" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
-					<?php the_post_thumbnail('gizmo-thumb',['loading'=>'lazy','alt'=>'']); ?>
+					<?php the_post_thumbnail('gizmo-thumb',['loading'=>'lazy','alt'=> esc_attr(get_the_title())]); ?>
 				</a>
 				<?php endif; ?>
 				<div class="news-card__body">
@@ -245,7 +245,7 @@ if ($howto_q->have_posts()) :
 			<article <?php post_class('news-card'); ?> style="background:var(--bg-surface); border-color:var(--border-color);">
 				<?php if (has_post_thumbnail()) : ?>
 				<a class="news-card__thumb" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
-					<?php the_post_thumbnail('gizmo-thumb',['loading'=>'lazy']); ?>
+					<?php the_post_thumbnail('gizmo-thumb',['loading'=>'lazy', 'alt' => esc_attr(get_the_title())]); ?>
 				</a>
 				<?php endif; ?>
 				<div class="news-card__body">
@@ -296,7 +296,7 @@ if ($techtips_q->have_posts()) :
 			<article <?php post_class('news-card'); ?>>
 				<?php if (has_post_thumbnail()) : ?>
 				<a class="news-card__thumb" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
-					<?php the_post_thumbnail('gizmo-thumb',['loading'=>'lazy']); ?>
+					<?php the_post_thumbnail('gizmo-thumb',['loading'=>'lazy', 'alt' => esc_attr(get_the_title())]); ?>
 				</a>
 				<?php endif; ?>
 				<div class="news-card__body">

@@ -13,6 +13,23 @@ if ( post_password_required() ) {
 }
 ?>
 
+<?php 
+$comment_n = get_comments_number();
+?>
+
+<div class="comments-section" id="comments-section">
+
+	<!-- Toggle Button -->
+	<button class="comments-toggle" type="button" aria-expanded="false" aria-controls="comments-body" id="comments-toggle-btn">
+		<div class="comments-toggle__left">
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+			<?php printf( _n( '%s Comment', '%s Comments', $comment_n, 'gizmodotech-pro' ), '<span class="comments-toggle__count">' . number_format_i18n( $comment_n ) . '</span>' ); ?>
+		</div>
+		<svg class="comments-toggle__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+	</button>
+
+	<div class="comments-body" id="comments-body" aria-live="polite">
+
 <div class="comments-area">
 
 	<?php if ( have_comments() ) : ?>
@@ -37,7 +54,7 @@ if ( post_password_required() ) {
 				[
 					'style'       => 'ol',
 					'short_ping'  => true,
-					'avatar_size' => 48,
+					'avatar_size' => 80,
 					'callback'    => 'gizmo_comment_callback',
 				]
 			);
@@ -80,3 +97,6 @@ if ( post_password_required() ) {
 	?>
 
 </div>
+
+	</div><!-- /.comments-body -->
+</div><!-- /.comments-section -->

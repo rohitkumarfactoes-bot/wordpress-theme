@@ -16,6 +16,7 @@ get_header();
 
 // Determine context
 $is_archive = is_archive();
+$is_search  = is_search();
 ?>
 
 <div class="archive-wrap">
@@ -23,12 +24,12 @@ $is_archive = is_archive();
 
 		<?php
 		/* ── Page title for archives ── */
-		if ( $is_archive || is_search() ) :
+		if ( $is_archive || $is_search ) :
 		?>
 		<header class="archive-header">
 			<h1 class="archive-title">
 				<?php
-				if ( is_search() ) {
+				if ( $is_search ) {
 					printf(
 						/* translators: %s: search query */
 						esc_html__( 'Search Results for: "%s"', 'gizmodotech-pro' ),
@@ -63,7 +64,7 @@ $is_archive = is_archive();
 				the_post();
 
 				// Hero card for first post on first page
-				set_query_var( 'is_hero', ( $post_index === 0 && ! is_paged() && ! is_search() ) );
+				set_query_var( 'is_hero', ( $post_index === 0 && ! is_paged() && ! $is_search ) );
 				get_template_part( 'template-parts/content', 'archive' );
 
 				<?php $post_index++; ?>

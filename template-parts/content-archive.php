@@ -15,6 +15,7 @@ $read    = gizmo_get_reading_time( get_the_ID() );
 	<a class="post-card__thumb" href="<?php the_permalink(); ?>" tabindex="-1">
 		<?php the_post_thumbnail( $is_hero ? 'gizmo-hero' : 'gizmo-card', [
 			'loading' => $is_hero ? 'eager' : 'lazy',
+			'fetchpriority' => $is_hero ? 'high' : 'auto',
 			'alt'     => esc_attr( get_the_title() ),
 		] ); ?>
 		<?php if ( $is_hero ) : ?>
