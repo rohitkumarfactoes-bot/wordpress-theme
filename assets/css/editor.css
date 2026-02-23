@@ -131,3 +131,11 @@
       justify-content: center;
   }
 }
+
+/* Fix for Group blocks in editor acting as flex containers */
+.wp-block-group.pros-cons-block,
+.wp-block-group.main-cont-specs {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+}
