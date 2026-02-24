@@ -11,6 +11,7 @@
     var SelectControl = components.SelectControl;
     var PanelBody = components.PanelBody;
     var InspectorControls = blockEditor.InspectorControls;
+    var RichText = blockEditor.RichText;
     var ServerSideRender = serverSideRender.default || serverSideRender;
 
     // 1. POST GRID BLOCK
@@ -455,6 +456,75 @@
             return el('div', innerBlocksProps);
         },
         save: function() { return el(blockEditor.InnerBlocks.Content); }
+    });
+
+    // 7. PROS & CONS LIST BLOCK
+    registerBlockType('gizmodotech/pros-cons-list', {
+        title: 'Gizmo Pros & Cons List',
+        icon: 'list-view',
+        category: 'gizmodotech',
+        description: 'A static Pros and Cons list block with bullet points.',
+        attributes: {
+            prosTitle: { type: 'string', default: 'Pros:' },
+            consTitle: { type: 'string', default: 'Cons:' },
+            prosList: { type: 'string', source: 'html', selector: '.pros ul', default: '<li>Item 1</li><li>Item 2</li>' },
+            consList: { type: 'string', source: 'html', selector: '.cons ul', default: '<li>Item 1</li><li>Item 2</li>' }
+        },
+        edit: function(props) {
+            var attributes = props.attributes;
+            var setAttributes = props.setAttributes;
+
+            return el('div', { className: 'pros-cons-main' },
+                el('div', { className: 'pros' },
+                    el('p', {}, 
+                        el(RichText, {
+                            tagName: 'strong',
+                            value: attributes.prosTitle,
+                            onChange: function(val) { setAttributes({ prosTitle: val }); },
+                            placeholder: 'Pros Label'
+                        })
+                    ),
+                    el(RichText, {
+                        tagName: 'ul',
+                        multiline: 'li',
+                        value: attributes.prosList,
+                        onChange: function(val) { setAttributes({ prosList: val }); },
+                        placeholder: 'Add pros list...'
+                    })
+                ),
+                el('div', { className: 'cons' },
+                    el('p', {}, 
+                        el(RichText, {
+                            tagName: 'strong',
+                            value: attributes.consTitle,
+                            onChange: function(val) { setAttributes({ consTitle: val }); },
+                            placeholder: 'Cons Label'
+                        })
+                    ),
+                    el(RichText, {
+                        tagName: 'ul',
+                        multiline: 'li',
+                        value: attributes.consList,
+                        onChange: function(val) { setAttributes({ consList: val }); },
+                        placeholder: 'Add cons list...'
+                    })
+                )
+            );
+        },
+        save: function(props) {
+            var attributes = props.attributes;
+
+            return el('div', { className: 'pros-cons-main' },
+                el('div', { className: 'pros' },
+                    el('p', {}, el(RichText.Content, { tagName: 'strong', value: attributes.prosTitle })),
+                    el(RichText.Content, { tagName: 'ul', value: attributes.prosList })
+                ),
+                el('div', { className: 'cons' },
+                    el('p', {}, el(RichText.Content, { tagName: 'strong', value: attributes.consTitle })),
+                    el(RichText.Content, { tagName: 'ul', value: attributes.consList })
+                )
+            );
+        }
     });
 
 })(window.wp.blocks, window.wp.element, window.wp.components, window.wp.blockEditor, window.wp.serverSideRender);

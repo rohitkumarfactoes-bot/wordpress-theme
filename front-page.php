@@ -395,4 +395,65 @@ if ($mobiles_q->have_posts()) :
 </section>
 <?php endif; ?>
 
+<!-- ============================================================
+     CAROUSEL SLIDER SECTION
+     ============================================================ -->
+<?php
+$carousel_enabled = get_theme_mod('gizmo_carousel_enabled', false);
+
+if ($carousel_enabled) :
+	$carousel_title = get_theme_mod('gizmo_carousel_title', 'Trending Now');
+	$carousel_type  = get_theme_mod('gizmo_carousel_post_type', 'post');
+	$carousel_count = get_theme_mod('gizmo_carousel_count', 8);
+	$carousel_cats_str = get_theme_mod('gizmo_carousel_categories', '');
+	$carousel_cats     = !empty($carousel_cats_str) ? array_map('intval', explode(',', $carousel_cats_str)) : [];
+
+	$carousel_args = [
+		'post_type'      => $carousel_type,
+		'post_status'    => 'publish',
+		'posts_per_page' => $carousel_count,
+		'post__not_in'   => $exclude_ids,
+	];
+	if (!empty($carousel_cats)) { $carousel_args['category__in'] = $carousel_cats; }
+
+	$carousel_q = new WP_Query($carousel_args);
+
+	if ($carousel_q->have_posts()) :
+?>
+<section class="hp-section hp-carousel-section" aria-label="<?php echo esc_attr($carousel_title); ?>">
+	<div class="hp-container">
+		<div class="section-title-row">
+			<h2 class="section-title" style="color:var(--text-primary);">
+				<?php echo esc_html($carousel_title); ?>
+			</h2>
+		</div>
+		
+		<div class="carousel-container">
+			<button class="carousel-btn carousel-btn-prev" aria-label="<?php esc_attr_e('Previous', 'gizmodotech-pro'); ?>">&#x276E;</button>
+			<div class="carousel-track">
+				<?php while ($carousel_q->have_posts()) : $carousel_q->the_post(); ?>
+					<?php get_template_part('template-parts/card', 'post'); // Re-using standard post card or create a specific one ?>
+					<!-- If template part doesn't exist, it will fallback or you can inline card HTML here. 
+					     For this example, I'll assume standard post card structure is desired, but wrapped in a specific class via JS/CSS -->
+					<div class="carousel-card-wrap">
+						<article <?php post_class('post-card'); ?>>
+							<a class="post-card__thumb" href="<?php the_permalink(); ?>">
+								<?php if (has_post_thumbnail()) { the_post_thumbnail('gizmo-card', ['loading'=>'lazy']); } ?>
+							</a>
+							<div class="post-card__body">
+								<h3 class="post-card__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+								<div class="post-card__meta">
+									<span class="post-card__date"><?php echo get_the_date(); ?></span>
+								</div>
+							</div>
+						</article>
+					</div>
+				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+			<button class="carousel-btn carousel-btn-next" aria-label="<?php esc_attr_e('Next', 'gizmodotech-pro'); ?>">&#x276F;</button>
+		</div>
+	</div>
+</section>
+<?php endif; endif; ?>
+
 <?php get_footer(); ?>

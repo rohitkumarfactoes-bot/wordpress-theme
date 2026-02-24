@@ -538,6 +538,58 @@
       }
     });
   }
+
+  /* ============================================================
+     17. CAROUSEL SLIDER (Generic)
+     ============================================================ */
+  function initCarouselSlider() {
+    const containers = $$('.carousel-container');
+    if (!containers.length) return;
+
+    containers.forEach(container => {
+      const track = $('.carousel-track', container);
+      const prevBtn = $('.carousel-btn-prev', container);
+      const nextBtn = $('.carousel-btn-next', container);
+      
+      if (!track || !prevBtn || !nextBtn) return;
+
+      let scrollAmount = 0;
+      
+      // Calculate scroll step based on first card width + gap
+      const getScrollStep = () => {
+        const card = track.firstElementChild;
+        if (!card) return 300;
+        const style = window.getComputedStyle(card);
+        return card.offsetWidth + parseFloat(style.marginRight || 0) + 24; // 24 is gap
+      };
+
+      const updateButtons = () => {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        prevBtn.disabled = track.scrollLeft <= 0;
+        nextBtn.disabled = track.scrollLeft >= maxScroll - 5; // tolerance
+      };
+
+      prevBtn.addEventListener('click', () => {
+        track.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
+      });
+
+      nextBtn.addEventListener('click', () => {
+        track.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
+      });
+
+      track.addEventListener('scroll', () => {
+        // Debounce button update
+        if(track.timeout) clearTimeout(track.timeout);
+        track.timeout = setTimeout(updateButtons, 100);
+      });
+
+      // Initial check
+      updateButtons();
+      // Check on resize
+      window.addEventListener('resize', updateButtons);
+    });
+  }
+
   /* ============================================================
      INIT ALL
      ============================================================ */
@@ -558,6 +610,7 @@
     initHomepageSlider();
     initMobileGallery();
     initMobileFilter();
+    initCarouselSlider();
   }
 
   // DOM-ready

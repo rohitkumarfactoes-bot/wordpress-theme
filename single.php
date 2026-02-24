@@ -167,17 +167,6 @@ while (have_posts()) : the_post();
 			]);
 			?>
 
-			<!-- Tags -->
-			<?php if ($tags) : ?>
-			<div class="post-tags" aria-label="<?php esc_attr_e('Post Tags','gizmodotech-pro'); ?>">
-				<?php foreach ($tags as $tag) : ?>
-				<a class="post-tag" href="<?php echo esc_url(get_tag_link($tag->term_id)); ?>" rel="tag">
-					#<?php echo esc_html($tag->name); ?>
-				</a>
-				<?php endforeach; ?>
-			</div>
-			<?php endif; ?>
-
 			<!-- Share Bar -->
 			<div class="share-bar" aria-label="<?php esc_attr_e('Share this article','gizmodotech-pro'); ?>">
 				<span class="share-bar__label"><?php esc_html_e('Share:','gizmodotech-pro'); ?></span>
@@ -263,14 +252,47 @@ while (have_posts()) : the_post();
 			<?php endif; ?>
 			
 			
+			<!-- Amazon Products OR Related Posts -->
+			<?php
+			$amazon_products = [];
+			if (function_exists('gizmo_get_amazon_products')) {
+				// Use post title as keyword, stripping common words if needed
+				$amazon_products = gizmo_get_amazon_products(get_the_title());
+			}
 
-			<!-- Related Posts with thumbnails -->
+			if (!empty($amazon_products)) : 
+				$amz_title = get_theme_mod('gizmo_amazon_title', 'Buy on Amazon');
+			?>
+			<div class="sidebar-widget sidebar-amazon">
+				<h3 class="sidebar-widget__title"><?php echo esc_html($amz_title); ?></h3>
+				<div class="sidebar-amazon-list">
+					<?php foreach ($amazon_products as $item) : 
+						$img = $item['Images']['Primary']['Small']['URL'] ?? '';
+						$url = $item['DetailPageURL'] ?? '#';
+						$title = $item['ItemInfo']['Title']['DisplayValue'] ?? '';
+						$price = $item['Offers']['Listings'][0]['Price']['DisplayAmount'] ?? 'Check Price';
+					?>
+					<a class="sidebar-amazon-item" href="<?php echo esc_url($url); ?>" target="_blank" rel="nofollow noopener">
+						<?php if ($img) : ?><div class="sidebar-amazon-thumb"><img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy"></div><?php endif; ?>
+						<div class="sidebar-amazon-details">
+							<span class="sidebar-amazon-title"><?php echo esc_html($title); ?></span>
+							<span class="sidebar-amazon-price"><?php echo esc_html($price); ?></span>
+						</div>
+					</a>
+					<?php endforeach; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+
+			<!-- Related Posts -->
 			<?php if ($related && $related->have_posts()) : ?>
 			<div class="sidebar-widget">
 				<h3 class="sidebar-widget__title"><?php esc_html_e('Related Post','gizmodotech-pro'); ?></h3>
 				<div class="sidebar-related">
-					<?php while ($related->have_posts()) : $related->the_post(); ?>
-					<a class="sidebar-related__item" href="<?php the_permalink(); ?>">
+					<?php while ($related->have_posts()) : $related->the_post(); 
+						$is_mob = ( has_category('mobile') || get_post_type() === 'mobile' ) ? 'type-mobile' : '';
+					?>
+					<a class="sidebar-related__item <?php echo esc_attr($is_mob); ?>" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>
 						<div class="sidebar-related__thumb">
 							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=> esc_attr(get_the_title())]); ?>
@@ -298,8 +320,10 @@ while (have_posts()) : the_post();
 			<div class="sidebar-widget">
 				<h3 class="sidebar-widget__title"><?php esc_html_e('Latest Tech News','gizmodotech-pro'); ?></h3>
 				<div class="sidebar-related">
-					<?php while ($technews_q->have_posts()) : $technews_q->the_post(); ?>
-					<a class="sidebar-related__item" href="<?php the_permalink(); ?>">
+					<?php while ($technews_q->have_posts()) : $technews_q->the_post(); 
+						$is_mob = ( has_category('mobile') || get_post_type() === 'mobile' ) ? 'type-mobile' : '';
+					?>
+					<a class="sidebar-related__item <?php echo esc_attr($is_mob); ?>" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>
 						<div class="sidebar-related__thumb">
 							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=> esc_attr(get_the_title())]); ?>
@@ -327,8 +351,10 @@ while (have_posts()) : the_post();
 			<div class="sidebar-widget">
 				<h3 class="sidebar-widget__title"><?php esc_html_e('Latest Reviews','gizmodotech-pro'); ?></h3>
 				<div class="sidebar-related">
-					<?php while ($reviews_q->have_posts()) : $reviews_q->the_post(); ?>
-					<a class="sidebar-related__item" href="<?php the_permalink(); ?>">
+					<?php while ($reviews_q->have_posts()) : $reviews_q->the_post(); 
+						$is_mob = ( has_category('mobile') || get_post_type() === 'mobile' ) ? 'type-mobile' : '';
+					?>
+					<a class="sidebar-related__item <?php echo esc_attr($is_mob); ?>" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>
 						<div class="sidebar-related__thumb">
 							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=> esc_attr(get_the_title())]); ?>
