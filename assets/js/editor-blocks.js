@@ -11,6 +11,7 @@
     var SelectControl = components.SelectControl;
     var PanelBody = components.PanelBody;
     var InspectorControls = blockEditor.InspectorControls;
+    var InnerBlocks = blockEditor.InnerBlocks;
     var RichText = blockEditor.RichText;
     var ServerSideRender = serverSideRender.default || serverSideRender;
 
@@ -532,61 +533,149 @@
         title: 'Gizmo Carousel Slider',
         icon: 'slides',
         category: 'gizmodotech',
-        description: 'A post carousel slider.',
+        description: 'A simple image slider. Add Image blocks inside.',
         attributes: {
-            title: { type: 'string', default: 'Trending Now' },
-            postType: { type: 'string', default: 'post' },
-            count: { type: 'string', default: '8' },
-            categories: { type: 'string', default: '' }
+            autoplay: { type: 'boolean', default: true },
+            speed: { type: 'number', default: 3000 }
         },
         edit: function(props) {
             var attributes = props.attributes;
             var setAttributes = props.setAttributes;
+            var blockProps = blockEditor.useBlockProps({ className: 'gizmo-slider-block' });
+            var innerBlocksProps = blockEditor.useInnerBlocksProps(blockProps, {
+                allowedBlocks: ['core/image'],
+                template: [['core/image'], ['core/image']],
+                orientation: 'horizontal'
+            });
 
-            return el(
-                element.Fragment,
-                {},
-                el(
-                    InspectorControls,
-                    {},
-                    el(
-                        PanelBody,
-                        { title: 'Carousel Settings', initialOpen: true },
-                        el(TextControl, {
-                            label: 'Section Title',
-                            value: attributes.title,
-                            onChange: function(val) { setAttributes({ title: val }); }
-                        }),
-                        el(SelectControl, {
-                            label: 'Post Type',
-                            value: attributes.postType,
-                            options: [
-                                { label: 'Standard Posts', value: 'post' },
-                                { label: 'Tech News', value: 'technews' },
-                                { label: 'Reviews', value: 'reviews' }
-                            ],
-                            onChange: function(val) { setAttributes({ postType: val }); }
+            return el(element.Fragment, {},
+                el(InspectorControls, {},
+                    el(PanelBody, { title: 'Slider Settings', initialOpen: true },
+                        el(ToggleControl, {
+                            label: 'Autoplay',
+                            checked: attributes.autoplay,
+                            onChange: function(val) { setAttributes({ autoplay: val }); }
                         }),
                         el(TextControl, {
-                            label: 'Number of Posts',
-                            value: attributes.count,
+                            label: 'Autoplay Speed (ms)',
+                            value: attributes.speed,
                             type: 'number',
-                            onChange: function(val) { setAttributes({ count: val }); }
-                        }),
-                        el(TextControl, {
-                            label: 'Category IDs (comma separated)',
-                            value: attributes.categories,
-                            onChange: function(val) { setAttributes({ categories: val }); }
+                            onChange: function(val) { setAttributes({ speed: parseInt(val) }); }
                         })
                     )
                 ),
-                el(ServerSideRender, {
-                    block: 'gizmodotech/carousel-slider',
-                    attributes: attributes
-                })
+                el('div', innerBlocksProps)
             );
         },
-        save: function() { return null; }
+        save: function(props) {
+            var blockProps = blockEditor.useBlockProps.save({ className: 'gizmo-slider-block' });
+            return el('div', blockProps,
+                el('div', { className: 'gizmo-slider-track' }, el(InnerBlocks.Content)),
+                el('button', { className: 'gizmo-slider-btn prev', 'aria-label': 'Previous' }, '❮'),
+                el('button', { className: 'gizmo-slider-btn next', 'aria-label': 'Next' }, '❯')
+            );
+        }
+    });
+
+  // 9. FAQ CONTAINER BLOCK
+registerBlockType('gizmodotech/faq-container', {
+    title: 'Gizmo FAQ Accordion',
+    icon: 'format-chat',
+    category: 'gizmodotech',
+    description: 'A container for FAQ items.',
+    
+    // Removed unused 'props' from edit
+    edit: function() {
+        const blockProps = blockEditor.useBlockProps({ 
+            className: 'gizmo-faq-container' 
+        });
+        
+        const innerBlocksProps = blockEditor.useInnerBlocksProps(blockProps, {
+            allowedBlocks: ['gizmodotech/faq-item'],
+            template: [['gizmodotech/faq-item'], ['gizmodotech/faq-item']]
+        });
+
+        return el('div', innerBlocksProps);
+    },
+
+    // Removed unused 'props' from save
+    save: function() {
+        const blockProps = blockEditor.useBlockProps.save({ 
+            className: 'gizmo-faq-container',
+            itemScope: true, // Schema.org microdata
+            itemType: 'https://schema.org/FAQPage'
+        });
+
+        return el('div', blockProps, el(blockEditor.InnerBlocks.Content));
+    }
+});
+
+    // 10. FAQ ITEM BLOCK
+    registerBlockType('gizmodotech/faq-item', {
+        title: 'FAQ Item',
+        icon: 'plus',
+        category: 'gizmodotech',
+        parent: ['gizmodotech/faq-container'],
+        attributes: {
+            question: { type: 'string', default: 'Question?' },
+            answer: { type: 'string', source: 'html', selector: '.gizmo-faq-answer-content' }
+        },
+        edit: function(props) {
+            var attributes = props.attributes;
+            var setAttributes = props.setAttributes;
+            var blockProps = blockEditor.useBlockProps({ className: 'gizmo-faq-item' });
+
+            return el('div', blockProps,
+                el('div', { className: 'gizmo-faq-header' },
+                    el(RichText, {
+                        tagName: 'h4',
+                        className: 'gizmo-faq-question',
+                        value: attributes.question,
+                        onChange: function(val) { setAttributes({ question: val }); },
+                        placeholder: 'Enter Question...'
+                    }),
+                    el('span', { className: 'gizmo-faq-icon' }, '+')
+                ),
+                el('div', { className: 'gizmo-faq-body' },
+                    el(RichText, {
+                        tagName: 'div',
+                        className: 'gizmo-faq-answer-content',
+                        value: attributes.answer,
+                        onChange: function(val) { setAttributes({ answer: val }); },
+                        placeholder: 'Enter Answer...'
+                    })
+                )
+            );
+        },
+        save: function(props) {
+            var attributes = props.attributes;
+            var blockProps = blockEditor.useBlockProps.save({ 
+                className: 'gizmo-faq-item',
+                itemScope: true,
+                itemProp: 'mainEntity',
+                itemType: 'https://schema.org/Question'
+            });
+
+            return el('div', blockProps,
+                el('button', { className: 'gizmo-faq-trigger', 'aria-expanded': 'false' },
+                    el('span', { className: 'gizmo-faq-question', itemProp: 'name' }, attributes.question),
+                    el('span', { className: 'gizmo-faq-icon' }, 
+                        el('svg', { width: '24', height: '24', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, el('path', { d: 'M6 9l6 6 6-6' }))
+                    )
+                ),
+                el('div', { 
+                    className: 'gizmo-faq-content', 
+                    hidden: true,
+                    itemScope: true,
+                    itemProp: 'acceptedAnswer',
+                    itemType: 'https://schema.org/Answer'
+                },
+                    el('div', { itemProp: 'text' },
+                        el(RichText.Content, { tagName: 'div', className: 'gizmo-faq-answer-content', value: attributes.answer })
+                    )
+                )
+            );
+        }
     });
 
 })(window.wp.blocks, window.wp.element, window.wp.components, window.wp.blockEditor, window.wp.serverSideRender);

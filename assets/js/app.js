@@ -543,31 +543,17 @@
      17. CAROUSEL SLIDER (Generic)
      ============================================================ */
   function initCarouselSlider() {
-    const containers = $$('.carousel-container');
+    const containers = $$('.gizmo-slider-block');
     if (!containers.length) return;
 
     containers.forEach(container => {
-      const track = $('.carousel-track', container);
-      const prevBtn = $('.carousel-btn-prev', container);
-      const nextBtn = $('.carousel-btn-next', container);
+      const track = $('.gizmo-slider-track', container);
+      const prevBtn = $('.gizmo-slider-btn.prev', container);
+      const nextBtn = $('.gizmo-slider-btn.next', container);
       
       if (!track || !prevBtn || !nextBtn) return;
 
-      let scrollAmount = 0;
-      
-      // Calculate scroll step based on first card width + gap
-      const getScrollStep = () => {
-        const card = track.firstElementChild;
-        if (!card) return 300;
-        const style = window.getComputedStyle(card);
-        return card.offsetWidth + parseFloat(style.marginRight || 0) + 24; // 24 is gap
-      };
-
-      const updateButtons = () => {
-        const maxScroll = track.scrollWidth - track.clientWidth;
-        prevBtn.disabled = track.scrollLeft <= 0;
-        nextBtn.disabled = track.scrollLeft >= maxScroll - 5; // tolerance
-      };
+      const getScrollStep = () => track.clientWidth;
 
       prevBtn.addEventListener('click', () => {
         track.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
@@ -576,59 +562,67 @@
       nextBtn.addEventListener('click', () => {
         track.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
       });
-
-      track.addEventListener('scroll', () => {
-        // Debounce button update
-        if(track.timeout) clearTimeout(track.timeout);
-        track.timeout = setTimeout(updateButtons, 100);
-      });
-
-      // Initial check
-      updateButtons();
-      // Check on resize
-      window.addEventListener('resize', updateButtons);
     });
   }
 
   /* ============================================================
-     18. AMAZON SIDEBAR LOADER (Async)
+     19. CUSTOM FAQ ACCORDION
      ============================================================ */
-  function initAmazonLoader() {
-    const container = $('#gizmo-amazon-sidebar');
-    console.log('Amazon Loader Init: Checking container...');
+  function initCustomFAQ() {
+    const triggers = $$('.gizmo-faq-trigger');
+    if (!triggers.length) return;
 
-    if (!container || typeof GizmoData === 'undefined') {
-        console.warn('Amazon Loader: Container or GizmoData missing.');
-        return;
-    }
+    triggers.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.gizmo-faq-item');
+        const content = item.querySelector('.gizmo-faq-content');
+        const isExpanded = btn.getAttribute('aria-expanded') === 'true';
 
-    const keyword = container.dataset.keyword;
-    if (!keyword) {
-        console.warn('Amazon Loader: No keyword found in dataset.');
-        return;
-    }
+        btn.setAttribute('aria-expanded', !isExpanded);
+        content.hidden = isExpanded;
+        item.classList.toggle('is-active', !isExpanded);
+      });
+    });
+  }
 
-    console.log('Amazon Loader: Fetching products for keyword:', keyword);
+/* ============================================================
+   18. AMAZON SIDEBAR LOADER (Async)
+   ============================================================ */
+function initAmazonLoader() {
+  const container = document.getElementById('gizmo-amazon-sidebar');
+  if (!container || typeof GizmoData === 'undefined') return;
 
-    const fd = new FormData();
-    fd.append('action', 'gizmo_load_amazon_products');
-    fd.append('nonce', GizmoData.nonce);
-    fd.append('keyword', keyword);
+  const keyword = container.dataset.keyword;
+  if (!keyword) return;
 
-    fetch(GizmoData.ajaxUrl, { method: 'POST', body: fd })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Amazon Loader: Server Response:', data);
-        if (data.success && data.data.html) {
-          container.innerHTML = data.data.html;
-          console.log('Amazon Loader: HTML injected successfully.');
-        } else {
-          console.error('Amazon Loader: Success was false or HTML missing.');
-        }
-      })
-      .catch(err => console.error('Amazon load failed:', err));
+  const fd = new FormData();
+  fd.append('action', 'gizmo_load_amazon_products');
+  fd.append('nonce', GizmoData.nonce);
+  fd.append('keyword', keyword);
+
+  fetch(GizmoData.ajaxUrl, { method: 'POST', body: fd })
+    .then(res => res.json())
+    .then(data => {
+
+      // ── Print PHP debug log in console ──
+      if (data.data && data.data.debug) {
+        console.group('🛒 Amazon Creator API Debug');
+        data.data.debug.forEach(line => console.log(line));
+        console.groupEnd();
+      }
+
+      if (data.success && data.data.html) {
+        container.innerHTML = data.data.html;
+      } else {
+        console.error('Amazon Error:', data.data?.message ?? 'Unknown');
+        container.style.display = 'none';
+      }
+    })
+    .catch(err => {
+      console.error('Amazon fetch error:', err);
+      container.style.display = 'none';
+    });
 }
-
   /* ============================================================
      INIT ALL
      ============================================================ */
@@ -651,6 +645,7 @@
     initMobileFilter();
     initCarouselSlider();
     initAmazonLoader();
+    initCustomFAQ();
   }
 
   // DOM-ready

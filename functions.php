@@ -9,7 +9,7 @@
 defined('ABSPATH') || exit;
 
 /* ── Constants ── */
-define('GIZMO_VERSION', wp_get_theme()->get('Version') ?: '1.0.0');
+define('GIZMO_VERSION', wp_get_theme()->get('Version') ?: '2.2.0');
 define('GIZMO_DIR',     get_template_directory());
 define('GIZMO_URI',     get_template_directory_uri());
 define('GIZMO_ASSETS',  GIZMO_URI . '/assets');
@@ -80,7 +80,6 @@ function gizmo_enqueue() {
 	gizmo_enqueue_google_fonts();
 }
 
-/* Enqueue Google Fonts based on Customizer selection */
 /* Enqueue Google Fonts based on Customizer selection */
 function gizmo_enqueue_google_fonts() {
 	$body_font = get_theme_mod('body_font_family', "'Inter', sans-serif");
@@ -514,24 +513,29 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'type'    => 'checkbox',
 	]);
 
-	$wp_customize->add_setting('gizmo_amazon_access_key', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
-	$wp_customize->add_control('gizmo_amazon_access_key', ['label' => 'Access Key ID', 'section' => 'gizmo_amazon_section', 'type' => 'text']);
+	$wp_customize->add_setting('gizmo_creators_client_id', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control('gizmo_creators_client_id', ['label' => 'Creator API Client ID', 'section' => 'gizmo_amazon_section', 'type' => 'text']);
 
-	$wp_customize->add_setting('gizmo_amazon_secret_key', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
-	$wp_customize->add_control('gizmo_amazon_secret_key', ['label' => 'Secret Access Key', 'section' => 'gizmo_amazon_section', 'type' => 'password']);
+	$wp_customize->add_setting('gizmo_creators_client_secret', ['default' => '', 'sanitize_callback' => function($i){return trim($i);}]);
+	$wp_customize->add_control('gizmo_creators_client_secret', ['label' => 'Creator API Client Secret', 'section' => 'gizmo_amazon_section', 'type' => 'password']);
 
 	$wp_customize->add_setting('gizmo_amazon_associate_tag', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
-	$wp_customize->add_control('gizmo_amazon_associate_tag', ['label' => 'Associate Tag (Partner Tag)', 'section' => 'gizmo_amazon_section', 'type' => 'text']);
+	$wp_customize->add_control('gizmo_amazon_associate_tag', [
+		'label'       => 'Associate Tag (Partner Tag)',
+		'description' => 'Enter your Store ID here (e.g., yourname-21).',
+		'section'     => 'gizmo_amazon_section',
+		'type'        => 'text'
+	]);
 
-	$wp_customize->add_setting('gizmo_amazon_region', ['default' => 'in', 'sanitize_callback' => 'sanitize_key']);
-	$wp_customize->add_control('gizmo_amazon_region', [
-		'label'   => __('Amazon Region', GIZMO_TEXT),
+	$wp_customize->add_setting('gizmo_amazon_marketplace', ['default' => 'www.amazon.in', 'sanitize_callback' => 'sanitize_text_field']);
+	$wp_customize->add_control('gizmo_amazon_marketplace', [
+		'label'   => __('Amazon Marketplace', GIZMO_TEXT),
 		'section' => 'gizmo_amazon_section',
 		'type'    => 'select',
 		'choices' => [
-			'in' => 'India (webservices.amazon.in)',
-			'us' => 'USA (webservices.amazon.com)',
-			'uk' => 'UK (webservices.amazon.co.uk)',
+			'www.amazon.in' => 'India (www.amazon.in)',
+			'www.amazon.com' => 'USA (www.amazon.com)',
+			'www.amazon.co.uk' => 'UK (www.amazon.co.uk)',
 		],
 	]);
 
@@ -540,48 +544,6 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'label'   => __('Widget Title', GIZMO_TEXT),
 		'section' => 'gizmo_amazon_section',
 		'type'    => 'text',
-	]);
-
-	/* ── Carousel Slider Section ── */
-	$wp_customize->add_section('gizmo_carousel_section', [
-		'title'    => __('Carousel Slider', GIZMO_TEXT),
-		'panel'    => 'gizmo_homepage_panel',
-		'priority' => 40,
-	]);
-
-	$wp_customize->add_setting('gizmo_carousel_enabled', ['default' => false, 'sanitize_callback' => 'wp_validate_boolean']);
-	$wp_customize->add_control('gizmo_carousel_enabled', [
-		'label'   => __('Enable Carousel', GIZMO_TEXT),
-		'section' => 'gizmo_carousel_section',
-		'type'    => 'checkbox',
-	]);
-
-	$wp_customize->add_setting('gizmo_carousel_title', ['default' => 'Trending Now', 'sanitize_callback' => 'sanitize_text_field']);
-	$wp_customize->add_control('gizmo_carousel_title', [
-		'label'   => __('Section Title', GIZMO_TEXT),
-		'section' => 'gizmo_carousel_section',
-		'type'    => 'text',
-	]);
-
-	$wp_customize->add_setting('gizmo_carousel_post_type', ['default' => 'post', 'sanitize_callback' => 'sanitize_key']);
-	$wp_customize->add_control('gizmo_carousel_post_type', [
-		'label'   => __('Post Type', GIZMO_TEXT),
-		'section' => 'gizmo_carousel_section',
-		'type'    => 'select',
-		'choices' => $post_type_choices,
-	]);
-
-	$wp_customize->add_setting('gizmo_carousel_categories', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
-	$wp_customize->add_control(new Gizmo_Customize_Category_Checklist_Control($wp_customize, 'gizmo_carousel_categories', [
-		'label'       => __('Categories', GIZMO_TEXT),
-		'section'     => 'gizmo_carousel_section',
-	]));
-
-	$wp_customize->add_setting('gizmo_carousel_count', ['default' => 8, 'sanitize_callback' => 'absint']);
-	$wp_customize->add_control('gizmo_carousel_count', [
-		'label'   => __('Number of Posts', GIZMO_TEXT),
-		'section' => 'gizmo_carousel_section',
-		'type'    => 'number',
 	]);
 
 	/* ── Social URLs ── */
@@ -1252,15 +1214,7 @@ function gizmo_register_dynamic_blocks() {
 
 	register_block_type('gizmodotech/featured-card');
 
-	register_block_type('gizmodotech/carousel-slider', [
-		'render_callback' => 'gizmo_render_carousel_block',
-		'attributes' => [
-			'title'      => ['type' => 'string', 'default' => 'Trending Now'],
-			'postType'   => ['type' => 'string', 'default' => 'post'],
-			'count'      => ['type' => 'string', 'default' => '8'],
-			'categories' => ['type' => 'string', 'default' => ''],
-		]
-	]);
+	register_block_type('gizmodotech/carousel-slider');
 }
 
 /* COMMENT CALLBACK*/
@@ -1298,143 +1252,216 @@ function gizmo_comment_callback($comment, $args, $depth) {
    ============================================================ */
 add_action('wp_ajax_gizmo_load_amazon_products', 'gizmo_ajax_load_amazon_products');
 add_action('wp_ajax_nopriv_gizmo_load_amazon_products', 'gizmo_ajax_load_amazon_products');
-
 function gizmo_ajax_load_amazon_products() {
-	check_ajax_referer('gizmo_nonce', 'nonce');
-	$keyword = isset($_POST['keyword']) ? sanitize_text_field($_POST['keyword']) : '';
-	
-	if (empty($keyword)) wp_send_json_error();
+    check_ajax_referer('gizmo_nonce', 'nonce');
+    $keyword = isset($_POST['keyword']) ? sanitize_text_field($_POST['keyword']) : '';
+    
+    if (empty($keyword)) wp_send_json_error(['debug' => 'No keyword provided']);
 
-	$products = gizmo_get_amazon_products($keyword);
+    $products = gizmo_get_amazon_products($keyword);
 
-	if (empty($products)) wp_send_json_error();
+    if (is_wp_error($products)) {
+        wp_send_json_error([
+            'message' => $products->get_error_message(),
+            'code'    => $products->get_error_code(),
+            'debug'   => gizmo_amazon_get_debug_log(),
+        ]);
+    }
 
-	$amz_title = get_theme_mod('gizmo_amazon_title', 'Buy on Amazon');
-	ob_start();
-	?>
-	<div class="sidebar-widget sidebar-amazon">
-		<h3 class="sidebar-widget__title"><?php echo esc_html($amz_title); ?></h3>
-		<div class="sidebar-amazon-list">
-			<?php foreach ($products as $item) : 
-				$img = $item['Images']['Primary']['Small']['URL'] ?? '';
-				$url = $item['DetailPageURL'] ?? '#';
-				$title = $item['ItemInfo']['Title']['DisplayValue'] ?? '';
-				$price = $item['Offers']['Listings'][0]['Price']['DisplayAmount'] ?? 'Check Price';
-			?>
-			<a class="sidebar-amazon-item" href="<?php echo esc_url($url); ?>" target="_blank" rel="nofollow noopener">
-				<?php if ($img) : ?><div class="sidebar-amazon-thumb"><img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy"></div><?php endif; ?>
-				<div class="sidebar-amazon-details">
-					<span class="sidebar-amazon-title"><?php echo esc_html($title); ?></span>
-					<span class="sidebar-amazon-price"><?php echo esc_html($price); ?></span>
-				</div>
-			</a>
-			<?php endforeach; ?>
-		</div>
-	</div>
-	<?php
-	$html = ob_get_clean();
-	wp_send_json_success(['html' => $html]);
+    if (empty($products)) {
+        wp_send_json_error([
+            'message' => 'No products found',
+            'debug'   => gizmo_amazon_get_debug_log(),
+        ]);
+    }
+
+    $amz_title = get_theme_mod('gizmo_amazon_title', 'Buy on Amazon');
+    ob_start();
+    ?>
+    <div class="sidebar-widget sidebar-amazon">
+        <h3 class="sidebar-widget__title"><?php echo esc_html($amz_title); ?></h3>
+        <div class="sidebar-amazon-list">
+            <?php foreach ($products as $item) : 
+                $img   = $item['Images']['Primary']['Small']['URL'] ?? '';
+                $url   = $item['DetailPageURL'] ?? '#';
+                $title = $item['ItemInfo']['Title']['DisplayValue'] ?? '';
+                $price = $item['Offers']['Listings'][0]['Price']['DisplayAmount'] ?? 'Check Price';
+            ?>
+            <a class="sidebar-amazon-item" href="<?php echo esc_url($url); ?>" target="_blank" rel="nofollow noopener">
+                <?php if ($img) : ?><div class="sidebar-amazon-thumb"><img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy"></div><?php endif; ?>
+                <div class="sidebar-amazon-details">
+                    <span class="sidebar-amazon-title"><?php echo esc_html($title); ?></span>
+                    <span class="sidebar-amazon-price"><?php echo esc_html($price); ?></span>
+                </div>
+            </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php
+    $html = ob_get_clean();
+    wp_send_json_success([
+        'html'  => $html,
+        'debug' => gizmo_amazon_get_debug_log(),
+    ]);
+}
+function gizmo_amazon_debug(string $message) {
+    global $gizmo_amazon_debug_log;
+    $gizmo_amazon_debug_log[] = $message;
+}
+
+function gizmo_amazon_get_debug_log(): array {
+    global $gizmo_amazon_debug_log;
+    return $gizmo_amazon_debug_log ?? [];
 }
 
 /* ============================================================
-   AMAZON PA-API 5.0 INTEGRATION
+   AMAZON CREATOR API INTEGRATION
    ============================================================ */
-function gizmo_get_amazon_products($keyword) {
-	if (!get_theme_mod('gizmo_amazon_enabled', false)) return [];
 
-	$access_key = get_theme_mod('gizmo_amazon_access_key');
-	$secret_key = get_theme_mod('gizmo_amazon_secret_key');
-	$partner_tag = get_theme_mod('gizmo_amazon_associate_tag');
-	$region_code = get_theme_mod('gizmo_amazon_region', 'in');
+/**
+ * Get and cache the Amazon Creator API access token.
+ *
+ * @return string|WP_Error Access token on success, WP_Error on failure.
+ */
+function gizmo_get_creator_api_token() {
+    $token = get_transient('gizmo_creator_api_token');
+    if ($token) {
+        gizmo_amazon_debug('✅ Using cached API token');
+        return $token;
+    }
 
-	if (!$access_key || !$secret_key || !$partner_tag) return [];
+    gizmo_amazon_debug('⚠️ Requesting new API token...');
+    $client_id     = trim(get_theme_mod('gizmo_creators_client_id'));
+    $client_secret = trim(get_theme_mod('gizmo_creators_client_secret'));
 
-	// Cache check (1 hour)
-	$cache_key = 'gizmo_amz_' . md5($keyword . $region_code);
-	$cached = get_transient($cache_key);
-	if ($cached !== false) return $cached;
+    gizmo_amazon_debug('Client ID length: ' . strlen($client_id));
+    gizmo_amazon_debug('Client Secret length: ' . strlen($client_secret));
+    gizmo_amazon_debug('Secret Check: ' . substr($client_secret, 0, 4) . '...' . substr($client_secret, -4));
 
-	// Config
-	$configs = [
-		'in' => ['host' => 'webservices.amazon.in', 'region' => 'eu-west-1'],
-		'us' => ['host' => 'webservices.amazon.com', 'region' => 'us-east-1'],
-		'uk' => ['host' => 'webservices.amazon.co.uk', 'region' => 'eu-west-1'],
-	];
-	$config = $configs[$region_code] ?? $configs['in'];
-	
-	$service = 'ProductAdvertisingAPI';
-	$uri = '/paapi5/searchitems';
-	$method = 'POST';
-	$payload = json_encode([
-		'Keywords' => $keyword,
-		'Resources' => [
-			'Images.Primary.Small',
-			'ItemInfo.Title',
-			'Offers.Listings.Price',
-			'ItemInfo.ProductInfo'
-		],
-		'PartnerTag' => $partner_tag,
-		'PartnerType' => 'Associates',
-		'ItemCount' => 4,
-	], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    if (!$client_id || !$client_secret) {
+        return new WP_Error('no_creds', 'Creator API Client ID or Secret is missing.');
+    }
 
-	$now = time();
-	$amz_date = gmdate('Ymd\THis\Z', $now);
-	$date_stamp = gmdate('Ymd', $now);
+    $response = wp_remote_post('https://api.amazon.com/auth/o2/token', [
+    'headers' => [
+        'Content-Type' => 'application/x-www-form-urlencoded',
+    ],
+    'body' => [
+        'grant_type'    => 'client_credentials',
+        'client_id'     => $client_id,
+        'client_secret' => $client_secret,
+        'scope'         => 'creator-api:product:read', // Ensure this matches your App console
+    ],
+]);
 
-	// 1. Canonical Request
-	$canonical_headers = "content-encoding:amz-1.0\nhost:{$config['host']}\nx-amz-date:$amz_date\nx-amz-target:com.amazon.paapi5.v1.ProductAdvertisingAPIv1.SearchItems\n";
-	$signed_headers = 'content-encoding;host;x-amz-date;x-amz-target';
-	$payload_hash = hash('sha256', $payload);
-	$canonical_request = "$method\n$uri\n\n$canonical_headers\n$signed_headers\n$payload_hash";
+    if (is_wp_error($response)) {
+        gizmo_amazon_debug('❌ Token request failed (WP_Error): ' . $response->get_error_message());
+        return $response;
+    }
 
-	// 2. String to Sign
-	$algorithm = 'AWS4-HMAC-SHA256';
-	$credential_scope = "$date_stamp/{$config['region']}/$service/aws4_request";
-	$string_to_sign = "$algorithm\n$amz_date\n$credential_scope\n" . hash('sha256', $canonical_request);
+    $body = json_decode(wp_remote_retrieve_body($response), true);
 
-	// 3. Signature
-	$k_secret = 'AWS4' . $secret_key;
-	$k_date = hash_hmac('sha256', $date_stamp, $k_secret, true);
-	$k_region = hash_hmac('sha256', $config['region'], $k_date, true);
-	$k_service = hash_hmac('sha256', $service, $k_region, true);
-	$k_signing = hash_hmac('sha256', 'aws4_request', $k_service, true);
-	$signature = hash_hmac('sha256', $string_to_sign, $k_signing);
+    if (isset($body['access_token'])) {
+        $token      = $body['access_token'];
+        $expires_in = isset($body['expires_in']) ? intval($body['expires_in']) - 60 : 3540; // Cache for 59 mins
+        set_transient('gizmo_creator_api_token', $token, $expires_in);
+        gizmo_amazon_debug('✅ New API token acquired and cached');
+        return $token;
+    }
 
-	// 4. Request
-	$authorization = "$algorithm Credential=$access_key/$credential_scope, SignedHeaders=$signed_headers, Signature=$signature";
+    $error_msg = $body['error_description'] ?? 'Unknown token error';
+    gizmo_amazon_debug('❌ Token acquisition failed: ' . $error_msg);
+    return new WP_Error('token_error', $error_msg);
+}
 
-	$response = wp_remote_post("https://{$config['host']}$uri", [
-		'headers' => [
-			'host' => $config['host'],
-			'content-encoding' => 'amz-1.0',
-			'x-amz-date' => $amz_date,
-			'x-amz-target' => 'com.amazon.paapi5.v1.ProductAdvertisingAPIv1.SearchItems',
-			'Authorization' => $authorization,
-			'Content-Type' => 'application/json; charset=utf-8',
-		],
-		'body' => $payload,
-		'timeout' => 10,
-	]);
+/**
+ * Fetch products from the Amazon Creator API.
+ *
+ * @param string $keyword The search keyword.
+ * @return array|WP_Error Array of products on success, WP_Error on failure.
+ */
+function gizmo_get_amazon_products(string $keyword) {
+    if (!get_theme_mod('gizmo_amazon_enabled', false)) {
+        gizmo_amazon_debug('❌ Feature disabled in Customizer');
+        return [];
+    }
 
-	if (is_wp_error($response)) return [];
-	if (is_wp_error($response)) {
-		error_log('Gizmo Amazon API Error: ' . $response->get_error_message());
-		return [];
-	}
+    $partner_tag = trim(get_theme_mod('gizmo_amazon_associate_tag'));
+    $marketplace = get_theme_mod('gizmo_amazon_marketplace', 'www.amazon.in');
 
-	$body = json_decode(wp_remote_retrieve_body($response), true);
-	
-	// Log API errors if any (check debug.log)
-	if (isset($body['Errors'])) {
-		error_log('Gizmo Amazon API Response Error: ' . print_r($body['Errors'], true));
-	}
-	
-	if (isset($body['SearchResult']['Items'])) {
-		$items = $body['SearchResult']['Items'];
-		set_transient($cache_key, $items, 3600); // Cache for 1 hour
-		return $items;
-	}
+    gizmo_amazon_debug('partner_tag: '        . $partner_tag);
+    gizmo_amazon_debug('marketplace: '        . $marketplace);
 
-	return [];
+    $token = gizmo_get_creator_api_token();
+    if (is_wp_error($token)) {
+        return $token;
+    }
+
+    $cache_key = 'gizmo_creator_api_' . md5($keyword . $marketplace . $partner_tag);
+    $cached    = get_transient($cache_key);
+    if ($cached !== false) {
+        gizmo_amazon_debug('✅ Returning cached result');
+        return $cached;
+    }
+
+    $marketplace_map = [
+        'www.amazon.in'    => 'IN',
+        'www.amazon.com'   => 'US',
+        'www.amazon.co.uk' => 'GB',
+    ];
+    $marketplace_code = $marketplace_map[$marketplace] ?? 'IN';
+
+    $payload = json_encode([
+        'partnerTag'   => $partner_tag,
+        'keywords'     => $keyword,
+        'marketplaces' => [$marketplace_code],
+        'productCount' => 4,
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+    gizmo_amazon_debug('payload: '  . $payload);
+
+    $response = wp_remote_post('https://api.amazon.com/creator/v2.2/products/search', [
+        'timeout' => 15,
+        'headers' => [
+            'Authorization' => 'Bearer ' . $token,
+            'Content-Type'  => 'application/json',
+        ],
+        'body' => $payload,
+    ]);
+
+    if (is_wp_error($response)) {
+        gizmo_amazon_debug('❌ WP_Error: ' . $response->get_error_message());
+        return $response;
+    }
+
+    $http_code = wp_remote_retrieve_response_code($response);
+    $raw_body  = wp_remote_retrieve_body($response);
+    gizmo_amazon_debug('HTTP status: '   . $http_code);
+    gizmo_amazon_debug('raw response: '  . $raw_body);
+
+    $body = json_decode($raw_body, true);
+
+    if ($http_code >= 400 || isset($body['error'])) {
+        $error_msg = $body['error']['message'] ?? 'Unknown API Error';
+        gizmo_amazon_debug('❌ API Error: ' . $error_msg);
+        return new WP_Error('creator_api_error', $error_msg);
+    }
+
+    if (isset($body['products'])) {
+        $transformed_products = [];
+        foreach ($body['products'] as $product) {
+            $transformed_products[] = [
+                'DetailPageURL' => $product['landingPage']['url'] ?? '#',
+                'Images'        => ['Primary' => ['Small' => ['URL' => $product['images']['primary']['url'] ?? '']]],
+                'ItemInfo'      => ['Title' => ['DisplayValue' => $product['title'] ?? '']],
+                'Offers'        => ['Listings' => [['Price' => ['DisplayAmount' => $product['prices']['currentPrice']['displayValue'] ?? 'Check Price']]]],
+            ];
+        }
+        gizmo_amazon_debug('✅ Found ' . count($transformed_products) . ' items');
+        set_transient($cache_key, $transformed_products, 3600);
+        return $transformed_products;
+    }
+
+    gizmo_amazon_debug('⚠️ No items in response');
+    return [];
 }
