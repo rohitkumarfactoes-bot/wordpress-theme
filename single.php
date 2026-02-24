@@ -50,7 +50,8 @@ while (have_posts()) : the_post();
 		'post_status'    => 'publish',
 		'posts_per_page' => 5,
 		'post__not_in'   => [get_the_ID()],
-		'orderby'        => 'comment_count',
+		'orderby'        => 'date',
+		'order'          => 'DESC',
 	];
 	if ($cat) {
 		$also_like_args['cat'] = $cat->term_id;
@@ -257,13 +258,27 @@ while (have_posts()) : the_post();
 			<div id="gizmo-amazon-sidebar" data-keyword="<?php echo esc_attr(get_the_title()); ?>"></div>
 			<?php endif; ?>
 
+			<!-- Sidebar Ad -->
+			<div class="sidebar-widget sidebar-ad" style="text-align:center; overflow:hidden;">
+				<script>
+				atOptions = {
+					'key' : 'b83b927bb7d5a9536fe765b52b46c8f7',
+					'format' : 'iframe',
+					'height' : 250,
+					'width' : 300,
+					'params' : {}
+				};
+				</script>
+				<script src="https://soundfrankcoke.com/b83b927bb7d5a9536fe765b52b46c8f7/invoke.js"></script>
+			</div>
+
 			<!-- Related Posts -->
 			<?php if ($related && $related->have_posts()) : ?>
 			<div class="sidebar-widget">
 				<h3 class="sidebar-widget__title"><?php esc_html_e('Related Post','gizmodotech-pro'); ?></h3>
 				<div class="sidebar-related">
 					<?php while ($related->have_posts()) : $related->the_post(); 
-						$is_mob = ( has_category('mobile') || get_post_type() === 'mobile' ) ? 'type-mobile' : '';
+						$is_mob = has_category('mobile') ? 'type-mobile' : '';
 					?>
 					<a class="sidebar-related__item <?php echo esc_attr($is_mob); ?>" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>
@@ -294,7 +309,7 @@ while (have_posts()) : the_post();
 				<h3 class="sidebar-widget__title"><?php esc_html_e('Latest Tech News','gizmodotech-pro'); ?></h3>
 				<div class="sidebar-related">
 					<?php while ($technews_q->have_posts()) : $technews_q->the_post(); 
-						$is_mob = ( has_category('mobile') || get_post_type() === 'mobile' ) ? 'type-mobile' : '';
+						$is_mob = has_category('mobile') ? 'type-mobile' : '';
 					?>
 					<a class="sidebar-related__item <?php echo esc_attr($is_mob); ?>" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>
@@ -309,23 +324,55 @@ while (have_posts()) : the_post();
 			</div>
 			<?php endif; ?>
 
-			<!-- Latest Reviews -->
+			<!-- Latest Reviews (Post Type: Review) -->
 			<?php
-			$reviews_q = new WP_Query([
-				'post_type'      => 'reviews',
+			$custom_reviews_q = new WP_Query([
+				'post_type'      => 'review',
 				'post_status'    => 'publish',
 				'posts_per_page' => 4,
 				'post__not_in'   => [get_the_ID()],
 				'orderby'        => 'date',
 				'order'          => 'DESC',
 			]);
-			if ($reviews_q->have_posts()) :
+			if ($custom_reviews_q->have_posts()) :
 			?>
 			<div class="sidebar-widget">
 				<h3 class="sidebar-widget__title"><?php esc_html_e('Latest Reviews','gizmodotech-pro'); ?></h3>
 				<div class="sidebar-related">
-					<?php while ($reviews_q->have_posts()) : $reviews_q->the_post(); 
-						$is_mob = ( has_category('mobile') || get_post_type() === 'mobile' ) ? 'type-mobile' : '';
+					<?php while ($custom_reviews_q->have_posts()) : $custom_reviews_q->the_post(); 
+						$is_mob = has_category('mobile') ? 'type-mobile' : '';
+					?>
+					<a class="sidebar-related__item <?php echo esc_attr($is_mob); ?>" href="<?php the_permalink(); ?>">
+						<?php if (has_post_thumbnail()) : ?>
+						<div class="sidebar-related__thumb">
+							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=> esc_attr(get_the_title())]); ?>
+						</div>
+						<?php endif; ?>
+						<span class="sidebar-related__title"><?php the_title(); ?></span>
+					</a>
+					<?php endwhile; wp_reset_postdata(); ?>
+				</div>
+			</div>
+			<?php endif; ?>
+
+			<!-- Compare (Category: Compare) -->
+			<?php
+			$compare_q = new WP_Query([
+				'post_type'      => 'post',
+				'category_name'  => 'compare',
+				'post_status'    => 'publish',
+				'posts_per_page' => 4,
+				'post__not_in'   => [get_the_ID()],
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+			]);
+			if ($compare_q->have_posts()) :
+			?>
+			<div class="sidebar-widget">
+				<h3 class="sidebar-widget__title"><?php esc_html_e('Compare','gizmodotech-pro'); ?></h3>
+				<div class="sidebar-related">
+					<?php while ($compare_q->have_posts()) : $compare_q->the_post(); 
+						$is_mob = has_category('mobile') ? 'type-mobile' : '';
 					?>
 					<a class="sidebar-related__item <?php echo esc_attr($is_mob); ?>" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>

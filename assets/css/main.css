@@ -3560,6 +3560,10 @@ body.dark-mode,
   margin: 0;
 }
 
+.gizmo-faq-heading {
+  margin: 0;
+}
+
 .wp-block-accordion-heading__toggle {
   width: 100%;
   display: flex;
@@ -3626,4 +3630,59 @@ body.dark-mode,
 @keyframes gizmoAccordionFadeIn {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ────────────────────────────────────────────────────────────
+   FAQ BLOCK (Editor)
+   ──────────────────────────────────────────────────────────── */
+.gizmo-faq-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.gizmo-faq-item {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.gizmo-faq-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.gizmo-faq-trigger {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.gizmo-faq-question {
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.gizmo-faq-answer-content {
+  color: var(--text-secondary);
+}
+
+
+.wp-block-table thead {
+	border-bottom: 0px !important;
+}
+
+.single-body h2 {
+ font-weight: 700 !important; 
+}
+
+.gizmo-faq-icon {
+  color: var(--text-primary);
 }

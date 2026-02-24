@@ -628,7 +628,7 @@ registerBlockType('gizmodotech/faq-container', {
             return el('div', blockProps,
                 el('div', { className: 'gizmo-faq-header' },
                     el(RichText, {
-                        tagName: 'h4',
+                        tagName: 'h3',
                         className: 'gizmo-faq-question',
                         value: attributes.question,
                         onChange: function(val) { setAttributes({ question: val }); },
@@ -657,10 +657,12 @@ registerBlockType('gizmodotech/faq-container', {
             });
 
             return el('div', blockProps,
-                el('button', { className: 'gizmo-faq-trigger', 'aria-expanded': 'false' },
-                    el('span', { className: 'gizmo-faq-question', itemProp: 'name' }, attributes.question),
-                    el('span', { className: 'gizmo-faq-icon' }, 
-                        el('svg', { width: '24', height: '24', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, el('path', { d: 'M6 9l6 6 6-6' }))
+                el('h3', { className: 'gizmo-faq-heading', style: { margin: 0 } },
+                    el('button', { className: 'gizmo-faq-trigger', 'aria-expanded': 'false' },
+                        el('span', { className: 'gizmo-faq-question', itemProp: 'name' }, attributes.question),
+                        el('span', { className: 'gizmo-faq-icon' }, 
+                            el('svg', { width: '24', height: '24', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, el('path', { d: 'M6 9l6 6 6-6' }))
+                        )
                     )
                 ),
                 el('div', { 
