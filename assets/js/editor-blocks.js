@@ -527,4 +527,66 @@
         }
     });
 
+    // 8. CAROUSEL SLIDER BLOCK
+    registerBlockType('gizmodotech/carousel-slider', {
+        title: 'Gizmo Carousel Slider',
+        icon: 'slides',
+        category: 'gizmodotech',
+        description: 'A post carousel slider.',
+        attributes: {
+            title: { type: 'string', default: 'Trending Now' },
+            postType: { type: 'string', default: 'post' },
+            count: { type: 'string', default: '8' },
+            categories: { type: 'string', default: '' }
+        },
+        edit: function(props) {
+            var attributes = props.attributes;
+            var setAttributes = props.setAttributes;
+
+            return el(
+                element.Fragment,
+                {},
+                el(
+                    InspectorControls,
+                    {},
+                    el(
+                        PanelBody,
+                        { title: 'Carousel Settings', initialOpen: true },
+                        el(TextControl, {
+                            label: 'Section Title',
+                            value: attributes.title,
+                            onChange: function(val) { setAttributes({ title: val }); }
+                        }),
+                        el(SelectControl, {
+                            label: 'Post Type',
+                            value: attributes.postType,
+                            options: [
+                                { label: 'Standard Posts', value: 'post' },
+                                { label: 'Tech News', value: 'technews' },
+                                { label: 'Reviews', value: 'reviews' }
+                            ],
+                            onChange: function(val) { setAttributes({ postType: val }); }
+                        }),
+                        el(TextControl, {
+                            label: 'Number of Posts',
+                            value: attributes.count,
+                            type: 'number',
+                            onChange: function(val) { setAttributes({ count: val }); }
+                        }),
+                        el(TextControl, {
+                            label: 'Category IDs (comma separated)',
+                            value: attributes.categories,
+                            onChange: function(val) { setAttributes({ categories: val }); }
+                        })
+                    )
+                ),
+                el(ServerSideRender, {
+                    block: 'gizmodotech/carousel-slider',
+                    attributes: attributes
+                })
+            );
+        },
+        save: function() { return null; }
+    });
+
 })(window.wp.blocks, window.wp.element, window.wp.components, window.wp.blockEditor, window.wp.serverSideRender);

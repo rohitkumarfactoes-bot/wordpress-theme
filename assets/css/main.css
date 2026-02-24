@@ -3537,76 +3537,94 @@ body.dark-mode,
 }
 
 /* ────────────────────────────────────────────────────────────
-   WORDPRESS DETAILS / ACCORDION BLOCK
+   WORDPRESS ACCORDION BLOCK (Interactivity API)
    ──────────────────────────────────────────────────────────── */
 
-.wp-block-details {
-  background: var(--bg-surface);
+.wp-block-accordion {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
+  background: var(--bg-surface);
   margin-bottom: 1.5rem;
-  transition: all 0.2s ease;
   overflow: hidden;
 }
 
-.wp-block-details[open] {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-sm);
-}
-
-.wp-block-details summary {
-  padding: 1rem 3rem 1rem 1.25rem; /* Extra right padding for icon */
-  font-weight: 700;
-  cursor: pointer;
-  list-style: none;
-  position: relative;
-  color: var(--text-primary);
-  transition: background 0.2s, color 0.2s;
-  outline: none;
-}
-
-/* Hide default marker (triangle) */
-.wp-block-details summary::-webkit-details-marker {
-  display: none;
-}
-
-.wp-block-details summary:hover {
-  background: var(--bg-surface-2);
-  color: var(--color-primary);
-}
-
-.wp-block-details[open] summary {
+.wp-block-accordion-item {
   border-bottom: 1px solid var(--border-color);
-  background: var(--bg-surface-2);
+  transition: background-color 0.2s;
+}
+
+.wp-block-accordion-item:last-child {
+  border-bottom: none;
+}
+
+.wp-block-accordion-heading {
+  margin: 0;
+}
+
+.wp-block-accordion-heading__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.wp-block-accordion-heading__toggle:hover {
   color: var(--color-primary);
+  background: var(--bg-surface-2);
 }
 
-/* Custom Chevron Icon */
-.wp-block-details summary::after {
-  content: '';
-  position: absolute;
-  right: 1.25rem;
-  top: 50%;
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid var(--text-muted);
-  border-bottom: 2px solid var(--text-muted);
-  transform: translateY(-65%) rotate(45deg);
-  transition: transform 0.2s ease, border-color 0.2s;
+.wp-block-accordion-item.is-open .wp-block-accordion-heading__toggle {
+  color: var(--color-primary);
+  background: var(--bg-surface-2);
 }
 
-.wp-block-details[open] summary::after {
-  transform: translateY(-15%) rotate(225deg);
-  border-color: var(--color-primary);
+.wp-block-accordion-heading__toggle-title {
+  margin-right: 1rem;
+  line-height: 1.4;
 }
 
-.wp-block-details__content {
-  padding: 1.25rem;
+.wp-block-accordion-heading__toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: 300;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.wp-block-accordion-item.is-open .wp-block-accordion-heading__toggle-icon {
+  transform: rotate(45deg);
+}
+
+.wp-block-accordion-panel {
+  padding: 0 1.5rem;
   color: var(--text-secondary);
   line-height: 1.7;
-  background: var(--bg-surface);
+  display: none; 
 }
 
-.wp-block-details__content > *:last-child {
-  margin-bottom: 0;
+.wp-block-accordion-item.is-open .wp-block-accordion-panel {
+  display: block;
+  padding-bottom: 1.5rem;
+  padding-top: 0.5rem;
+  animation: gizmoAccordionFadeIn 0.3s ease;
+}
+
+@keyframes gizmoAccordionFadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }

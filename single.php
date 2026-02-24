@@ -252,36 +252,9 @@ while (have_posts()) : the_post();
 			<?php endif; ?>
 			
 			
-			<!-- Amazon Products OR Related Posts -->
-			<?php
-			$amazon_products = [];
-			if (function_exists('gizmo_get_amazon_products')) {
-				// Use post title as keyword, stripping common words if needed
-				$amazon_products = gizmo_get_amazon_products(get_the_title());
-			}
-
-			if (!empty($amazon_products)) : 
-				$amz_title = get_theme_mod('gizmo_amazon_title', 'Buy on Amazon');
-			?>
-			<div class="sidebar-widget sidebar-amazon">
-				<h3 class="sidebar-widget__title"><?php echo esc_html($amz_title); ?></h3>
-				<div class="sidebar-amazon-list">
-					<?php foreach ($amazon_products as $item) : 
-						$img = $item['Images']['Primary']['Small']['URL'] ?? '';
-						$url = $item['DetailPageURL'] ?? '#';
-						$title = $item['ItemInfo']['Title']['DisplayValue'] ?? '';
-						$price = $item['Offers']['Listings'][0]['Price']['DisplayAmount'] ?? 'Check Price';
-					?>
-					<a class="sidebar-amazon-item" href="<?php echo esc_url($url); ?>" target="_blank" rel="nofollow noopener">
-						<?php if ($img) : ?><div class="sidebar-amazon-thumb"><img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy"></div><?php endif; ?>
-						<div class="sidebar-amazon-details">
-							<span class="sidebar-amazon-title"><?php echo esc_html($title); ?></span>
-							<span class="sidebar-amazon-price"><?php echo esc_html($price); ?></span>
-						</div>
-					</a>
-					<?php endforeach; ?>
-				</div>
-			</div>
+			<!-- Amazon Products (Async) -->
+			<?php if (get_theme_mod('gizmo_amazon_enabled', false)) : ?>
+			<div id="gizmo-amazon-sidebar" data-keyword="<?php echo esc_attr(get_the_title()); ?>"></div>
 			<?php endif; ?>
 
 			<!-- Related Posts -->

@@ -591,6 +591,45 @@
   }
 
   /* ============================================================
+     18. AMAZON SIDEBAR LOADER (Async)
+     ============================================================ */
+  function initAmazonLoader() {
+    const container = $('#gizmo-amazon-sidebar');
+    console.log('Amazon Loader Init: Checking container...');
+
+    if (!container || typeof GizmoData === 'undefined') {
+        console.warn('Amazon Loader: Container or GizmoData missing.');
+        return;
+    }
+
+    const keyword = container.dataset.keyword;
+    if (!keyword) {
+        console.warn('Amazon Loader: No keyword found in dataset.');
+        return;
+    }
+
+    console.log('Amazon Loader: Fetching products for keyword:', keyword);
+
+    const fd = new FormData();
+    fd.append('action', 'gizmo_load_amazon_products');
+    fd.append('nonce', GizmoData.nonce);
+    fd.append('keyword', keyword);
+
+    fetch(GizmoData.ajaxUrl, { method: 'POST', body: fd })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Amazon Loader: Server Response:', data);
+        if (data.success && data.data.html) {
+          container.innerHTML = data.data.html;
+          console.log('Amazon Loader: HTML injected successfully.');
+        } else {
+          console.error('Amazon Loader: Success was false or HTML missing.');
+        }
+      })
+      .catch(err => console.error('Amazon load failed:', err));
+}
+
+  /* ============================================================
      INIT ALL
      ============================================================ */
 
@@ -611,6 +650,7 @@
     initMobileGallery();
     initMobileFilter();
     initCarouselSlider();
+    initAmazonLoader();
   }
 
   // DOM-ready

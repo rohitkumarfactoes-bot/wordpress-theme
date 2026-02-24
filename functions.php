@@ -1251,6 +1251,16 @@ function gizmo_register_dynamic_blocks() {
 	register_block_type('gizmodotech/specs-card-block');
 
 	register_block_type('gizmodotech/featured-card');
+
+	register_block_type('gizmodotech/carousel-slider', [
+		'render_callback' => 'gizmo_render_carousel_block',
+		'attributes' => [
+			'title'      => ['type' => 'string', 'default' => 'Trending Now'],
+			'postType'   => ['type' => 'string', 'default' => 'post'],
+			'count'      => ['type' => 'string', 'default' => '8'],
+			'categories' => ['type' => 'string', 'default' => ''],
+		]
+	]);
 }
 
 /* COMMENT CALLBACK*/
@@ -1281,6 +1291,49 @@ function gizmo_comment_callback($comment, $args, $depth) {
 		</div>
 	</<?php echo esc_attr( $tag ); ?>>
 	<?php
+}
+
+/* ============================================================
+   AJAX: Load Amazon Products
+   ============================================================ */
+add_action('wp_ajax_gizmo_load_amazon_products', 'gizmo_ajax_load_amazon_products');
+add_action('wp_ajax_nopriv_gizmo_load_amazon_products', 'gizmo_ajax_load_amazon_products');
+
+function gizmo_ajax_load_amazon_products() {
+	check_ajax_referer('gizmo_nonce', 'nonce');
+	$keyword = isset($_POST['keyword']) ? sanitize_text_field($_POST['keyword']) : '';
+	
+	if (empty($keyword)) wp_send_json_error();
+
+	$products = gizmo_get_amazon_products($keyword);
+
+	if (empty($products)) wp_send_json_error();
+
+	$amz_title = get_theme_mod('gizmo_amazon_title', 'Buy on Amazon');
+	ob_start();
+	?>
+	<div class="sidebar-widget sidebar-amazon">
+		<h3 class="sidebar-widget__title"><?php echo esc_html($amz_title); ?></h3>
+		<div class="sidebar-amazon-list">
+			<?php foreach ($products as $item) : 
+				$img = $item['Images']['Primary']['Small']['URL'] ?? '';
+				$url = $item['DetailPageURL'] ?? '#';
+				$title = $item['ItemInfo']['Title']['DisplayValue'] ?? '';
+				$price = $item['Offers']['Listings'][0]['Price']['DisplayAmount'] ?? 'Check Price';
+			?>
+			<a class="sidebar-amazon-item" href="<?php echo esc_url($url); ?>" target="_blank" rel="nofollow noopener">
+				<?php if ($img) : ?><div class="sidebar-amazon-thumb"><img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy"></div><?php endif; ?>
+				<div class="sidebar-amazon-details">
+					<span class="sidebar-amazon-title"><?php echo esc_html($title); ?></span>
+					<span class="sidebar-amazon-price"><?php echo esc_html($price); ?></span>
+				</div>
+			</a>
+			<?php endforeach; ?>
+		</div>
+	</div>
+	<?php
+	$html = ob_get_clean();
+	wp_send_json_success(['html' => $html]);
 }
 
 /* ============================================================
@@ -1323,7 +1376,7 @@ function gizmo_get_amazon_products($keyword) {
 		'PartnerTag' => $partner_tag,
 		'PartnerType' => 'Associates',
 		'ItemCount' => 4,
-	]);
+	], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
 	$now = time();
 	$amz_date = gmdate('Ymd\THis\Z', $now);
@@ -1353,6 +1406,7 @@ function gizmo_get_amazon_products($keyword) {
 
 	$response = wp_remote_post("https://{$config['host']}$uri", [
 		'headers' => [
+			'host' => $config['host'],
 			'content-encoding' => 'amz-1.0',
 			'x-amz-date' => $amz_date,
 			'x-amz-target' => 'com.amazon.paapi5.v1.ProductAdvertisingAPIv1.SearchItems',
@@ -1364,8 +1418,17 @@ function gizmo_get_amazon_products($keyword) {
 	]);
 
 	if (is_wp_error($response)) return [];
+	if (is_wp_error($response)) {
+		error_log('Gizmo Amazon API Error: ' . $response->get_error_message());
+		return [];
+	}
 
 	$body = json_decode(wp_remote_retrieve_body($response), true);
+	
+	// Log API errors if any (check debug.log)
+	if (isset($body['Errors'])) {
+		error_log('Gizmo Amazon API Response Error: ' . print_r($body['Errors'], true));
+	}
 	
 	if (isset($body['SearchResult']['Items'])) {
 		$items = $body['SearchResult']['Items'];
