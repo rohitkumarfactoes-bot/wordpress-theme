@@ -759,7 +759,7 @@ add_filter('body_class', function(array $classes): array {
 		$classes[] = 'dark-mode';
 	}
 
-	if (is_page_template('compare.php')) {
+	if (is_page_template('compare.php') || is_page('compare')) {
 		$classes[] = 'compare-page';
 	}
 
@@ -1039,7 +1039,7 @@ function gizmo_dc_get_price_from_content($post_id) {
 add_action('wp_ajax_gizmo_dc_search_devices', 'gizmo_ajax_dc_search_devices');
 add_action('wp_ajax_nopriv_gizmo_dc_search_devices', 'gizmo_ajax_dc_search_devices');
 function gizmo_ajax_dc_search_devices() {
-    check_ajax_referer('gizmo_nonce', 'nonce');
+    check_ajax_referer('gizmo_nonce', 'security');
 
     $query = isset($_GET['query']) ? sanitize_text_field(wp_unslash($_GET['query'])) : '';
 
@@ -1078,7 +1078,7 @@ function gizmo_ajax_dc_search_devices() {
 add_action('wp_ajax_gizmo_dc_handle_comparison', 'gizmo_ajax_dc_handle_comparison');
 add_action('wp_ajax_nopriv_gizmo_dc_handle_comparison', 'gizmo_ajax_dc_handle_comparison');
 function gizmo_ajax_dc_handle_comparison() {
-	check_ajax_referer('gizmo_nonce', 'nonce');
+	check_ajax_referer('gizmo_nonce', 'security');
 
     $raw_slugs = isset($_GET['slugs']) ? (array) $_GET['slugs'] : [];
     $slugs     = array_filter(

@@ -19,6 +19,9 @@ $container_classes = ['hp-container'];
 if ( is_page('technews') || is_page('reviews') ) {
 	$container_classes[] = 'reviews-technews';
 }
+if ( is_page('compare') || is_page_template('compare.php') ) {
+	$container_classes[] = 'compare-page-container';
+}
 ?>
 
 <div class="<?php echo esc_attr( implode( ' ', $container_classes ) ); ?>" style="padding-top: 3rem; padding-bottom: 3rem;">
