@@ -563,12 +563,21 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'section' => 'gizmo_ads_global',
 		'type'    => 'checkbox',
 	]);
+	
+	$wp_customize->add_setting('gizmo_ads_head_code', ['default' => '', 'sanitize_callback' => 'gizmo_sanitize_ad_code']);
+	$wp_customize->add_control('gizmo_ads_head_code', [
+		'label'       => __('Global Head Script', GIZMO_TEXT),
+		'description' => __('Paste global scripts here (e.g., AdSense Auto Ads, Adsterra invoke.js). This loads on every page.', GIZMO_TEXT),
+		'section'     => 'gizmo_ads_global',
+		'type'        => 'textarea',
+	]);
 
 	// Define Slots
 	$ad_slots = [
-		'sidebar'   => __('Sidebar Ad (Top)', GIZMO_TEXT),
+		'sidebar'   => __('Sidebar Ad (Sticky)', GIZMO_TEXT),
 		'content_1' => __('In-Article Ad #1 (After Paragraph 3)', GIZMO_TEXT),
 		'content_2' => __('In-Article Ad #2 (After Paragraph 8)', GIZMO_TEXT),
+		'sticky_mobile' => __('Sticky Footer (Mobile Only)', GIZMO_TEXT),
 	];
 
 	foreach ($ad_slots as $slot_id => $slot_label) {
@@ -1289,6 +1298,27 @@ function gizmo_insert_after_paragraph($insertion, $paragraph_id, $content) {
 		return implode('', $paragraphs);
 	}
 	return $content;
+}
+
+/* Output Global Head Script */
+add_action('wp_head', 'gizmo_output_ads_head', 20);
+function gizmo_output_ads_head() {
+	if (!get_theme_mod('gizmo_ads_enabled', false)) return;
+	$code = get_theme_mod('gizmo_ads_head_code', '');
+	if ($code) {
+		echo $code . "\n"; // phpcs:ignore
+	}
+}
+
+/* Output Sticky Mobile Footer Ad */
+add_action('wp_footer', 'gizmo_output_sticky_footer_ad', 100);
+function gizmo_output_sticky_footer_ad() {
+	if (!get_theme_mod('gizmo_ads_enabled', false)) return;
+	
+	$ad_html = gizmo_get_ad_slot_html('sticky_mobile');
+	if ($ad_html) {
+		echo '<div class="gizmo-sticky-footer">' . $ad_html . '<button class="gizmo-sticky-close" onclick="this.parentElement.style.display=\'none\'">&times;</button></div>'; // phpcs:ignore
+	}
 }
 
 /* ============================================================

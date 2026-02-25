@@ -262,12 +262,6 @@ while (have_posts()) : the_post();
 			</div>
 			<?php endif; ?>
 			
-			<!-- Amazon Products (Async) -->
-			<?php if (get_theme_mod('gizmo_amazon_enabled', false)) : ?>
-			<div id="gizmo-amazon-sidebar" data-keyword="<?php echo esc_attr(get_the_title()); ?>"></div>
-			<?php endif; ?>
-
-			
 			
 
 			<!-- Related Posts -->
@@ -347,6 +341,17 @@ while (have_posts()) : the_post();
 					<?php endwhile; wp_reset_postdata(); ?>
 				</div>
 			</div>
+			<?php endif; ?>
+
+			<!-- Amazon Products (Async) -->
+			<?php if (get_theme_mod('gizmo_amazon_enabled', false)) : ?>
+			<div id="gizmo-amazon-sidebar" data-keyword="<?php echo esc_attr(get_the_title()); ?>"></div>
+			<?php endif; ?>
+
+			<!-- Sidebar Ad (Sticky Bottom) -->
+			<?php $ad_html = function_exists('gizmo_get_ad_slot_html') ? gizmo_get_ad_slot_html('sidebar') : ''; ?>
+			<?php if ($ad_html) : ?>
+			<div class="sidebar-widget sidebar-ad"><?php echo $ad_html; // phpcs:ignore ?></div>
 			<?php endif; ?>
 
 			<!-- Compare (Category: Compare) -->

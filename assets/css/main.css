@@ -1560,7 +1560,7 @@ font-size: .75rem;
 
 .single-title {
   font-size: clamp(1.6rem, 4vw, 2.5rem);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -.03em;
   color: var(--text-primary);
@@ -1636,7 +1636,7 @@ font-size: .75rem;
 
 .single-body h2 {
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 700;
   margin: 2.5rem 0 .75rem;
   padding-bottom: .6rem;
   border-bottom: 3px solid var(--color-primary, #2563EB);
@@ -1645,13 +1645,13 @@ font-size: .75rem;
 
 .single-body h3 {
   font-size: 1.2rem;
-  font-weight: 700;
+  font-weight: 600;
   margin: 2rem 0 .6rem;
 }
 
 .single-body h4 {
   font-size: 1.05rem;
-  font-weight: 700;
+  font-weight: 600;
   margin: 1.75rem 0 .5rem;
 }
 
@@ -2324,6 +2324,55 @@ font-size: .75rem;
 /* Mobile (< 768px) */
 @media (max-width: 767px) {
   .gizmo-ad-mobile { display: block; }
+}
+
+/* Sticky Sidebar Ad */
+.sidebar-ad {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 90px; /* Offset for sticky header */
+  z-index: 90;
+  text-align: center;
+  padding: 1rem;
+  overflow: visible; /* Allow ad to show */
+}
+
+/* Sticky Mobile Footer Ad */
+.gizmo-sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem;
+  animation: slideUp 0.5s ease-out;
+}
+
+.gizmo-sticky-close {
+  position: absolute;
+  top: -30px;
+  right: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  width: 24px; height: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* Hide sticky footer on desktop if desired, or rely on empty slot content */
+@media (min-width: 768px) {
+  .gizmo-sticky-footer { display: none; }
 }
 
 /* Breadcrumbs */
