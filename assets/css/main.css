@@ -2297,82 +2297,13 @@ font-size: .75rem;
 /* ────────────────────────────────────────────────────────────
    ADVERTISEMENT SYSTEM
    ──────────────────────────────────────────────────────────── */
-.gizmo-ad-container {
+.gizmo-async-ad {
   display: block;
   margin: 2rem auto;
   text-align: center;
   clear: both;
   overflow: hidden;
-}
-
-.gizmo-ad-desktop,
-.gizmo-ad-tablet,
-.gizmo-ad-mobile {
-  display: none;
-}
-
-/* Desktop (>= 1024px) */
-@media (min-width: 1024px) {
-  .gizmo-ad-desktop { display: block; }
-}
-
-/* Tablet (768px - 1023px) */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .gizmo-ad-tablet { display: block; }
-}
-
-/* Mobile (< 768px) */
-@media (max-width: 767px) {
-  .gizmo-ad-mobile { display: block; }
-}
-
-/* Sticky Sidebar Ad */
-.sidebar-ad {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 90px; /* Offset for sticky header */
-  z-index: 90;
-  text-align: center;
-  padding: 1rem;
-  overflow: visible; /* Allow ad to show */
-}
-
-/* Sticky Mobile Footer Ad */
-.gizmo-sticky-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 9999;
-  background: var(--bg-surface);
-  border-top: 1px solid var(--border-color);
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-  display: flex;
-  justify-content: center;
-  padding: 0.5rem;
-  animation: slideUp 0.5s ease-out;
-}
-
-.gizmo-sticky-close {
-  position: absolute;
-  top: -30px;
-  right: 10px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
-  width: 24px; height: 24px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-
-/* Hide sticky footer on desktop if desired, or rely on empty slot content */
-@media (min-width: 768px) {
-  .gizmo-sticky-footer { display: none; }
+  min-height: 1px; /* Prevent collapse before load */
 }
 
 /* Breadcrumbs */

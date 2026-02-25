@@ -348,10 +348,10 @@ while (have_posts()) : the_post();
 			<div id="gizmo-amazon-sidebar" data-keyword="<?php echo esc_attr(get_the_title()); ?>"></div>
 			<?php endif; ?>
 
-			<!-- Sidebar Ad (Sticky Bottom) -->
-			<?php $ad_html = function_exists('gizmo_get_ad_slot_html') ? gizmo_get_ad_slot_html('sidebar') : ''; ?>
+			<!-- Sidebar Ad -->
+			<?php $ad_html = function_exists('gizmo_get_ad_location_html') ? gizmo_get_ad_location_html('sidebar') : ''; ?>
 			<?php if ($ad_html) : ?>
-			<div class="sidebar-widget sidebar-ad"><?php echo $ad_html; // phpcs:ignore ?></div>
+			<div class="sidebar-widget sidebar-ad" style="text-align:center;"><?php echo $ad_html; // phpcs:ignore ?></div>
 			<?php endif; ?>
 
 			<!-- Compare (Category: Compare) -->

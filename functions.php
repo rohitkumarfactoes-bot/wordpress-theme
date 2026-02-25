@@ -564,54 +564,54 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'type'    => 'checkbox',
 	]);
 	
-	$wp_customize->add_setting('gizmo_ads_head_code', ['default' => '', 'sanitize_callback' => 'gizmo_sanitize_ad_code']);
-	$wp_customize->add_control('gizmo_ads_head_code', [
-		'label'       => __('Global Head Script', GIZMO_TEXT),
-		'description' => __('Paste global scripts here (e.g., AdSense Auto Ads, Adsterra invoke.js). This loads on every page.', GIZMO_TEXT),
-		'section'     => 'gizmo_ads_global',
-		'type'        => 'textarea',
-	]);
-
-	// Define Slots
-	$ad_slots = [
-		'sidebar'   => __('Sidebar Ad (Sticky)', GIZMO_TEXT),
-		'content_1' => __('In-Article Ad #1 (After Paragraph 3)', GIZMO_TEXT),
-		'content_2' => __('In-Article Ad #2 (After Paragraph 8)', GIZMO_TEXT),
-		'sticky_mobile' => __('Sticky Footer (Mobile Only)', GIZMO_TEXT),
+	// Ad Locations
+	$ad_locations = [
+		'none'        => __('Select Location...', GIZMO_TEXT),
+		'sidebar'     => __('Sidebar', GIZMO_TEXT),
+		'content_top' => __('Before Content', GIZMO_TEXT),
+		'content_3'   => __('After Paragraph 3', GIZMO_TEXT),
+		'content_8'   => __('After Paragraph 8', GIZMO_TEXT),
+		'content_bot' => __('After Content', GIZMO_TEXT),
 	];
 
-	foreach ($ad_slots as $slot_id => $slot_label) {
-		$section_id = 'gizmo_ads_' . $slot_id;
+	// Device Targets
+	$ad_devices = [
+		'all'     => __('All Devices', GIZMO_TEXT),
+		'desktop' => __('Desktop Only (> 1024px)', GIZMO_TEXT),
+		'tablet'  => __('Tablet Only (768px - 1024px)', GIZMO_TEXT),
+		'mobile'  => __('Mobile Only (< 768px)', GIZMO_TEXT),
+	];
+
+	// Register 5 Flexible Ad Units
+	for ($i = 1; $i <= 5; $i++) {
+		$section_id = 'gizmo_ad_unit_' . $i;
 		$wp_customize->add_section($section_id, [
-			'title' => $slot_label,
+			'title' => sprintf(__('Ad Unit %d', GIZMO_TEXT), $i),
 			'panel' => 'gizmo_ads_panel',
 		]);
 
-		// Desktop
-		$wp_customize->add_setting("gizmo_ad_{$slot_id}_desktop", ['default' => '', 'sanitize_callback' => 'gizmo_sanitize_ad_code']);
-		$wp_customize->add_control("gizmo_ad_{$slot_id}_desktop", [
-			'label'       => __('Desktop Code (> 1024px)', GIZMO_TEXT),
-			'description' => __('e.g. 300x250 or 728x90', GIZMO_TEXT),
+		$wp_customize->add_setting("gizmo_ad_{$i}_code", ['default' => '', 'sanitize_callback' => 'gizmo_sanitize_ad_code']);
+		$wp_customize->add_control("gizmo_ad_{$i}_code", [
+			'label'       => __('Ad Code (HTML/JS)', GIZMO_TEXT),
+			'description' => __('Paste your ad script here.', GIZMO_TEXT),
 			'section'     => $section_id,
 			'type'        => 'textarea',
 		]);
 
-		// Tablet
-		$wp_customize->add_setting("gizmo_ad_{$slot_id}_tablet", ['default' => '', 'sanitize_callback' => 'gizmo_sanitize_ad_code']);
-		$wp_customize->add_control("gizmo_ad_{$slot_id}_tablet", [
-			'label'       => __('Tablet Code (768px - 1023px)', GIZMO_TEXT),
-			'description' => __('e.g. 300x250', GIZMO_TEXT),
+		$wp_customize->add_setting("gizmo_ad_{$i}_location", ['default' => 'none', 'sanitize_callback' => 'sanitize_key']);
+		$wp_customize->add_control("gizmo_ad_{$i}_location", [
+			'label'       => __('Placement', GIZMO_TEXT),
 			'section'     => $section_id,
-			'type'        => 'textarea',
+			'type'        => 'select',
+			'choices'     => $ad_locations,
 		]);
 
-		// Mobile
-		$wp_customize->add_setting("gizmo_ad_{$slot_id}_mobile", ['default' => '', 'sanitize_callback' => 'gizmo_sanitize_ad_code']);
-		$wp_customize->add_control("gizmo_ad_{$slot_id}_mobile", [
-			'label'       => __('Mobile Code (< 768px)', GIZMO_TEXT),
-			'description' => __('e.g. 300x250 or 320x50', GIZMO_TEXT),
+		$wp_customize->add_setting("gizmo_ad_{$i}_device", ['default' => 'all', 'sanitize_callback' => 'sanitize_key']);
+		$wp_customize->add_control("gizmo_ad_{$i}_device", [
+			'label'       => __('Target Device', GIZMO_TEXT),
 			'section'     => $section_id,
-			'type'        => 'textarea',
+			'type'        => 'select',
+			'choices'     => $ad_devices,
 		]);
 	}
 
@@ -1243,30 +1243,25 @@ function gizmo_shortcode_review_box($atts) {
 }
 
 /**
- * 3. Ad Slot Helper
- * Automatically selects the right code based on CSS media queries
+ * 3. Ad Slot Helper (Async)
+ * Outputs ad code in a <template> tag for JS to inject based on device.
  */
-function gizmo_get_ad_slot_html($slot_id) {
+function gizmo_get_ad_location_html($location) {
 	if (!get_theme_mod('gizmo_ads_enabled', false)) return '';
 
-	$desktop = get_theme_mod("gizmo_ad_{$slot_id}_desktop", '');
-	$tablet  = get_theme_mod("gizmo_ad_{$slot_id}_tablet", '');
-	$mobile  = get_theme_mod("gizmo_ad_{$slot_id}_mobile", '');
-
-	// Fallback: If tablet is empty, use desktop. If mobile is empty, use tablet/desktop.
-	if (empty($tablet)) $tablet = $desktop;
-	if (empty($mobile)) $mobile = $tablet;
-
-	if (empty($desktop) && empty($tablet) && empty($mobile)) return '';
-
 	ob_start();
-	?>
-	<div class="gizmo-ad-container gizmo-ad-<?php echo esc_attr($slot_id); ?>">
-		<div class="gizmo-ad-desktop"><?php echo $desktop; // phpcs:ignore ?></div>
-		<div class="gizmo-ad-tablet"><?php echo $tablet; // phpcs:ignore ?></div>
-		<div class="gizmo-ad-mobile"><?php echo $mobile; // phpcs:ignore ?></div>
-	</div>
-	<?php
+	for ($i = 1; $i <= 5; $i++) {
+		$loc = get_theme_mod("gizmo_ad_{$i}_location", 'none');
+		if ($loc === $location) {
+			$code = get_theme_mod("gizmo_ad_{$i}_code", '');
+			$dev  = get_theme_mod("gizmo_ad_{$i}_device", 'all');
+			if ($code) {
+				echo '<div class="gizmo-async-ad" data-device="' . esc_attr($dev) . '">';
+				echo '<template>' . $code . '</template>'; // Raw code hidden in template
+				echo '</div>';
+			}
+		}
+	}
 	return ob_get_clean();
 }
 
@@ -1275,16 +1270,28 @@ add_filter('the_content', 'gizmo_inject_ads_in_content');
 function gizmo_inject_ads_in_content($content) {
 	if (!is_single() || !get_theme_mod('gizmo_ads_enabled', false)) return $content;
 
-	// Ad #1 after paragraph 3
-	$ad_code_1 = gizmo_get_ad_slot_html('content_1');
-	if ($ad_code_1) {
-		$content = gizmo_insert_after_paragraph($ad_code_1, 3, $content);
+	// Before Content
+	$ad_top = gizmo_get_ad_location_html('content_top');
+	if ($ad_top) {
+		$content = $ad_top . $content;
 	}
 
-	// Ad #2 after paragraph 8
-	$ad_code_2 = gizmo_get_ad_slot_html('content_2');
-	if ($ad_code_2) {
-		$content = gizmo_insert_after_paragraph($ad_code_2, 8, $content);
+	// After Para 3
+	$ad_3 = gizmo_get_ad_location_html('content_3');
+	if ($ad_3) {
+		$content = gizmo_insert_after_paragraph($ad_3, 3, $content);
+	}
+
+	// After Para 8
+	$ad_8 = gizmo_get_ad_location_html('content_8');
+	if ($ad_8) {
+		$content = gizmo_insert_after_paragraph($ad_8, 8, $content);
+	}
+
+	// After Content
+	$ad_bot = gizmo_get_ad_location_html('content_bot');
+	if ($ad_bot) {
+		$content .= $ad_bot;
 	}
 
 	return $content;
@@ -1298,27 +1305,6 @@ function gizmo_insert_after_paragraph($insertion, $paragraph_id, $content) {
 		return implode('', $paragraphs);
 	}
 	return $content;
-}
-
-/* Output Global Head Script */
-add_action('wp_head', 'gizmo_output_ads_head', 20);
-function gizmo_output_ads_head() {
-	if (!get_theme_mod('gizmo_ads_enabled', false)) return;
-	$code = get_theme_mod('gizmo_ads_head_code', '');
-	if ($code) {
-		echo $code . "\n"; // phpcs:ignore
-	}
-}
-
-/* Output Sticky Mobile Footer Ad */
-add_action('wp_footer', 'gizmo_output_sticky_footer_ad', 100);
-function gizmo_output_sticky_footer_ad() {
-	if (!get_theme_mod('gizmo_ads_enabled', false)) return;
-	
-	$ad_html = gizmo_get_ad_slot_html('sticky_mobile');
-	if ($ad_html) {
-		echo '<div class="gizmo-sticky-footer">' . $ad_html . '<button class="gizmo-sticky-close" onclick="this.parentElement.style.display=\'none\'">&times;</button></div>'; // phpcs:ignore
-	}
 }
 
 /* ============================================================

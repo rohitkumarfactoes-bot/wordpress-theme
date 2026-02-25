@@ -623,6 +623,43 @@ function initAmazonLoader() {
       container.style.display = 'none';
     });
 }
+
+/* ============================================================
+   20. ASYNC AD LOADER
+   Injects ad code from <template> only if device matches
+   ============================================================ */
+function initAsyncAds() {
+  const slots = $$('.gizmo-async-ad');
+  if (!slots.length) return;
+
+  const width = window.innerWidth;
+  const isMobile = width < 768;
+  const isTablet = width >= 768 && width <= 1024;
+  const isDesktop = width > 1024;
+
+  slots.forEach(slot => {
+    const target = slot.dataset.device;
+    let shouldLoad = (target === 'all');
+    if (target === 'mobile' && isMobile) shouldLoad = true;
+    if (target === 'tablet' && isTablet) shouldLoad = true;
+    if (target === 'desktop' && isDesktop) shouldLoad = true;
+
+    if (shouldLoad) {
+      const template = $('template', slot);
+      if (template) {
+        slot.innerHTML = template.innerHTML;
+        // Execute scripts inserted via innerHTML
+        $$('script', slot).forEach(oldScript => {
+          const newScript = document.createElement('script');
+          Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+          newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+      }
+    }
+  });
+}
+
   /* ============================================================
      INIT ALL
      ============================================================ */
@@ -646,6 +683,7 @@ function initAmazonLoader() {
     initCarouselSlider();
     initAmazonLoader();
     initCustomFAQ();
+    initAsyncAds();
   }
 
   // DOM-ready
