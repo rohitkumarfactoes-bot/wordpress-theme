@@ -2201,7 +2201,7 @@ font-size: .75rem;
 .sidebar-related__thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+/*   object-fit: cover; */
 }
 
 .sidebar-related__title {
@@ -2292,6 +2292,38 @@ font-size: .75rem;
 .dark-mode .sidebar-amazon-price,
 [data-theme="dark"] .sidebar-amazon-price {
   color: #FF9900; /* Lighter orange for dark mode */
+}
+
+/* ────────────────────────────────────────────────────────────
+   ADVERTISEMENT SYSTEM
+   ──────────────────────────────────────────────────────────── */
+.gizmo-ad-container {
+  display: block;
+  margin: 2rem auto;
+  text-align: center;
+  clear: both;
+  overflow: hidden;
+}
+
+.gizmo-ad-desktop,
+.gizmo-ad-tablet,
+.gizmo-ad-mobile {
+  display: none;
+}
+
+/* Desktop (>= 1024px) */
+@media (min-width: 1024px) {
+  .gizmo-ad-desktop { display: block; }
+}
+
+/* Tablet (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .gizmo-ad-tablet { display: block; }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 767px) {
+  .gizmo-ad-mobile { display: block; }
 }
 
 /* Breadcrumbs */
@@ -2759,12 +2791,16 @@ font-size: .75rem;
 .category-mobile .news-card__thumb img,
 .type-mobile .news-card__thumb img,
 .category-mobile .single-hero img,
-  .type-mobile .single-hero img,
-  .type-mobile .sidebar-related__thumb img,
-  .category-mobile .sidebar-related__thumb img {
+  .type-mobile .single-hero img {
   object-fit: contain !important;
   background: var(--bg-surface-2, #F8FAFC);
   /* Adds a light bg if image doesn't fill space */
+}
+
+/* Sidebar items: Only apply if the item itself is mobile type */
+.sidebar-related__item.type-mobile .sidebar-related__thumb img {
+  object-fit: contain !important;
+  background: var(--bg-surface-2, #F8FAFC);
 }
 
 /* ────────────────────────────────────────────────────────────
@@ -3662,6 +3698,7 @@ body.dark-mode,
   display: flex;
   width: 100%;
   justify-content: space-between;
+	text-align: left;
 }
 
 .gizmo-faq-question {

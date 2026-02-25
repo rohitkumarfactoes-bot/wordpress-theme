@@ -239,11 +239,21 @@ while (have_posts()) : the_post();
 			<?php endif; ?>
 
 			<!-- You May Also Like -->
-			<?php if ($also_like && $also_like->have_posts()) : ?>
+			<?php
+			$latest_posts_q = new WP_Query([
+				'post_type'      => 'post',
+				'posts_per_page' => 5,
+				'post_status'    => 'publish',
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'post__not_in'   => [get_the_ID()],
+			]);
+			if ($latest_posts_q->have_posts()) :
+			?>
 			<div class="sidebar-widget">
-				<h3 class="sidebar-widget__title"><?php esc_html_e('You may also like','gizmodotech-pro'); ?></h3>
+				<h3 class="sidebar-widget__title"><?php esc_html_e('You may also like', 'gizmodotech-pro'); ?></h3>
 				<ul class="sidebar-also-like">
-					<?php while ($also_like->have_posts()) : $also_like->the_post(); ?>
+					<?php while ($latest_posts_q->have_posts()) : $latest_posts_q->the_post(); ?>
 					<li>
 						<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 					</li>
@@ -252,25 +262,13 @@ while (have_posts()) : the_post();
 			</div>
 			<?php endif; ?>
 			
-			
 			<!-- Amazon Products (Async) -->
 			<?php if (get_theme_mod('gizmo_amazon_enabled', false)) : ?>
 			<div id="gizmo-amazon-sidebar" data-keyword="<?php echo esc_attr(get_the_title()); ?>"></div>
 			<?php endif; ?>
 
-			<!-- Sidebar Ad -->
-			<div class="sidebar-widget sidebar-ad" style="text-align:center; overflow:hidden;">
-				<script>
-				atOptions = {
-					'key' : 'b83b927bb7d5a9536fe765b52b46c8f7',
-					'format' : 'iframe',
-					'height' : 250,
-					'width' : 300,
-					'params' : {}
-				};
-				</script>
-				<script src="https://soundfrankcoke.com/b83b927bb7d5a9536fe765b52b46c8f7/invoke.js"></script>
-			</div>
+			
+			
 
 			<!-- Related Posts -->
 			<?php if ($related && $related->have_posts()) : ?>
@@ -308,10 +306,8 @@ while (have_posts()) : the_post();
 			<div class="sidebar-widget">
 				<h3 class="sidebar-widget__title"><?php esc_html_e('Latest Tech News','gizmodotech-pro'); ?></h3>
 				<div class="sidebar-related">
-					<?php while ($technews_q->have_posts()) : $technews_q->the_post(); 
-						$is_mob = has_category('mobile') ? 'type-mobile' : '';
-					?>
-					<a class="sidebar-related__item <?php echo esc_attr($is_mob); ?>" href="<?php the_permalink(); ?>">
+					<?php while ($technews_q->have_posts()) : $technews_q->the_post(); ?>
+					<a class="sidebar-related__item" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>
 						<div class="sidebar-related__thumb">
 							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=> esc_attr(get_the_title())]); ?>
@@ -339,10 +335,8 @@ while (have_posts()) : the_post();
 			<div class="sidebar-widget">
 				<h3 class="sidebar-widget__title"><?php esc_html_e('Latest Reviews','gizmodotech-pro'); ?></h3>
 				<div class="sidebar-related">
-					<?php while ($custom_reviews_q->have_posts()) : $custom_reviews_q->the_post(); 
-						$is_mob = has_category('mobile') ? 'type-mobile' : '';
-					?>
-					<a class="sidebar-related__item <?php echo esc_attr($is_mob); ?>" href="<?php the_permalink(); ?>">
+					<?php while ($custom_reviews_q->have_posts()) : $custom_reviews_q->the_post(); ?>
+					<a class="sidebar-related__item" href="<?php the_permalink(); ?>">
 						<?php if (has_post_thumbnail()) : ?>
 						<div class="sidebar-related__thumb">
 							<?php the_post_thumbnail('thumbnail',['loading'=>'lazy','alt'=> esc_attr(get_the_title())]); ?>

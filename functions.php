@@ -546,6 +546,66 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 		'type'    => 'text',
 	]);
 
+	/* ── Advertisement System ── */
+	$wp_customize->add_panel('gizmo_ads_panel', [
+		'title'    => __('Advertisement Settings', GIZMO_TEXT),
+		'priority' => 50,
+	]);
+
+	// Global Toggle
+	$wp_customize->add_section('gizmo_ads_global', [
+		'title' => __('Global Settings', GIZMO_TEXT),
+		'panel' => 'gizmo_ads_panel',
+	]);
+	$wp_customize->add_setting('gizmo_ads_enabled', ['default' => false, 'sanitize_callback' => 'wp_validate_boolean']);
+	$wp_customize->add_control('gizmo_ads_enabled', [
+		'label'   => __('Enable Advertisements', GIZMO_TEXT),
+		'section' => 'gizmo_ads_global',
+		'type'    => 'checkbox',
+	]);
+
+	// Define Slots
+	$ad_slots = [
+		'sidebar'   => __('Sidebar Ad (Top)', GIZMO_TEXT),
+		'content_1' => __('In-Article Ad #1 (After Paragraph 3)', GIZMO_TEXT),
+		'content_2' => __('In-Article Ad #2 (After Paragraph 8)', GIZMO_TEXT),
+	];
+
+	foreach ($ad_slots as $slot_id => $slot_label) {
+		$section_id = 'gizmo_ads_' . $slot_id;
+		$wp_customize->add_section($section_id, [
+			'title' => $slot_label,
+			'panel' => 'gizmo_ads_panel',
+		]);
+
+		// Desktop
+		$wp_customize->add_setting("gizmo_ad_{$slot_id}_desktop", ['default' => '', 'sanitize_callback' => 'gizmo_sanitize_ad_code']);
+		$wp_customize->add_control("gizmo_ad_{$slot_id}_desktop", [
+			'label'       => __('Desktop Code (> 1024px)', GIZMO_TEXT),
+			'description' => __('e.g. 300x250 or 728x90', GIZMO_TEXT),
+			'section'     => $section_id,
+			'type'        => 'textarea',
+		]);
+
+		// Tablet
+		$wp_customize->add_setting("gizmo_ad_{$slot_id}_tablet", ['default' => '', 'sanitize_callback' => 'gizmo_sanitize_ad_code']);
+		$wp_customize->add_control("gizmo_ad_{$slot_id}_tablet", [
+			'label'       => __('Tablet Code (768px - 1023px)', GIZMO_TEXT),
+			'description' => __('e.g. 300x250', GIZMO_TEXT),
+			'section'     => $section_id,
+			'type'        => 'textarea',
+		]);
+
+		// Mobile
+		$wp_customize->add_setting("gizmo_ad_{$slot_id}_mobile", ['default' => '', 'sanitize_callback' => 'gizmo_sanitize_ad_code']);
+		$wp_customize->add_control("gizmo_ad_{$slot_id}_mobile", [
+			'label'       => __('Mobile Code (< 768px)', GIZMO_TEXT),
+			'description' => __('e.g. 300x250 or 320x50', GIZMO_TEXT),
+			'section'     => $section_id,
+			'type'        => 'textarea',
+		]);
+	}
+
 	/* ── Social URLs ── */
 	$wp_customize->add_section('gizmo_socials', [
 		'title'    => __('Social Media URLs', GIZMO_TEXT),
@@ -605,6 +665,11 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 	gizmo_add_px_control($wp_customize, 'content_width', 'gizmo_layout', __('Content Width (px)', GIZMO_TEXT), 800, 600, 1200);
 	gizmo_add_px_control($wp_customize, 'wide_width',    'gizmo_layout', __('Wide Width (px)',    GIZMO_TEXT), 1320, 1000, 1920);
 	gizmo_add_px_control($wp_customize, 'card_radius',   'gizmo_layout', __('Card Border Radius (px)', GIZMO_TEXT), 16, 0, 32);
+}
+
+/* Allow raw HTML/JS for ads (Admin only) */
+function gizmo_sanitize_ad_code($input) {
+	return current_user_can('unfiltered_html') ? $input : wp_kses_post($input);
 }
 
 /* Customizer helpers */
@@ -1166,6 +1231,64 @@ function gizmo_shortcode_review_box($atts) {
 	</div>
 	<?php
 	return ob_get_clean();
+}
+
+/**
+ * 3. Ad Slot Helper
+ * Automatically selects the right code based on CSS media queries
+ */
+function gizmo_get_ad_slot_html($slot_id) {
+	if (!get_theme_mod('gizmo_ads_enabled', false)) return '';
+
+	$desktop = get_theme_mod("gizmo_ad_{$slot_id}_desktop", '');
+	$tablet  = get_theme_mod("gizmo_ad_{$slot_id}_tablet", '');
+	$mobile  = get_theme_mod("gizmo_ad_{$slot_id}_mobile", '');
+
+	// Fallback: If tablet is empty, use desktop. If mobile is empty, use tablet/desktop.
+	if (empty($tablet)) $tablet = $desktop;
+	if (empty($mobile)) $mobile = $tablet;
+
+	if (empty($desktop) && empty($tablet) && empty($mobile)) return '';
+
+	ob_start();
+	?>
+	<div class="gizmo-ad-container gizmo-ad-<?php echo esc_attr($slot_id); ?>">
+		<div class="gizmo-ad-desktop"><?php echo $desktop; // phpcs:ignore ?></div>
+		<div class="gizmo-ad-tablet"><?php echo $tablet; // phpcs:ignore ?></div>
+		<div class="gizmo-ad-mobile"><?php echo $mobile; // phpcs:ignore ?></div>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+/* Automatically inject ads into single post content */
+add_filter('the_content', 'gizmo_inject_ads_in_content');
+function gizmo_inject_ads_in_content($content) {
+	if (!is_single() || !get_theme_mod('gizmo_ads_enabled', false)) return $content;
+
+	// Ad #1 after paragraph 3
+	$ad_code_1 = gizmo_get_ad_slot_html('content_1');
+	if ($ad_code_1) {
+		$content = gizmo_insert_after_paragraph($ad_code_1, 3, $content);
+	}
+
+	// Ad #2 after paragraph 8
+	$ad_code_2 = gizmo_get_ad_slot_html('content_2');
+	if ($ad_code_2) {
+		$content = gizmo_insert_after_paragraph($ad_code_2, 8, $content);
+	}
+
+	return $content;
+}
+
+function gizmo_insert_after_paragraph($insertion, $paragraph_id, $content) {
+	$closing_p = '</p>';
+	$paragraphs = explode($closing_p, $content);
+	if (count($paragraphs) > $paragraph_id) {
+		$paragraphs[$paragraph_id - 1] .= $closing_p . $insertion;
+		return implode('', $paragraphs);
+	}
+	return $content;
 }
 
 /* ============================================================
