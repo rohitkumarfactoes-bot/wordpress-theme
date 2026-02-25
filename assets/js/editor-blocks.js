@@ -7,7 +7,6 @@
     var registerBlockType = blocks.registerBlockType;
     var TextControl = components.TextControl;
     var ToggleControl = components.ToggleControl;
-    var TextareaControl = components.TextareaControl;
     var SelectControl = components.SelectControl;
     var PanelBody = components.PanelBody;
     var InspectorControls = blockEditor.InspectorControls;
@@ -72,54 +71,6 @@
                 ),
                 el(ServerSideRender, {
                     block: 'gizmodotech/post-grid-block',
-                    attributes: attributes
-                })
-            );
-        },
-        save: function() {
-            return null; // Rendered via PHP
-        }
-    });
-
-    // 2. PROS & CONS BLOCK
-    registerBlockType('gizmodotech/pros-cons-block', {
-        title: 'Gizmo Pros & Cons',
-        icon: 'thumbs-up',
-        category: 'gizmodotech',
-        description: 'A review box for Pros and Cons.',
-        attributes: {
-            pros: { type: 'string', default: 'Great Battery|Amazing Screen' },
-            cons: { type: 'string', default: 'Expensive|No Headphone Jack' }
-        },
-        edit: function(props) {
-            var attributes = props.attributes;
-            var setAttributes = props.setAttributes;
-
-            return el(
-                element.Fragment,
-                {},
-                el(
-                    InspectorControls,
-                    {},
-                    el(
-                        PanelBody,
-                        { title: 'Review Data', initialOpen: true },
-                        el(TextareaControl, {
-                            label: 'Pros (separate with |)',
-                            value: attributes.pros,
-                            rows: 4,
-                            onChange: function(val) { setAttributes({ pros: val }); }
-                        }),
-                        el(TextareaControl, {
-                            label: 'Cons (separate with |)',
-                            value: attributes.cons,
-                            rows: 4,
-                            onChange: function(val) { setAttributes({ cons: val }); }
-                        })
-                    )
-                ),
-                el(ServerSideRender, {
-                    block: 'gizmodotech/pros-cons-block',
                     attributes: attributes
                 })
             );
@@ -468,8 +419,8 @@
         attributes: {
             prosTitle: { type: 'string', default: 'Pros:' },
             consTitle: { type: 'string', default: 'Cons:' },
-            prosList: { type: 'string', source: 'html', selector: '.pros ul', default: '<li>Item 1</li><li>Item 2</li>' },
-            consList: { type: 'string', source: 'html', selector: '.cons ul', default: '<li>Item 1</li><li>Item 2</li>' }
+            prosList: { type: 'string', default: '<li>Item 1</li><li>Item 2</li>' },
+            consList: { type: 'string', default: '<li>Item 1</li><li>Item 2</li>' }
         },
         edit: function(props) {
             var attributes = props.attributes;
