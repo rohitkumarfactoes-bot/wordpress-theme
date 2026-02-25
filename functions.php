@@ -1017,6 +1017,93 @@ function gizmo_ajax_filter_mobiles() {
 	]);
 }
 
+/**
+ * ============================================================
+ * AJAX: Device Comparison Functionality (Merged from Plugin)
+ * ============================================================
+ */
+
+// Helper to extract price from post content (from your plugin)
+function gizmo_dc_get_price_from_content($post_id) {
+    $content = get_post_field('post_content', $post_id);
+    preg_match('/₹[\d,]+/', $content, $matches);
+    return $matches[0] ?? __('Price not available', 'gizmodotech-pro');
+}
+
+// AJAX handler for searching devices
+add_action('wp_ajax_gizmo_dc_search_devices', 'gizmo_ajax_dc_search_devices');
+add_action('wp_ajax_nopriv_gizmo_dc_search_devices', 'gizmo_ajax_dc_search_devices');
+function gizmo_ajax_dc_search_devices() {
+    check_ajax_referer('gizmo_nonce', 'nonce');
+
+    $query = isset($_GET['query']) ? sanitize_text_field(wp_unslash($_GET['query'])) : '';
+
+    if (empty($query) || strlen($query) < 2) {
+        wp_send_json_error(__('Please enter at least 2 characters', 'gizmodotech-pro'));
+        return;
+    }
+
+    $args = [
+        'post_type'      => ['post', 'mobile', 'review'],
+        'posts_per_page' => 5,
+        's'              => $query,
+        'category_name'  => 'mobile',
+        'fields'         => 'ids',
+        'no_found_rows'  => true,
+    ];
+
+    $query_result = new WP_Query($args);
+    $results      = [];
+
+    foreach ($query_result->posts as $post_id) {
+        $results[] = [
+            'id'      => $post_id,
+            'title'   => get_the_title($post_id),
+            'slug'    => get_post_field('post_name', $post_id),
+            'image'   => get_the_post_thumbnail_url($post_id, 'thumbnail') ?: '',
+            'price'   => gizmo_dc_get_price_from_content($post_id),
+            'content' => get_post_field('post_content', $post_id),
+        ];
+    }
+
+    wp_send_json_success($results);
+}
+
+// AJAX handler for fetching full device data for comparison
+add_action('wp_ajax_gizmo_dc_handle_comparison', 'gizmo_ajax_dc_handle_comparison');
+add_action('wp_ajax_nopriv_gizmo_dc_handle_comparison', 'gizmo_ajax_dc_handle_comparison');
+function gizmo_ajax_dc_handle_comparison() {
+	check_ajax_referer('gizmo_nonce', 'nonce');
+
+    $raw_slugs = isset($_GET['slugs']) ? (array) $_GET['slugs'] : [];
+    $slugs     = array_filter(
+        array_slice(array_map('sanitize_text_field', $raw_slugs), 0, 3)
+    );
+
+    if (empty($slugs)) {
+        wp_send_json_error(__('No devices selected', 'gizmodotech-pro'));
+        return;
+    }
+
+    $devices = [];
+
+    foreach ($slugs as $slug) {
+        $post = get_page_by_path($slug, OBJECT, ['post', 'mobile', 'review']);
+        if ($post) {
+            $devices[] = [
+                'id'      => $post->ID,
+                'title'   => $post->post_title,
+                'slug'    => $slug,
+                'content' => $post->post_content,
+                'url'     => get_permalink($post->ID),
+                'image'   => get_the_post_thumbnail_url($post->ID, 'medium') ?: '',
+            ];
+        }
+    }
+
+    wp_send_json_success(['devices' => $devices]);
+}
+
 /* ============================================================
    HELPER: Get Gallery Images (Featured + Content)
    ============================================================ */
