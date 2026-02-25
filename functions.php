@@ -758,6 +758,11 @@ add_filter('body_class', function(array $classes): array {
 	if (!empty($_COOKIE['gizmo_theme']) && $_COOKIE['gizmo_theme'] === 'dark') {
 		$classes[] = 'dark-mode';
 	}
+
+	if (is_page_template('compare.php')) {
+		$classes[] = 'compare-page';
+	}
+
 	return $classes;
 });
 

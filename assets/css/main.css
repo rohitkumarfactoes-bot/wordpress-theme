@@ -3767,6 +3767,9 @@ body.dark-mode,
     border: 1px solid var(--border-color);
 }
 
+table.has-fixed-layout {
+  margin:0px !important
+}
 /* ─── Top Controls Bar ───────────────────────────────────────── */
 .highlight-differences {
     display: flex;
