@@ -59,7 +59,7 @@
 
   function initProgressBar() {
     const bar  = $( '.progress-bar' );
-    const body = $( '.post-content' ) || document.body;
+    const body = $( '.single-body' ) || document.body; // Corrected selector
     if ( ! bar ) { return; }
 
     let ticking = false;

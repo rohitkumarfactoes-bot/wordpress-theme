@@ -248,7 +248,6 @@ function gizmodotech_breadcrumbs(bool $echo = true): string {
 	}
 
 	// Custom breadcrumbs
-	$sep   = '<span class="breadcrumb__sep" aria-hidden="true">›</span>';
 	$parts = [];
 	$parts[] = sprintf('<li class="breadcrumb__item"><a href="%s">%s</a></li>',
 		esc_url(home_url('/')), esc_html__('Home', GIZMO_TEXT));
@@ -277,7 +276,7 @@ function gizmodotech_breadcrumbs(bool $echo = true): string {
 	}
 
 	$out  = '<nav class="breadcrumb" aria-label="' . esc_attr__('Breadcrumb', GIZMO_TEXT) . '">';
-	$out .= '<ol class="breadcrumb__list">' . implode($sep, $parts) . '</ol>';
+	$out .= '<ol class="breadcrumb__list">' . implode('', $parts) . '</ol>';
 	$out .= '</nav>';
 
 	if ($echo) { echo $out; } // phpcs:ignore
@@ -583,7 +582,7 @@ function gizmo_customizer(WP_Customize_Manager $wp_customize) {
 	];
 
 	// Register 5 Flexible Ad Units
-	for ($i = 1; $i <= 5; $i++) {
+	for ($i = 1; $i <= 10; $i++) {
 		$section_id = 'gizmo_ad_unit_' . $i;
 		$wp_customize->add_section($section_id, [
 			'title' => sprintf(__('Ad Unit %d', GIZMO_TEXT), $i),
@@ -1339,21 +1338,38 @@ function gizmo_shortcode_review_box($atts) {
  * Outputs ad code in a <template> tag for JS to inject based on device.
  */
 function gizmo_get_ad_location_html($location) {
-	if (!get_theme_mod('gizmo_ads_enabled', false)) return '';
+	if ( ! get_theme_mod( 'gizmo_ads_enabled', false ) ) {
+		return '';
+	}
 
-	ob_start();
-	for ($i = 1; $i <= 5; $i++) {
+	$matching_ads = [];
+	// Increased loop to 10 to match new number of ad units.
+	for ( $i = 1; $i <= 10; $i++ ) {
 		$loc = get_theme_mod("gizmo_ad_{$i}_location", 'none');
-		if ($loc === $location) {
+		if ( $loc === $location ) {
 			$code = get_theme_mod("gizmo_ad_{$i}_code", '');
 			$dev  = get_theme_mod("gizmo_ad_{$i}_device", 'all');
-			if ($code) {
-				echo '<div class="gizmo-async-ad" data-device="' . esc_attr($dev) . '">';
-				echo '<template>' . $code . '</template>'; // Raw code hidden in template
-				echo '</div>';
+			if ( $code ) {
+				$matching_ads[] = [
+					'code' => $code,
+					'dev'  => $dev,
+				];
 			}
 		}
 	}
+
+	if ( empty( $matching_ads ) ) {
+		return '';
+	}
+
+	// If multiple ads are assigned to the same location, pick one at random for each page load.
+	$ad = $matching_ads[ array_rand( $matching_ads ) ];
+
+	ob_start();
+	echo '<div class="gizmo-async-ad" data-device="' . esc_attr( $ad['dev'] ) . '">';
+	// Raw code hidden in template
+	echo '<template>' . $ad['code'] . '</template>';
+	echo '</div>';
 	return ob_get_clean();
 }
 
@@ -1389,14 +1405,27 @@ function gizmo_inject_ads_in_content($content) {
 	return $content;
 }
 
-function gizmo_insert_after_paragraph($insertion, $paragraph_id, $content) {
-	$closing_p = '</p>';
-	$paragraphs = explode($closing_p, $content);
-	if (count($paragraphs) > $paragraph_id) {
-		$paragraphs[$paragraph_id - 1] .= $closing_p . $insertion;
-		return implode('', $paragraphs);
+function gizmo_insert_after_paragraph( $insertion, $paragraph_id, $content ) {
+	$closing_p  = '</p>';
+	$paragraphs = explode( $closing_p, $content );
+	// Check if there are enough paragraphs
+	if ( count( $paragraphs ) < $paragraph_id ) {
+		return $content;
 	}
-	return $content;
+	$new_content = '';
+	foreach ( $paragraphs as $index => $paragraph ) {
+		// Add the paragraph and its closing tag back
+		$new_content .= $paragraph;
+		// Don't add the closing tag if it's the last (and likely empty) element from explode
+		if ( $index < count( $paragraphs ) - 1 ) {
+			$new_content .= $closing_p;
+		}
+		// After the Nth paragraph, add the insertion
+		if ( $paragraph_id === ( $index + 1 ) ) {
+			$new_content .= $insertion;
+		}
+	}
+	return $new_content;
 }
 
 /* ============================================================
