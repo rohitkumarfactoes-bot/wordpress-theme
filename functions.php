@@ -1409,7 +1409,7 @@ function gizmo_insert_after_paragraph( $insertion, $paragraph_id, $content ) {
 	$closing_p  = '</p>';
 	$paragraphs = explode( $closing_p, $content );
 	// Check if there are enough paragraphs
-	if ( count( $paragraphs ) < $paragraph_id ) {
+	if ( count( $paragraphs ) <= $paragraph_id ) {
 		return $content;
 	}
 	$new_content = '';

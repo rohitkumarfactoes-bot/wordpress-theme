@@ -4018,3 +4018,42 @@ table.has-fixed-layout {
 .search-results::-webkit-scrollbar-thumb:hover {
     background: var(--text-muted);
 }
+
+
+
+.ad-wrap{
+	
+    justify-content: center;
+    display: flex;
+    align-items: center;
+   
+	
+}
+.ad-container {
+	position: fixed;
+    bottom: 0px;
+    background: white;
+    width: 100%;
+	 z-index: 999;
+	display: flex;
+    justify-content: center;
+	padding: 10px 15px;
+}
+.close {
+	position: absolute;
+    z-index: 9999;
+    top: -32px;
+    right: 0;
+    margin-right: 10px;
+	cursor: pointer;
+}
+
+.close  svg {
+	width: 15px;
+	height: 15px;
+}
+
+.single-meta__updated {
+	display: none
+}
+
