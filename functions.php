@@ -1725,9 +1725,9 @@ function gizmo_get_ad_location_html($location) {
 	$ad = $matching_ads[ array_rand( $matching_ads ) ];
 
 	ob_start();
-	echo '<div class="gizmo-async-ad" data-device="' . esc_attr( $ad['dev'] ) . '">';
-	// Raw code hidden in template
-	echo '<template>' . $ad['code'] . '</template>';
+	// Output ad with device targeting - scripts will execute immediately
+	echo '<div class="gizmo-ad-unit gizmo-ad-' . esc_attr( $ad['dev'] ) . '">';
+	echo $ad['code'];
 	echo '</div>';
 	return ob_get_clean();
 }
@@ -1735,7 +1735,16 @@ function gizmo_get_ad_location_html($location) {
 /* Automatically inject ads into single post content */
 add_filter('the_content', 'gizmo_inject_ads_in_content', 20);
 function gizmo_inject_ads_in_content($content) {
-	if (!is_singular(['post', 'page']) || !get_theme_mod('gizmo_ads_enabled', false)) {
+	// Debug mode - add ?gizmo_ad_debug=1 to URL
+	$debug = isset($_GET['gizmo_ad_debug']) && current_user_can('manage_options');
+	
+	if (!is_singular(['post', 'page'])) {
+		if ($debug) $content = '<!-- DEBUG: Not singular -->' . $content;
+		return $content;
+	}
+	
+	if (!get_theme_mod('gizmo_ads_enabled', false)) {
+		if ($debug) $content = '<!-- DEBUG: Ads disabled in Customizer -->' . $content;
 		return $content;
 	}
 	
@@ -1743,17 +1752,22 @@ function gizmo_inject_ads_in_content($content) {
 	$min_words = get_theme_mod('gizmo_ads_auto_min_words', 300);
 	$content_words = str_word_count(strip_tags($content));
 	if ($content_words < $min_words) {
+		if ($debug) $content = '<!-- DEBUG: Content too short (' . $content_words . ' words, min ' . $min_words . ') -->' . $content;
 		return $content;
 	}
 	
 	$auto_mode = get_theme_mod('gizmo_ads_auto_mode', 'manual');
 	
+	if ($debug) {
+		$content = '<!-- DEBUG: Ads enabled, mode=' . $auto_mode . ', words=' . $content_words . ' -->' . $content;
+	}
+	
 	if ($auto_mode === 'auto') {
 		// Smart Auto Placement like AdSense Auto Ads
-		$content = gizmo_smart_auto_ads($content);
+		$content = gizmo_smart_auto_ads($content, $debug);
 	} else {
 		// Manual Placement
-		$content = gizmo_manual_ad_placement($content);
+		$content = gizmo_manual_ad_placement($content, $debug);
 	}
 
 	return $content;
@@ -1762,7 +1776,7 @@ function gizmo_inject_ads_in_content($content) {
 /**
  * Smart Auto Ads - Automatically places ads based on content length
  */
-function gizmo_smart_auto_ads($content) {
+function gizmo_smart_auto_ads($content, $debug = false) {
 	$frequency = get_theme_mod('gizmo_ads_auto_frequency', 'medium');
 	$skip_first = get_theme_mod('gizmo_ads_auto_exclude_first', 2);
 	
@@ -1786,21 +1800,32 @@ function gizmo_smart_auto_ads($content) {
 		}
 	}
 	
+	if ($debug) {
+		$content = '<!-- DEBUG: Found ' . count($auto_ads) . ' auto ads -->' . $content;
+	}
+	
 	if (empty($auto_ads)) {
-		return gizmo_manual_ad_placement($content);
+		if ($debug) $content = '<!-- DEBUG: No auto ads found, falling back to manual -->' . $content;
+		return gizmo_manual_ad_placement($content, $debug);
 	}
 	
 	// Count paragraphs
 	$paragraphs = explode('</p>', $content);
 	$total_paragraphs = count($paragraphs);
 	
+	if ($debug) {
+		$content = '<!-- DEBUG: Total paragraphs=' . $total_paragraphs . ', skip_first=' . $skip_first . ', interval=' . $interval . ' -->' . $content;
+	}
+	
 	if ($total_paragraphs <= $skip_first + 2) {
+		if ($debug) $content = '<!-- DEBUG: Too few paragraphs -->' . $content;
 		return $content; // Too few paragraphs
 	}
 	
 	// Insert ads at calculated intervals
 	$ad_index = 0;
 	$new_content = '';
+	$ads_inserted = 0;
 	
 	foreach ($paragraphs as $index => $paragraph) {
 		$new_content .= $paragraph;
@@ -1822,7 +1847,15 @@ function gizmo_smart_auto_ads($content) {
 			$ad_html = gizmo_wrap_ad_code($ad['code'], $ad['device']);
 			$new_content .= $ad_html;
 			$ad_index++;
+			$ads_inserted++;
+			if ($debug) {
+				$new_content .= '<!-- DEBUG: Ad inserted after paragraph ' . $position . ' -->';
+			}
 		}
+	}
+	
+	if ($debug) {
+		$new_content = '<!-- DEBUG: Total ads inserted=' . $ads_inserted . ' -->' . $new_content;
 	}
 	
 	return $new_content;
@@ -1831,11 +1864,14 @@ function gizmo_smart_auto_ads($content) {
 /**
  * Manual Ad Placement - Places ads at specific locations
  */
-function gizmo_manual_ad_placement($content) {
+function gizmo_manual_ad_placement($content, $debug = false) {
+	$ads_found = [];
+	
 	// Before Content
 	$ad_top = gizmo_get_ad_location_html('content_top');
 	if ($ad_top) {
 		$content = $ad_top . $content;
+		$ads_found[] = 'content_top';
 	}
 
 	// After specific paragraphs
@@ -1850,6 +1886,7 @@ function gizmo_manual_ad_placement($content) {
 		$ad = gizmo_get_ad_location_html($location);
 		if ($ad) {
 			$content = gizmo_insert_after_paragraph($ad, $paragraph_num, $content);
+			$ads_found[] = $location;
 		}
 	}
 	
@@ -1859,12 +1896,22 @@ function gizmo_manual_ad_placement($content) {
 		$paragraphs = explode('</p>', $content);
 		$middle = intval(count($paragraphs) / 2);
 		$content = gizmo_insert_after_paragraph($ad_middle, $middle, $content);
+		$ads_found[] = 'content_middle';
 	}
 
 	// After Content
 	$ad_bot = gizmo_get_ad_location_html('content_bot');
 	if ($ad_bot) {
 		$content .= $ad_bot;
+		$ads_found[] = 'content_bot';
+	}
+	
+	if ($debug) {
+		if (empty($ads_found)) {
+			$content = '<!-- DEBUG: No manual ads configured for any location -->' . $content;
+		} else {
+			$content = '<!-- DEBUG: Manual ads found: ' . implode(', ', $ads_found) . ' -->' . $content;
+		}
 	}
 
 	return $content;
@@ -1876,25 +1923,7 @@ function gizmo_manual_ad_placement($content) {
 function gizmo_wrap_ad_code($code, $device = 'all') {
 	if (empty($code)) return '';
 	
-	$device_class = '';
-	switch ($device) {
-		case 'desktop':
-			$device_class = 'gizmo-ad-desktop';
-			break;
-		case 'tablet':
-			$device_class = 'gizmo-ad-tablet';
-			break;
-		case 'mobile':
-			$device_class = 'gizmo-ad-mobile';
-			break;
-		case 'no_mobile':
-			$device_class = 'gizmo-ad-no-mobile';
-			break;
-	}
-	
-	$class_attr = $device_class ? ' class="gizmo-ad-unit ' . esc_attr($device_class) . '"' : ' class="gizmo-ad-unit"';
-	
-	return '<div' . $class_attr . ' style="margin: 2rem 0; text-align: center;">' . $code . '</div>';
+	return '<div class="gizmo-ad-unit gizmo-ad-' . esc_attr($device) . '">' . $code . '</div>';
 }
 
 function gizmo_insert_after_paragraph( $insertion, $paragraph_id, $content ) {

@@ -4175,9 +4175,9 @@ table.has-fixed-layout {
 	max-width: 100%;
 }
 
-/* Device-specific visibility */
+/* Device-specific visibility - Hide by device class */
 @media (min-width: 1025px) {
-	/* Desktop only */
+	/* Desktop: hide mobile-only and tablet-only ads */
 	.gizmo-ad-mobile,
 	.gizmo-ad-tablet {
 		display: none !important;
@@ -4185,7 +4185,7 @@ table.has-fixed-layout {
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
-	/* Tablet only */
+	/* Tablet: hide desktop-only and mobile-only ads */
 	.gizmo-ad-desktop,
 	.gizmo-ad-mobile {
 		display: none !important;
@@ -4193,10 +4193,10 @@ table.has-fixed-layout {
 }
 
 @media (max-width: 767px) {
-	/* Mobile only */
+	/* Mobile: hide desktop-only, tablet-only, and no-mobile ads */
 	.gizmo-ad-desktop,
 	.gizmo-ad-tablet,
-	.gizmo-ad-no-mobile {
+	.gizmo-ad-no_mobile {
 		display: none !important;
 	}
 }
@@ -4243,4 +4243,10 @@ table.has-fixed-layout {
 /* Hide empty ad units */
 .gizmo-ad-unit:empty {
 	display: none !important;
+}
+
+/* Ensure iframes in ads are responsive */
+.gizmo-ad-unit iframe {
+	max-width: 100%;
+	height: auto;
 }

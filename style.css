@@ -239,7 +239,9 @@ h1, h2, h3, h4, h5, h6 {
 .container--content {
   max-width: var(--width-content);
 }
-
+.wp-block-table thead {
+	border-bottom: 0px solid !important;
+}
 /* ============================================================
    SKIP LINK
    ============================================================ */

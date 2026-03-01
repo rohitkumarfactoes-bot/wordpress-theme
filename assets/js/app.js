@@ -656,6 +656,7 @@ function initAsyncAds() {
     if (target === 'mobile' && isMobile) shouldLoad = true;
     if (target === 'tablet' && isTablet) shouldLoad = true;
     if (target === 'desktop' && isDesktop) shouldLoad = true;
+    if (target === 'no_mobile' && !isMobile) shouldLoad = true;
 
     if (shouldLoad) {
       const template = $('template', slot);
