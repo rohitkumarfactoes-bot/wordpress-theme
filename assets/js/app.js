@@ -593,7 +593,14 @@ function initAmazonLoader() {
   if (!container || typeof GizmoData === 'undefined') return;
 
   const keyword = container.dataset.keyword;
-  if (!keyword) return;
+  if (!keyword) {
+    console.log('Amazon: No keyword provided');
+    container.style.display = 'none';
+    return;
+  }
+
+  // Show loading state
+  container.innerHTML = '<div class="sidebar-amazon-loading">Loading products...</div>';
 
   const fd = new FormData();
   fd.append('action', 'gizmo_load_amazon_products');
@@ -606,21 +613,27 @@ function initAmazonLoader() {
 
       // ── Print PHP debug log in console ──
       if (data.data && data.data.debug) {
-        console.group('🛒 Amazon Creator API Debug');
+        console.group('🛒 Amazon PA API Debug');
         data.data.debug.forEach(line => console.log(line));
         console.groupEnd();
       }
 
       if (data.success && data.data.html) {
         container.innerHTML = data.data.html;
+        
+        // Log if using fallback
+        if (data.data.fallback) {
+          console.log('Amazon: Using fallback display (API not available or not configured)');
+        }
       } else {
-        console.error('Amazon Error:', data.data?.message ?? 'Unknown');
-        container.style.display = 'none';
+        console.error('Amazon Error:', data.data?.message ?? 'Unknown error');
+        // Don't hide container on error, show fallback
+        container.innerHTML = '<div class="sidebar-amazon-error">Unable to load products</div>';
       }
     })
     .catch(err => {
       console.error('Amazon fetch error:', err);
-      container.style.display = 'none';
+      container.innerHTML = '<div class="sidebar-amazon-error">Unable to load products</div>';
     });
 }
 

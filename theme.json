@@ -129,7 +129,7 @@
         "typography": { "fontFamilies": true }
       },
       "core/image": {
-        "lightbox": { "enabled": true, "allowEditing": true }
+        "lightbox": { "enabled": false}
       }
     },
     "custom": {

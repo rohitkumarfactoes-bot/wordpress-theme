@@ -6,7 +6,9 @@
 :root {
   --text-muted: #64748B; /* WCAG AA Compliant on white */
 }
-
+.slider-cs {
+	display: none !important;
+}
 
 .category-mobile .wp-block-image img {
 	display: none;
@@ -2333,6 +2335,91 @@ font-size: .75rem;
   color: #FF9900; /* Lighter orange for dark mode */
 }
 
+/* ── Amazon Loading State ── */
+.sidebar-amazon-loading {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.sidebar-amazon-loading::after {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Amazon Error State ── */
+.sidebar-amazon-error {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  background: var(--bg-surface-2);
+  border-radius: var(--radius-md);
+}
+
+/* ── Amazon Fallback State ── */
+.sidebar-amazon--fallback .sidebar-amazon-fallback {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.sidebar-amazon--fallback .sidebar-amazon-fallback p {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.btn-amazon-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: #FF9900;
+  color: #000;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+}
+
+.btn-amazon-search:hover {
+  background: #E88A00;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3);
+}
+
+.btn-amazon-search svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Amazon Footer Disclosure ── */
+.sidebar-amazon-footer {
+  padding: 0.75rem 1rem;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  margin-top: 0.5rem;
+}
+
+.sidebar-amazon-footer small {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
 /* ────────────────────────────────────────────────────────────
    ADVERTISEMENT SYSTEM
    ──────────────────────────────────────────────────────────── */
@@ -3357,8 +3444,11 @@ body.dark-mode,
   text-align: center;
 }
 
+.pcb-pros-cons-row {
+align-items: stretch !important;
+}
 /* ── MIDDLE COLUMN: Pros ── */
-.pcb-pros {
+.pcb-pros, .pcb-cons {
   flex: 1;
   background: var(--bg-surface);
   border-radius: var(--radius-md);
@@ -3375,9 +3465,10 @@ body.dark-mode,
   margin: 0 0 1rem 0;
 }
 
-.pcb-list {
+.pcb-list, .cons-list {
   list-style: none;
   margin: 0;
+	padding-left: 0px !important;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -3388,6 +3479,7 @@ body.dark-mode,
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
+	
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -3426,13 +3518,7 @@ body.dark-mode,
 }
 
 /* ── RIGHT COLUMN: Cons ── */
-.pcb-cons {
-  flex: 1;
-  min-width: 0;
-  padding-top: 0;
-  /* Cons doesn't have background in this design, just text */
-  padding: 1.25rem 0 0 1rem;
-}
+
 
 /* ── BOTTOM: Buy Now row ── */
 .pcb-buy-row {
@@ -3482,8 +3568,12 @@ body.dark-mode,
 .pcb-pros-cons-row {
   display: flex;
   flex-direction: row;
-  gap: 1.5rem;
+  gap: .5rem !important;
   align-items: flex-start;
+}
+
+.gizmo-async-ad {
+	transform: scale(0.95);
 }
 
 /* Responsive */
@@ -3493,6 +3583,29 @@ body.dark-mode,
     align-items: stretch;
     padding: 1.25rem;
   }
+	.pcb-buy-row {
+		gap: 5px !important;
+		flex-wrap: nowrap;
+		flex-direction: row;
+		
+	}
+	
+	.ad-wrap{
+	transform: scale(0.8);
+	
+}
+	.buy-cs img {
+		width: 75px !important;
+		margin-block: 0px !important;
+	}
+	.pcb-pros-cons-row {
+		flex-direction: column;
+	}
+
+	.pcb-buy-buttons {
+  gap: 5px !important;
+		flex-wrap: nowrap;
+}
 
   .pcb-left {
     width: 100%;
@@ -3505,7 +3618,7 @@ body.dark-mode,
   }
 
   .pcb-image-wrap {
-    width: 100px;
+   
     flex-shrink: 0;
   }
 
@@ -3515,21 +3628,6 @@ body.dark-mode,
   }
 }
 
-@media (max-width: 550px) {
-  .pcb-pros-cons-row {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .pcb-cons {
-    padding: 0;
-  }
-
-  .pcb-buy-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
 
 /* Dark Mode Overrides for Product Pros/Cons */
 .dark-mode .pros-cons-block,
@@ -4025,6 +4123,7 @@ table.has-fixed-layout {
 	
     justify-content: center;
     display: flex;
+	transform: scale(0.7);
     align-items: center;
    
 	
@@ -4039,16 +4138,19 @@ table.has-fixed-layout {
     justify-content: center;
 	padding: 10px 15px;
 }
-.close {
+#close-ad-btn {
 	position: absolute;
     z-index: 9999;
     top: -32px;
+	background:red;
+	border-radius: 50px;
+	padding: 1px 4px;
     right: 0;
     margin-right: 10px;
 	cursor: pointer;
 }
 
-.close  svg {
+#close-ad-btn svg {
 	width: 15px;
 	height: 15px;
 }
