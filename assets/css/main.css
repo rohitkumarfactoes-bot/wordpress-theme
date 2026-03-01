@@ -4159,3 +4159,88 @@ table.has-fixed-layout {
 	display: none
 }
 
+/* ============================================================
+   SMART ADVERTISEMENT SYSTEM - Device Targeting
+   ============================================================ */
+
+/* Base ad unit styles */
+.gizmo-ad-unit {
+	margin: 2rem 0;
+	text-align: center;
+	clear: both;
+}
+
+.gizmo-ad-unit iframe,
+.gizmo-ad-unit ins {
+	max-width: 100%;
+}
+
+/* Device-specific visibility */
+@media (min-width: 1025px) {
+	/* Desktop only */
+	.gizmo-ad-mobile,
+	.gizmo-ad-tablet {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	/* Tablet only */
+	.gizmo-ad-desktop,
+	.gizmo-ad-mobile {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	/* Mobile only */
+	.gizmo-ad-desktop,
+	.gizmo-ad-tablet,
+	.gizmo-ad-no-mobile {
+		display: none !important;
+	}
+}
+
+/* Sticky ads */
+.gizmo-ad-sticky-footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 9999;
+	background: var(--bg-primary);
+	padding: 0.5rem;
+	box-shadow: 0 -2px 10px var(--shadow-color);
+}
+
+.gizmo-ad-sticky-sidebar {
+	position: sticky;
+	top: 100px;
+}
+
+/* Auto-ads animation */
+@keyframes gizmoAdFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.gizmo-ad-unit {
+	animation: gizmoAdFadeIn 0.3s ease-out;
+}
+
+/* Responsive ad containers */
+.gizmo-ad-unit ins.adsbygoogle {
+	display: block;
+	margin: 0 auto;
+}
+
+/* Hide empty ad units */
+.gizmo-ad-unit:empty {
+	display: none !important;
+}

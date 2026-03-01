@@ -122,10 +122,16 @@
         });
     });
 
-    // Colors
+    // Colors - Brand
     wp.customize('primary_color', function(value) {
         value.bind(function(newVal) {
             updateCSSVariable('--color-primary', newVal);
+        });
+    });
+
+    wp.customize('primary_hover', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--color-primary-hover', newVal);
         });
     });
 
@@ -135,15 +141,100 @@
         });
     });
 
+    wp.customize('accent_hover', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--color-accent-hover', newVal);
+        });
+    });
+
+    // Colors - Text
+    wp.customize('text_primary', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--text-primary', newVal);
+            document.body.style.color = newVal;
+        });
+    });
+
+    wp.customize('text_secondary', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--text-secondary', newVal);
+        });
+    });
+
+    wp.customize('text_link', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--text-link', newVal);
+        });
+    });
+
+    wp.customize('text_link_hover', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--text-link-hover', newVal);
+        });
+    });
+
+    // Colors - Background
+    wp.customize('bg_primary', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--bg-primary', newVal);
+            document.body.style.backgroundColor = newVal;
+        });
+    });
+
+    wp.customize('bg_secondary', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--bg-secondary', newVal);
+        });
+    });
+
+    wp.customize('bg_card', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--bg-card', newVal);
+        });
+    });
+
+    // Colors - UI
+    wp.customize('border_color', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--border-color', newVal);
+        });
+    });
+
+    // Colors - Header/Footer
     wp.customize('nav_bg', function(value) {
         value.bind(function(newVal) {
             updateCSSVariable('--bg-nav', newVal);
         });
     });
 
+    wp.customize('nav_text', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--text-nav', newVal);
+        });
+    });
+
     wp.customize('footer_bg', function(value) {
         value.bind(function(newVal) {
             updateCSSVariable('--bg-footer', newVal);
+        });
+    });
+
+    wp.customize('footer_text', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--text-footer', newVal);
+        });
+    });
+
+    // Colors - Status
+    wp.customize('success_color', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--color-success', newVal);
+        });
+    });
+
+    wp.customize('error_color', function(value) {
+        value.bind(function(newVal) {
+            updateCSSVariable('--color-error', newVal);
         });
     });
 
