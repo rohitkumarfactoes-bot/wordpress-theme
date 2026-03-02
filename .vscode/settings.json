@@ -76,5 +76,9 @@
     "intelephense.files.exclude": [
         "**/node_modules/**",
         "**/vendor/**"
+    ],
+    "intelephense.files.include": [
+        "**/*.php",
+        ".stubs/**/*.php"
     ]
 }

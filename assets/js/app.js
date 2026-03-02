@@ -107,22 +107,65 @@
     if ( ! overlay ) { return; }
 
     const input   = $( '.search-overlay__input', overlay );
-    const closers = [
-      $( '.search-overlay__close', overlay ),
-      $( '.search-toggle' ),
-    ];
+    const closeBtn = $( '.search-overlay__close', overlay );
+    const toggleBtn = $( '.search-toggle' );
+    const closers = [ closeBtn, toggleBtn ];
+    let lastFocusedElement = null;
+
+    // Get all focusable elements within the overlay
+    function getFocusableElements() {
+      return $$( 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])', overlay )
+        .filter( el => ! el.disabled && el.offsetParent !== null );
+    }
+
+    // Trap focus within the overlay
+    function trapFocus( e ) {
+      if ( e.key !== 'Tab' ) { return; }
+      const focusable = getFocusableElements();
+      if ( focusable.length === 0 ) { return; }
+      const first = focusable[ 0 ];
+      const last = focusable[ focusable.length - 1 ];
+
+      if ( e.shiftKey ) {
+        if ( document.activeElement === first ) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if ( document.activeElement === last ) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
 
     function openSearch() {
+      lastFocusedElement = document.activeElement;
       overlay.classList.add( 'is-open' );
       overlay.setAttribute( 'aria-hidden', 'false' );
       document.body.style.overflow = 'hidden';
-      requestAnimationFrame( () => input && input.focus() );
+      if ( toggleBtn ) {
+        toggleBtn.setAttribute( 'aria-expanded', 'true' );
+      }
+      requestAnimationFrame( () => {
+        if ( input ) { input.focus(); }
+      } );
+      document.addEventListener( 'keydown', trapFocus );
     }
 
     function closeSearch() {
       overlay.classList.remove( 'is-open' );
       overlay.setAttribute( 'aria-hidden', 'true' );
       document.body.style.overflow = '';
+      if ( toggleBtn ) {
+        toggleBtn.setAttribute( 'aria-expanded', 'false' );
+      }
+      document.removeEventListener( 'keydown', trapFocus );
+      // Return focus to the element that opened the overlay
+      if ( lastFocusedElement ) {
+        lastFocusedElement.focus();
+        lastFocusedElement = null;
+      }
     }
 
     closers.forEach( el => el && el.addEventListener( 'click', e => {
@@ -134,7 +177,10 @@
     } );
 
     document.addEventListener( 'keydown', e => {
-      if ( e.key === 'Escape' ) { closeSearch(); }
+      if ( e.key === 'Escape' && overlay.classList.contains( 'is-open' ) ) {
+        e.preventDefault();
+        closeSearch();
+      }
       if ( ( e.ctrlKey || e.metaKey ) && e.key === 'k' ) {
         e.preventDefault();
         overlay.classList.contains( 'is-open' ) ? closeSearch() : openSearch();
@@ -149,34 +195,125 @@
   function initMobileNav() {
     const nav     = $( '.mobile-nav' );
     const trigger = $( '.hamburger' );
+    const overlay = $( '.mobile-overlay' );
     if ( ! nav || ! trigger ) { return; }
 
-    function toggleNav() {
-      const isOpen = nav.classList.toggle( 'is-open' );
-      trigger.setAttribute( 'aria-expanded', String( isOpen ) );
-      document.body.style.overflow = isOpen ? 'hidden' : '';
+    let lastFocusedElement = null;
+
+    // Get all focusable elements within the mobile nav
+    function getFocusableElements() {
+      return $$( 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])', nav )
+        .filter( el => ! el.disabled && el.offsetParent !== null );
+    }
+
+    // Trap focus within the mobile nav
+    function trapFocus( e ) {
+      if ( e.key !== 'Tab' ) { return; }
+      const focusable = getFocusableElements();
+      if ( focusable.length === 0 ) { return; }
+      const first = focusable[ 0 ];
+      const last = focusable[ focusable.length - 1 ];
+
+      if ( e.shiftKey ) {
+        if ( document.activeElement === first ) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if ( document.activeElement === last ) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    function openNav() {
+      lastFocusedElement = document.activeElement;
+      nav.classList.add( 'is-open' );
+      nav.setAttribute( 'aria-hidden', 'false' );
+      if ( overlay ) {
+        overlay.classList.add( 'is-active' );
+        overlay.setAttribute( 'aria-hidden', 'false' );
+      }
+      trigger.setAttribute( 'aria-expanded', 'true' );
+      document.body.style.overflow = 'hidden';
 
       // Animate hamburger → X
       const spans = $$( 'span', trigger );
       if ( spans.length >= 3 ) {
-        spans[0].style.transform = isOpen ? 'rotate(45deg) translate(5px, 5px)' : '';
-        spans[1].style.opacity   = isOpen ? '0' : '';
-        spans[2].style.transform = isOpen ? 'rotate(-45deg) translate(5px, -5px)' : '';
+        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+        spans[1].style.opacity   = '0';
+        spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+      }
+
+      // Focus first focusable element in nav
+      const focusable = getFocusableElements();
+      if ( focusable.length > 0 ) {
+        requestAnimationFrame( () => focusable[ 0 ].focus() );
+      }
+
+      document.addEventListener( 'keydown', trapFocus );
+    }
+
+    function closeNav() {
+      nav.classList.remove( 'is-open' );
+      nav.setAttribute( 'aria-hidden', 'true' );
+      if ( overlay ) {
+        overlay.classList.remove( 'is-active' );
+        overlay.setAttribute( 'aria-hidden', 'true' );
+      }
+      trigger.setAttribute( 'aria-expanded', 'false' );
+      document.body.style.overflow = '';
+
+      // Reset hamburger animation
+      const spans = $$( 'span', trigger );
+      if ( spans.length >= 3 ) {
+        spans[0].style.transform = '';
+        spans[1].style.opacity   = '';
+        spans[2].style.transform = '';
+      }
+
+      document.removeEventListener( 'keydown', trapFocus );
+
+      // Return focus to the trigger button
+      if ( lastFocusedElement ) {
+        lastFocusedElement.focus();
+        lastFocusedElement = null;
+      }
+    }
+
+    function toggleNav() {
+      if ( nav.classList.contains( 'is-open' ) ) {
+        closeNav();
+      } else {
+        openNav();
       }
     }
 
     trigger.addEventListener( 'click', toggleNav );
 
     document.addEventListener( 'keydown', e => {
-      if ( e.key === 'Escape' && nav.classList.contains( 'is-open' ) ) { toggleNav(); }
+      if ( e.key === 'Escape' && nav.classList.contains( 'is-open' ) ) {
+        e.preventDefault();
+        closeNav();
+      }
     } );
 
-    // Close on backdrop click
+    // Close on backdrop/overlay click
+    if ( overlay ) {
+      overlay.addEventListener( 'click', () => {
+        if ( nav.classList.contains( 'is-open' ) ) {
+          closeNav();
+        }
+      } );
+    }
+
+    // Close on backdrop click (document level)
     document.addEventListener( 'click', e => {
       if ( nav.classList.contains( 'is-open' ) &&
            ! nav.contains( e.target ) &&
            ! trigger.contains( e.target ) ) {
-        toggleNav();
+        closeNav();
       }
     } );
   }

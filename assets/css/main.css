@@ -1354,6 +1354,23 @@ font-size: .75rem;
   gap: 1.5rem;
 }
 
+/* 3-column grid layout - no hero card */
+.posts-grid--3col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .posts-grid--3col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .posts-grid--3col {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Hero (first post, full width) */
 .post-card--hero {
   grid-column: 1 / -1;

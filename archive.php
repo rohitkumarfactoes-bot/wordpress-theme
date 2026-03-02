@@ -64,23 +64,18 @@
 
 			<?php if ( have_posts() ) : ?>
 
-				<div class="posts-grid" id="posts-container">
+				<div class="posts-grid posts-grid--3col" id="posts-container">
 					<?php
-					$post_index = 0;
 					while ( have_posts() ) :
 						the_post();
-
+					
 						/**
-						 * Hero card logic: 
-						 * Only applies to the very first post, on the first page, 
-						 * and specifically for archives (not search results).
+						 * No hero card - all posts display as standard 3-column cards
 						 */
-						$is_hero = ( $post_index === 0 && ! is_paged() && ! $is_search );
-						set_query_var( 'is_hero', $is_hero );
-
+						set_query_var( 'is_hero', false );
+					
 						get_template_part( 'template-parts/content', 'archive' );
-
-						$post_index++; 
+					
 					endwhile;
 					?>
 				</div><nav class="posts-pagination" aria-label="<?php esc_attr_e( 'Posts navigation', 'gizmodotech-pro' ); ?>">

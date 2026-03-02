@@ -9,6 +9,15 @@
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Preconnect hints for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <?php if ( get_theme_mod( 'gizmo_amazon_enabled', false ) ) : ?>
+    <link rel="dns-prefetch" href="https://webservices.amazon.com">
+    <link rel="preconnect" href="https://webservices.amazon.com" crossorigin>
+    <?php endif; ?>
+
     <script>
       (function() {
         const theme = localStorage.getItem('gizmo_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
