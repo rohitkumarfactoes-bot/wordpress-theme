@@ -1659,11 +1659,52 @@ function gizmo_shortcode_posts($atts) {
 }
 
 /**
- * 2. Pros & Cons Shortcode
- * Usage: [gizmo_pros_cons pros="Good|Great" cons="Bad|Expensive"]
+ * 3. Ad Shortcodes for Different Positions
+ * Usage: 
+ * [gizmo_ad_top] - Header/banner ad
+ * [gizmo_ad_sidebar] - Sidebar ad  
+ * [gizmo_ad_inline] - Inline content ad
+ * [gizmo_ad_bottom] - Footer/sticky ad
  */
-add_shortcode('gizmo_pros_cons', 'gizmo_shortcode_review_box');
-function gizmo_shortcode_review_box($atts) {
+add_shortcode('gizmo_ad_top', 'gizmo_shortcode_ad_top');
+function gizmo_shortcode_ad_top($atts) {
+	$ad_code = get_theme_mod('gizmo_ad_top_code', '');
+	if (empty($ad_code)) return '';
+	
+	$device = get_theme_mod('gizmo_ad_top_device', 'all');
+	return gizmo_wrap_ad_code($ad_code, $device);
+}
+
+add_shortcode('gizmo_ad_sidebar', 'gizmo_shortcode_ad_sidebar');
+function gizmo_shortcode_ad_sidebar($atts) {
+	$ad_code = get_theme_mod('gizmo_ad_sidebar_code', '');
+	if (empty($ad_code)) return '';
+	
+	$device = get_theme_mod('gizmo_ad_sidebar_device', 'all');
+	return gizmo_wrap_ad_code($ad_code, $device);
+}
+
+add_shortcode('gizmo_ad_inline', 'gizmo_shortcode_ad_inline');
+function gizmo_shortcode_ad_inline($atts) {
+	$ad_code = get_theme_mod('gizmo_ad_inline_code', '');
+	if (empty($ad_code)) return '';
+	
+	$device = get_theme_mod('gizmo_ad_inline_device', 'all');
+	return gizmo_wrap_ad_code($ad_code, $device);
+}
+
+add_shortcode('gizmo_ad_bottom', 'gizmo_shortcode_ad_bottom');
+function gizmo_shortcode_ad_bottom($atts) {
+	$ad_code = get_theme_mod('gizmo_ad_bottom_code', '');
+	if (empty($ad_code)) return '';
+	
+	$device = get_theme_mod('gizmo_ad_bottom_device', 'all');
+	return gizmo_wrap_ad_code($ad_code, $device);
+}
+
+/**
+ * 4. Pros & Cons Shortcode
+ * Usage: [gizmo_pros_cons pros="Good|Great" cons="Bad|Expensive"]
 	$atts = shortcode_atts([
 		'pros' => '',
 		'cons' => '',

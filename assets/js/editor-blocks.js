@@ -322,8 +322,10 @@
                             ['core/group', { className: 'pcb-image-wrap' }, [
                                 ['core/image', { sizeSlug: 'full', url: 'https://placehold.co/600x800', alt: 'Product' }]
                             ]],
-                            ['core/paragraph', { className: 'pcb-price', placeholder: '₹99,999', content: '₹99,999' }],
-                            ['core/paragraph', { className: 'pcb-rating', placeholder: 'Rating: 9/10', content: 'Rating: 9/10' }]
+                            ['core/group', { className: 'pcb-meta' }, [
+                                ['core/paragraph', { className: 'pcb-price', placeholder: '₹99,999', content: '₹99,999' }],
+                                ['core/paragraph', { className: 'pcb-rating', placeholder: 'Rating: 9/10', content: 'Rating: 9/10' }]
+                            ]]
                         ]],
                         ['core/group', { className: 'pcb-right' }, [
                             ['core/group', { className: 'pcb-pros-cons-row', layout: { type: 'flex', flexWrap: 'nowrap' } }, [
@@ -344,8 +346,8 @@
                             ['core/group', { className: 'pcb-buy-row', layout: { type: 'flex', justifyContent: 'space-between' } }, [
                                 ['core/paragraph', { className: 'pcb-buy-label', content: 'Buy Now' }],
                                 ['core/group', { className: 'pcb-buy-buttons', layout: { type: 'flex' } }, [
-                                    ['core/image', { width: 120, url: 'https://gizmodotech.com/wp-content/uploads/2024/12/buy-amazon.png' }],
-                                    ['core/image', { width: 120, url: 'https://gizmodotech.com/wp-content/uploads/2024/12/buy-flipkart.png' }]
+                                    ['core/image', { className: 'buy-cs', width: 120, url: 'https://gizmodotech.com/wp-content/uploads/2024/12/buy-amazon.png' }],
+                                    ['core/image', { className: 'buy-cs', width: 120, url: 'https://gizmodotech.com/wp-content/uploads/2024/12/buy-flipkart.png' }]
                                 ]]
                             ]]
                         ]]
