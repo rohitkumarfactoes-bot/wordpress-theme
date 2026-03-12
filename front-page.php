@@ -80,11 +80,16 @@ if ($slider_enabled) :
 				</h2>
 				<div class="post-slider-container">
 					<div class="post-slider-track">
-						<?php while ($slider_q->have_posts()) : $slider_q->the_post(); ?>
+						<?php while ($slider_q->have_posts()) : $slider_q->the_post(); 
+							// Check if post has 'mobile' category
+							$is_mobile = has_category('mobile', get_the_ID());
+							$image_size = $is_mobile ? 'full' : 'gizmo-card';
+							$thumb_class = $is_mobile ? 'post-item-card__thumb is-mobile' : 'post-item-card__thumb';
+						?>
 						<div <?php post_class('post-item-card'); ?>>
-							<a href="<?php the_permalink(); ?>" class="post-item-card__thumb" tabindex="-1" aria-hidden="true">
+							<a href="<?php the_permalink(); ?>" class="<?php echo esc_attr($thumb_class); ?>" tabindex="-1" aria-hidden="true">
 								<?php if (has_post_thumbnail()) {
-									the_post_thumbnail('gizmo-card', ['loading' => 'lazy', 'alt' => esc_attr(get_the_title())]);
+									the_post_thumbnail($image_size, ['loading' => 'lazy', 'alt' => esc_attr(get_the_title())]);
 								} ?>
 							</a>
 							<div class="post-item-card__content">

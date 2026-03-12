@@ -42,7 +42,7 @@ function gizmo_setup() {
 
 	// Thumbnail sizes
 	add_image_size('gizmo-hero',  1200, 630, true);
-	add_image_size('gizmo-card',  600,  400, true);
+	add_image_size('gizmo-card',  800,  450, true);
 	add_image_size('gizmo-thumb', 400,  267, true);
 	add_image_size('gizmo-wide',  1920, 600, true);
 
@@ -2816,4 +2816,6 @@ function gizmo_get_amazon_products(string $keyword) {
     } else {
         return gizmo_get_amazon_products_creators($keyword);
     }
+
 }
+require_once get_template_directory() . '/inc/ad-fixes.php';
