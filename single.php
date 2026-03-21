@@ -79,8 +79,8 @@ while (have_posts()) : the_post();
 			<!-- Breadcrumbs -->
 			<?php gizmodotech_breadcrumbs(); ?>
 
-	<!-- Mobile Gallery OR Full-width hero image -->
-	<?php if ( $is_mobile_gallery && ! empty( $gallery_images ) ) : ?>
+		<!-- Mobile Gallery OR Full-width hero image -->
+		<?php if ( $is_mobile_gallery && ! empty( $gallery_images ) ) : ?>
 		<div class="mobile-wrap">
 			<div class="extracted-images">
 				<?php foreach ( $gallery_images as $img_src ) : ?>
@@ -229,7 +229,7 @@ while (have_posts()) : the_post();
 		<?php if ( comments_open() || get_comments_number() ) : ?>
 			<?php comments_template(); ?>
 		<?php endif; ?>
-</div>
+	</div>
 		<!-- ── RIGHT: Sidebar ── -->
 		<aside class="single-sidebar" aria-label="<?php esc_attr_e('Sidebar','gizmodotech-pro'); ?>">
 

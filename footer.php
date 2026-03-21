@@ -123,7 +123,11 @@
 					</a>
 					&mdash; <?php esc_html_e('All rights reserved.', 'gizmodotech-pro'); ?>
 				</p>
-				<p><?php esc_html_e('Built with ♥ for tech lovers.', 'gizmodotech-pro'); ?></p>
+				<p>
+					<a href="https://zentoroit.com/" target="_blank" rel="noopener noreferrer">
+						<?php esc_html_e('Built by Zentoroit Team', 'gizmodotech-pro'); ?>
+					</a>
+				</p>
 			</div>
 		</div>
 
